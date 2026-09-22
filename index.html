@@ -1073,39 +1073,39 @@
 
                 <!-- Step 15: Document Extraction & Vault -->
                 <div class="form-step" id="step-15">
-                  <h3>Step 15: Pluggable AI Document Extraction & Vault</h3>
-                  <p class="section-desc">Upload source documents to extract values with field-level provenance tracking.</p>
+                  <h3>Step 15: Source Documents (No OCR)</h3>
+                  <p class="section-desc">This prototype cannot read PDFs or images: there is no OCR and no AI extraction. The file pickers below are disabled placeholders. Enter values by hand in the earlier steps and keep the source documents for attorney review.</p>
                   
                   <div class="grid-2">
                     <div class="upload-dropzone">
                       <h4>📄 IRS Form 1040 Tax Returns</h4>
-                      <input type="file" id="upload-tax-returns" accept=".pdf,.png,.jpg,.jpeg" />
-                      <p class="dropzone-hint">Extracts AGI, filing status & dependents</p>
+                      <input type="file" id="upload-tax-returns" accept=".pdf,.png,.jpg,.jpeg" disabled />
+                      <p class="dropzone-hint">Not connected — nothing is read</p>
                     </div>
                     <div class="upload-dropzone">
                       <h4>💵 60-Day Paystubs</h4>
-                      <input type="file" id="upload-paystubs" accept=".pdf,.png,.jpg,.jpeg" />
-                      <p class="dropzone-hint">Computes CMI gross wages & deductions</p>
+                      <input type="file" id="upload-paystubs" accept=".pdf,.png,.jpg,.jpeg" disabled />
+                      <p class="dropzone-hint">Not connected — nothing is read</p>
                     </div>
                   </div>
 
                   <div class="grid-2" style="margin-top:1rem;">
                     <div class="upload-dropzone">
                       <h4>🏦 Bank Statements</h4>
-                      <input type="file" id="upload-bank-statements" accept=".pdf,.png,.jpg,.jpeg" />
-                      <p class="dropzone-hint">Scans 90-day balances & transfers</p>
+                      <input type="file" id="upload-bank-statements" accept=".pdf,.png,.jpg,.jpeg" disabled />
+                      <p class="dropzone-hint">Not connected — nothing is read</p>
                     </div>
                     <div class="upload-dropzone">
                       <h4>📊 Credit Report / Matrix</h4>
-                      <input type="file" id="upload-credit-report" accept=".pdf,.txt,.csv" />
-                      <p class="dropzone-hint">Extracts creditors, balances & notices</p>
+                      <input type="file" id="upload-credit-report" accept=".pdf,.txt,.csv" disabled />
+                      <p class="dropzone-hint">Not connected — nothing is read</p>
                     </div>
                   </div>
 
                   <div id="extraction-vault-status-box" class="extraction-status-box" style="margin-top:1rem;">
                     <div class="status-indicator success">
                       <span class="dot"></span>
-                      <span>Synthetic Source Document Vault Ready (4 Samples Extracted)</span>
+                      <span>No documents read. Sample figures elsewhere in the app are synthetic.</span>
                     </div>
                   </div>
                 </div>

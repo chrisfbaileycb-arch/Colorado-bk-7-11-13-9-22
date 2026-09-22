@@ -3161,7 +3161,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     logExtractionEvent('Tax Return Form 1040', taxDoc.facts);
     dualStateManager.stageFieldUpdate('ScheduleI', 'debtor_1_gross_wages', 'Gross Wages', 4850, 'Tax Return Parser (1040)');
-    handleUserPrompt('Extracted 2025 Tax Return: Gross wages $58,200 ($4,850/mo) staged to Schedule I.');
+    handleUserPrompt('Loaded synthetic sample tax return (no OCR): gross wages $58,200 ($4,850/mo) staged to Schedule I for review.');
   });
 
   document.getElementById('btn-ocr-paystub')?.addEventListener('click', () => {
@@ -3175,7 +3175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     logExtractionEvent('60-Day Paystub', paystubDoc.facts);
     dualStateManager.stageFieldUpdate('ScheduleI', 'debtor_1_gross_wages', 'Gross Wages', 4850, 'Paystub 60-Day Parser');
-    handleUserPrompt('Extracted 60-Day Paystub: Bi-weekly pay $2,425 staged to Schedule I with 99.4% confidence.');
+    handleUserPrompt('Loaded synthetic sample paystub (no OCR): bi-weekly pay $2,425 staged to Schedule I for review.');
   });
 
   document.getElementById('btn-ocr-bank')?.addEventListener('click', () => {
@@ -3186,7 +3186,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ending_balance: 1420.50
     });
     logExtractionEvent('FirstBank Checking Statement', bankDoc.facts);
-    handleUserPrompt('Extracted Bank Statement: $1,420.50 ending balance reconciled to Schedule A/B line 17.1.');
+    handleUserPrompt('Loaded synthetic sample bank statement (no OCR): $1,420.50 ending balance, for review against Schedule A/B.');
   });
 
   document.getElementById('btn-ocr-credit')?.addEventListener('click', () => {
@@ -3195,7 +3195,7 @@ document.addEventListener('DOMContentLoaded', () => {
       { creditor_name: 'Toyota Motor Credit', current_balance: 14200, is_secured: true }
     ]);
     logExtractionEvent('Tri-Merge Credit Report', creditDoc.facts);
-    handleUserPrompt('Extracted Credit Report: Active tradelines mapped to Schedule D and Schedule E/F.');
+    handleUserPrompt('Loaded synthetic sample credit tradelines (no OCR) for review against Schedules D and E/F.');
   });
 
   document.getElementById('btn-process-upload')?.addEventListener('click', () => {
@@ -3205,14 +3205,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (fileInput?.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
-      handleUserPrompt(`Uploaded and processed financial document: ${file.name} (${docType}). Staging extracted facts into Draft working copy.`);
-      logExtractionEvent(`Uploaded: ${file.name}`, [{
-        field_id: 'document_vault',
-        raw_text: file.name,
-        confidence_score: 0.98
-      }]);
+      handleUserPrompt(`Received ${file.name} (${docType}). This app has no OCR and did not read its contents; nothing was extracted.`);
     } else {
-      handleUserPrompt(`Ran automated pipeline adapter for ${docType}. Verified provenanced facts.`);
+      handleUserPrompt(`No file selected. Note: this app has no OCR; only structured JSON can be mapped.`);
     }
   });
 
@@ -4188,7 +4183,7 @@ function logExtractionEvent(title: string, facts: any[]) {
   const entryHtml = `
     <div style="margin-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 6px;">
       <div style="color: #60a5fa; font-weight: bold;">[${new Date().toLocaleTimeString()}] ${title}</div>
-      ${facts.map(f => `<div>• <strong>${f.field_id}</strong> (conf: ${((f.confidence_score || 0.95) * 100).toFixed(0)}%)</div>`).join('')}
+      ${facts.length ? facts.map(f => `<div>• <strong>${f.field_id}</strong> (field completeness: ${typeof f.confidence_score === 'number' ? (f.confidence_score * 100).toFixed(0) + '%' : 'n/a'}; unverified)</div>`).join('') : '<div>• No facts extracted (no OCR; sample data only).</div>'}
     </div>
   `;
 
