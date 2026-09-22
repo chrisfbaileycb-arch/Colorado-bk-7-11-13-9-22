@@ -124,10 +124,10 @@ Historical files previously cited "209 tests across 28 files"; that figure was n
 The repository uses TypeScript browser modules. Serve it through a development server rather than opening `index.html` directly:
 
 ```bash
-bunx vite --host 0.0.0.0
+bun run dev
 ```
 
-Then open the local URL printed by Vite. Use synthetic information only.
+Then open the local URL printed by Vite (bound to `127.0.0.1` only; do not expose the dev or preview server publicly). Use synthetic information only.
 
 ## Safety and privacy
 
