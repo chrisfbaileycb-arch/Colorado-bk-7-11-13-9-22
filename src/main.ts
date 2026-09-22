@@ -1,4 +1,6 @@
 import {
+  sha256Hex,
+  canonicalJson,
   generateDraftFormPdf,
   generateForm101Pdf, 
   generateForm121Pdf, 
@@ -3258,19 +3260,14 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ECF Court Filing Simulation Handlers
-  function updateEcfManifestChecksum() {
+  async function updateEcfManifestChecksum() {
     const checksumEl = document.getElementById('ecf-packet-checksum');
     if (checksumEl) {
-      const draft = dualStateManager.getDraftFiling();
-      const debtorName = `${draft.debtor_1.first_name.value}_${draft.debtor_1.last_name.value}`;
-      const hashSeed = `${debtorName}_${draft.chapter}_${new Date().toDateString()}`;
-      let hash = 0;
-      for (let i = 0; i < hashSeed.length; i++) {
-        hash = (hash << 5) - hash + hashSeed.charCodeAt(i);
-        hash |= 0;
-      }
-      const hex = Math.abs(hash).toString(16).padStart(8, '0');
-      checksumEl.innerText = `SHA-256: e8f9${hex}2a...`;
+      const digest = await sha256Hex(canonicalJson(dualStateManager.getDraftFiling()));
+      checksumEl.innerText = digest
+        ? `SHA-256 of draft data: ${digest.slice(0, 16)}…`
+        : 'SHA-256 unavailable (WebCrypto needs HTTPS or localhost)';
+      checksumEl.title = digest ?? '';
     }
   }
 
@@ -3287,9 +3284,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (criticalCount > 0) {
       alert(`Pre-Flight Lint Notice: ${criticalCount} critical audit flag(s) and ${warningCount} warning(s) detected. Please review before transmission.`);
     } else {
-      alert(`✓ Pre-Flight Verification Passed: 0 Critical Hard Audit Blockers. 100% PDF mapping integrity across all Official Forms.`);
+      alert(`Pre-Flight Lint: 0 critical hard-audit flags (${warningCount} warning(s)). This checks this app's own rules only; it is not a court-conformance check.`);
     }
-    handleUserPrompt(`Ran ECF pre-flight lint: ${flags.length === 0 ? 'All 100% clean' : flags.length + ' notices found'}. Court package conforms to District of Colorado standards.`);
+    handleUserPrompt(`Ran pre-flight lint: ${flags.length === 0 ? 'no audit flags' : flags.length + ' notices found'}. This checks this app's own audit rules only.`);
   });
 
   // Transmit & File to Court simulation
@@ -3312,7 +3309,7 @@ document.addEventListener('DOMContentLoaded', () => {
     isEcfFilingInProgress = true;
     if (fileBtn) {
       fileBtn.disabled = true;
-      fileBtn.innerHTML = `<span class="spinner-ring" style="width:12px; height:12px; margin-right:6px;"></span> Transmitting to ECF Gateway...`;
+      fileBtn.innerHTML = `<span class="spinner-ring" style="width:12px; height:12px; margin-right:6px;"></span> Simulating (nothing is sent)...`;
     }
 
     // Reset view
@@ -3325,62 +3322,53 @@ document.addEventListener('DOMContentLoaded', () => {
     const draft = dualStateManager.getDraftFiling();
     const debtorFullName = `${draft.debtor_1.first_name.value} ${draft.debtor_1.last_name.value}`;
     const chapter = draft.chapter || '7';
-    const courtTarget = (document.getElementById('ecf-court-target') as HTMLSelectElement)?.value || 'COB';
-    const filingType = (document.getElementById('ecf-filing-type') as HTMLSelectElement)?.value || 'NEW_PETITION';
     const feeMode = (document.getElementById('ecf-fee-mode') as HTMLSelectElement)?.value || 'PAY_ONLINE';
 
     function appendTerminal(text: string, type: 'info' | 'success' | 'accent' = 'info') {
       const line = document.createElement('div');
       line.className = `terminal-line ${type}`;
-      line.innerText = `[${new Date().toLocaleTimeString()}] ${text}`;
+      line.innerText = `[${new Date().toLocaleTimeString()}] [SIMULATION] ${text}`;
       terminalStream?.appendChild(line);
       if (terminalStream) terminalStream.scrollTop = terminalStream.scrollHeight;
     }
 
-    appendTerminal(`[INIT] Opening TLS 1.3 secure session with USBC-CO Gateway (${courtTarget})...`, 'info');
+    appendTerminal('No network connection is made. These are the steps an attorney performs in the court\'s own CM/ECF system.', 'info');
 
     const stages = [
       {
-        pct: 15,
-        stage: 'Authenticating CM/ECF Attorney Credentials & Digital Seal...',
-        log: '✓ State Bar & CM/ECF Login verified with PACER / NextGen ECF Auth Token.',
+        pct: 20,
+        stage: 'Step 1 of 5: Attorney logs in to CM/ECF (outside this app)',
+        log: 'Attorney signs in to the District of Colorado CM/ECF site with their own credentials. This app does not handle or check them.',
         type: 'info' as const,
         delay: 600
       },
       {
-        pct: 35,
-        stage: 'Validating PDF/A Standard Compliance & Docket Signatures (§ 101/521)...',
-        log: '✓ Form 101, Schedules A/B-J, SOFA 107, Form 108 validated. Total 38 pages rendered.',
+        pct: 40,
+        stage: 'Step 2 of 5: Attorney uploads the petition and schedules',
+        log: 'Final PDFs must come from the official forms. The draft PDFs from this app are watermarked and are not fileable.',
         type: 'info' as const,
         delay: 1200
       },
       {
-        pct: 55,
-        stage: 'Processing Pay.gov Filing Fee Authorization ($338.00)...',
-        log: `✓ Pay.gov Authorization Successful (Ref: PAYGOV-${Math.floor(100000 + Math.random() * 900000)}). Fee Mode: ${feeMode}.`,
+        pct: 60,
+        stage: 'Step 3 of 5: Filing fee',
+        log: `Fee handling selected here: ${feeMode}. No payment is attempted; fees are paid through the court's own process.`,
         type: 'accent' as const,
         delay: 1900
       },
       {
-        pct: 75,
-        stage: 'Uploading Creditor Address Matrix & Automatic Stay Lock (§ 362)...',
-        log: '✓ Uploaded 1-column raw ASCII creditor matrix. Automatic stay active nationwide.',
+        pct: 80,
+        stage: 'Step 4 of 5: Creditor matrix',
+        log: 'Attorney uploads the creditor matrix in the format the court requires.',
         type: 'info' as const,
         delay: 2600
       },
       {
-        pct: 90,
-        stage: 'Generating Notice of Electronic Filing (NEF) & Assigning Judge...',
-        log: '✓ Clerk of Court Docket Entry #1 Recorded. Random assignment: Hon. Michael E. Romero.',
-        type: 'info' as const,
-        delay: 3300
-      },
-      {
         pct: 100,
-        stage: 'Court Transmission Complete • Case Docketed!',
-        log: '✓ Transmitted successfully. Official Notice of Electronic Filing (NEF) issued.',
+        stage: 'Step 5 of 5: Court issues its own notice',
+        log: 'In a real filing the court assigns the case number and judge and sends its own notice. None of that happened here.',
         type: 'success' as const,
-        delay: 4000
+        delay: 3300
       }
     ];
 
@@ -3395,28 +3383,28 @@ document.addEventListener('DOMContentLoaded', () => {
           isEcfFilingInProgress = false;
           if (fileBtn) {
             fileBtn.disabled = false;
-            fileBtn.innerHTML = `<span class="btn-icon">⚡</span> Transmit & File to Court (CM/ECF Gateway)`;
+            fileBtn.innerHTML = `<span class="btn-icon">▶</span> Run Filing Simulation (nothing is sent)`;
           }
 
-          // Populate NEF details
-          const caseNumYear = new Date().getFullYear().toString().slice(-2);
-          const randomCaseNum = `${caseNumYear}-${Math.floor(10000 + Math.random() * 90000)}-MER`;
+          // Simulation summary. The ID is deliberately not shaped like a court case number.
+          const simId = `SIM-${Date.now().toString(36).toUpperCase()}`;
           const nefCaseEl = document.getElementById('nef-case-number');
           const nefChapterEl = document.getElementById('nef-chapter-val');
           const nefTimestampEl = document.getElementById('nef-timestamp-val');
           const nefDocHash = document.getElementById('nef-doc-hash');
 
-          if (nefCaseEl) nefCaseEl.innerText = randomCaseNum;
-          if (nefChapterEl) nefChapterEl.innerText = `Chapter ${chapter} Voluntary Individual Petition`;
-          if (nefTimestampEl) nefTimestampEl.innerText = `${new Date().toLocaleString()} (US/Mountain)`;
+          if (nefCaseEl) nefCaseEl.innerText = simId;
+          if (nefChapterEl) nefChapterEl.innerText = `Chapter ${chapter} (draft)`;
+          if (nefTimestampEl) nefTimestampEl.innerText = new Date().toLocaleString();
           if (nefDocHash) {
-            nefDocHash.innerText = `sha256:${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`;
+            nefDocHash.innerText = 'computing…';
+            sha256Hex(canonicalJson(draft)).then(d => { nefDocHash.innerText = d ?? 'unavailable (WebCrypto needs HTTPS or localhost)'; });
           }
 
           nefReceipt.style.display = 'block';
           nefReceipt.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-          handleUserPrompt(`Court filing simulation complete! Case docketed under Case No. ${randomCaseNum} in the U.S. Bankruptcy Court for the District of Colorado.`);
+          handleUserPrompt(`Filing simulation finished (${simId}). Nothing was sent to any court and no case exists.`);
         }
       }, delay);
     });
@@ -3428,64 +3416,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const nefReceipt = document.getElementById('ecf-nef-receipt-container');
     if (progressContainer) progressContainer.style.display = 'none';
     if (nefReceipt) nefReceipt.style.display = 'none';
-    handleUserPrompt('Reset ECF filing portal simulator to initial state.');
+    handleUserPrompt('Reset the filing simulation.');
   });
 
-  // Download NEF Receipt HTML
+  // Download simulation log. Deliberately not formatted as a court Notice of Electronic Filing:
+  // no court caption, no seal, no clerk certification, no case number or judge.
   document.getElementById('btn-download-nef-receipt')?.addEventListener('click', () => {
     const draft = dualStateManager.getDraftFiling();
-    const caseNum = document.getElementById('nef-case-number')?.innerText || '26-10482-MER';
-    const judge = document.getElementById('nef-judge-name')?.innerText || 'Hon. Michael E. Romero';
+    const simId = document.getElementById('nef-case-number')?.innerText || 'SIM';
     const timestamp = document.getElementById('nef-timestamp-val')?.innerText || new Date().toLocaleString();
-    const docHash = document.getElementById('nef-doc-hash')?.innerText || 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+    const docHash = document.getElementById('nef-doc-hash')?.innerText || 'not computed';
 
-    const nefReceiptHtml = `
+    const logHtml = `
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Notice of Electronic Filing — Case ${caseNum}</title>
+        <meta charset="utf-8"/>
+        <title>Filing Simulation Log ${escapeHtml(simId)} - NOT A COURT DOCUMENT</title>
         <style>
-          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; margin: 40px; color: #111; line-height: 1.5; }
-          .header { border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
-          .title { font-size: 18px; font-weight: bold; }
-          .subtitle { font-size: 14px; color: #555; }
-          .section { margin-top: 20px; }
-          .grid { display: grid; grid-template-columns: 200px 1fr; gap: 8px; margin-top: 10px; }
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 40px; color: #111; line-height: 1.5; }
+          .banner { border: 3px dashed #b45309; background: #fffbeb; padding: 14px; font-weight: bold; color: #92400e; }
+          .grid { display: grid; grid-template-columns: 220px 1fr; gap: 8px; margin-top: 16px; }
           .label { font-weight: bold; color: #333; }
-          .hash { font-family: monospace; font-size: 12px; background: #f0f0f0; padding: 4px; border-radius: 4px; }
-          .seal { float: right; font-size: 40px; }
+          .hash { font-family: monospace; font-size: 12px; word-break: break-all; }
         </style>
       </head>
       <body>
-        <div class="header">
-          <div class="seal">⚖️</div>
-          <div class="title">UNITED STATES BANKRUPTCY COURT</div>
-          <div class="subtitle">DISTRICT OF COLORADO (DENVER DIVISION)</div>
-          <h3>NOTICE OF ELECTRONIC FILING (NEF)</h3>
-        </div>
-        <p>The following transaction was entered on ${timestamp} and filed electronically.</p>
+        <div class="banner">SIMULATION LOG - NOT A COURT DOCUMENT. NOTHING WAS FILED. No case number, judge, fee payment, or court notice exists for this record.</div>
         <div class="grid">
-          <div class="label">Case Title:</div><div>In re: ${draft.debtor_1.first_name.value} ${draft.debtor_1.last_name.value}</div>
-          <div class="label">Case Number:</div><div><strong>${caseNum}</strong></div>
-          <div class="label">Chapter:</div><div>Chapter ${draft.chapter || '7'} Voluntary</div>
-          <div class="label">Assigned Judge:</div><div>${judge}</div>
-          <div class="label">Filer / Attorney:</div><div>${(document.getElementById('attorney-name') as HTMLInputElement)?.value || 'Supervising Attorney'} (Bar: ${(document.getElementById('attorney-bar') as HTMLInputElement)?.value || 'CO-54321'})</div>
-          <div class="label">Law Firm:</div><div>${(document.getElementById('attorney-firm') as HTMLInputElement)?.value || 'Denver Bankruptcy Law Group'}</div>
-          <div class="label">Filing Fee Status:</div><div>Paid in Full ($338.00 / Pay.gov Ref #PAYGOV-882194)</div>
-          <div class="label">Document Hash:</div><div class="hash">${docHash}</div>
-        </div>
-        <div class="section" style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 15px; font-size: 12px; color: #666;">
-          Electronic Document Certified by Clerk of Court, U.S. Bankruptcy Court for the District of Colorado.
+          <div class="label">Simulation ID:</div><div>${escapeHtml(simId)}</div>
+          <div class="label">Simulated at:</div><div>${escapeHtml(timestamp)}</div>
+          <div class="label">Draft debtor:</div><div>${escapeHtml(`${draft.debtor_1.first_name.value} ${draft.debtor_1.last_name.value}`)}</div>
+          <div class="label">Draft chapter:</div><div>${escapeHtml(String(draft.chapter || '7'))}</div>
+          <div class="label">SHA-256 of draft data:</div><div class="hash">${escapeHtml(docHash)}</div>
         </div>
       </body>
       </html>
     `;
 
-    const blob = new Blob([nefReceiptHtml], { type: 'text/html' });
+    const blob = new Blob([logHtml], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `USBC_CO_Notice_Of_Electronic_Filing_${caseNum}.html`;
+    a.download = `Filing_Simulation_Log_${simId}_NOT_FILED.html`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -3872,7 +3845,7 @@ function openEmailDispatchModal(formId: string) {
   const titleEl = document.getElementById('modal-dispatch-form-title');
   const trackEl = document.getElementById('modal-dispatch-tracking');
   if (titleEl) titleEl.innerText = `${path.officialFormNumber || path.formId.toUpperCase()} — Digital Email Transmission & Filing Path`;
-  if (trackEl) trackEl.innerText = `Provenance Tracking: ${path.deliveryConfirmationToken} • Case: ${draftData.case_id || '26-10482-MER'}`;
+  if (trackEl) trackEl.innerText = `Provenance Tracking: ${path.deliveryConfirmationToken} • Case: ${draftData.case_id || 'NOT FILED'}`;
 
   // Sender details
   const sName = document.getElementById('modal-sender-name');
@@ -3983,7 +3956,7 @@ function printSingleEmailTransmissionSlip(formId: string) {
 function printMasterTransmissionManifest() {
   const draftData = dualStateManager ? dualStateManager.getDraftFiling() : createSampleMasterCaseData();
   const debtorName = `${draftData.debtor_1.first_name.value} ${draftData.debtor_1.last_name.value}`;
-  const caseId = draftData.case_id || '26-10482-MER';
+  const caseId = draftData.case_id || 'NOT FILED';
   const now = new Date().toLocaleString();
 
   const manifestRows = ALL_COURT_FORMS.map(formId => {
@@ -4023,8 +3996,8 @@ function printMasterTransmissionManifest() {
     <body>
       <div class="header">
         <div>
-          <div class="title">U.S. BANKRUPTCY COURT • DISTRICT OF COLORADO</div>
-          <div class="subtitle">Master Outbound Electronic Filing & Transmission Manifest Docket</div>
+          <div class="title">DRAFT OUTBOX MANIFEST — NOT A COURT DOCUMENT</div>
+          <div class="subtitle">Prototype checklist. Nothing listed here has been sent or filed.</div>
         </div>
         <div style="text-align:right;">
           <strong>Date Generated:</strong> ${now}<br/>
@@ -4035,8 +4008,7 @@ function printMasterTransmissionManifest() {
       <div class="grid">
         <div>
           <strong>Debtor:</strong> ${debtorName}<br/>
-          <strong>Jurisdiction:</strong> U.S. Bankruptcy Court (District of Colorado)<br/>
-          <strong>Clerk Gateway:</strong> ecf_intake_filer@cob.uscourts.gov
+          <strong>Intended court:</strong> U.S. Bankruptcy Court (District of Colorado) — filed by the attorney via CM/ECF, not from this app
         </div>
         <div>
           <strong>Originating Sender:</strong> ${currentSenderVessel.senderName}<br/>
@@ -4053,7 +4025,7 @@ function printMasterTransmissionManifest() {
             <th style="width:20%;">Destination Email</th>
             <th style="width:26%;">Mandatory Accompanying Documents</th>
             <th style="width:12%;">Status</th>
-            <th style="width:10%;">Hash Link</th>
+            <th style="width:10%;">Hash</th>
           </tr>
         </thead>
         <tbody>
@@ -4061,13 +4033,8 @@ function printMasterTransmissionManifest() {
         </tbody>
       </table>
 
-      <div class="seal-box">
-        <strong>SUPERVISING COUNSEL CERTIFICATION & TRANSMISSION COVENANT:</strong><br/>
-        I declare under penalty of perjury and L.B.R. 5005-4 that each of the above 15 official filings and their respective statutory exhibits have been audited for accuracy and are authorized for transmission exclusively via the approved sender vessel.
-        <div style="margin-top:8px; display:flex; justify-content:space-between;">
-          <span>Digital Seal: <code>SHA256:${Array.from({ length: 32 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}</code></span>
-          <span>Signoff: <strong>${currentSenderVessel.senderName}</strong></span>
-        </div>
+      <div class="seal-box" style="background:#fffbeb; border-color:#b45309;">
+        <strong>DRAFT ONLY.</strong> This manifest carries no signature, seal, or certification. Any declaration to a court must be made by the attorney in the court's own filing system.
       </div>
     </body>
     </html>

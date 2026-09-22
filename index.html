@@ -1113,7 +1113,7 @@
                 <!-- Step 16: Attorney Review, ECF Gateway & Email Outbox -->
                 <div class="form-step" id="step-16">
                   <h3>Step 16: Supervising Attorney Signoff, ECF Gateway & Outbound Dispatch</h3>
-                  <p class="section-desc">ABA Model Rule 5.3 supervision, court transmission simulator, and certified email outbox console.</p>
+                  <p class="section-desc">Attorney signoff (recorded locally, unverified), a filing simulation (nothing is sent), and a draft email outbox.</p>
 
                   <div class="grid-2">
                     <div class="form-group">
@@ -1158,11 +1158,10 @@
                   <div id="ecf-filing-portal" class="section-block ecf-portal-box" style="margin-top:20px;">
                     <div class="ecf-portal-header">
                       <div class="ecf-badge-group">
-                        <span class="ecf-portal-badge">CM/ECF SIMULATOR</span>
-                        <span class="ecf-portal-badge district">DISTRICT OF COLORADO (DENVER)</span>
+                        <span class="ecf-portal-badge" style="background:rgba(234,179,8,0.2); color:#fbbf24; border-color:rgba(234,179,8,0.5);">SIMULATION ONLY — NOTHING IS SENT</span>
                       </div>
-                      <h4>Electronic Case Filing (ECF) Submission Interface</h4>
-                      <p class="section-desc">Transmit signed voluntary petition, schedules A-J, Means Test, Statement of Financial Affairs, and matrix to the U.S. Bankruptcy Court ECF gateway.</p>
+                      <h4>Filing Walkthrough (Simulated)</h4>
+                      <p class="section-desc">This app has no connection to CM/ECF, PACER, or Pay.gov. The button below only animates the steps an attorney would perform in the court's own CM/ECF system. No case is opened, no fee is paid, and no court record is created.</p>
                     </div>
 
                     <div class="grid-3" style="margin-top:12px;">
@@ -1196,22 +1195,22 @@
                     <div class="ecf-manifest-card" style="margin-top:14px;">
                       <div class="manifest-header">
                         <span>Packet Package Verification & Pre-Flight Check</span>
-                        <span id="ecf-packet-checksum" class="checksum-tag">SHA-256: CALCULATING...</span>
+                        <span id="ecf-packet-checksum" class="checksum-tag">SHA-256 of draft data: calculating…</span>
                       </div>
                       <div class="manifest-items-grid">
-                        <div class="manifest-item"><span class="check-icon">✓</span> Form 101 Voluntary Petition</div>
-                        <div class="manifest-item"><span class="check-icon">✓</span> Schedules A/B through J-2</div>
-                        <div class="manifest-item"><span class="check-icon">✓</span> Form 107 Statement of Financial Affairs</div>
-                        <div class="manifest-item"><span class="check-icon">✓</span> Form 122A Means Testing Presumption Packet</div>
-                        <div class="manifest-item"><span class="check-icon">✓</span> Creditor Address Matrix (USBC-CO format)</div>
-                        <div class="manifest-item"><span class="check-icon">✓</span> ABA Rule 5.3 Attorney Digital Seal</div>
+                        <div class="manifest-item"><span class="check-icon">☐</span> Form 101 Voluntary Petition</div>
+                        <div class="manifest-item"><span class="check-icon">☐</span> Schedules A/B through J-2</div>
+                        <div class="manifest-item"><span class="check-icon">☐</span> Form 107 Statement of Financial Affairs</div>
+                        <div class="manifest-item"><span class="check-icon">☐</span> Form 122A Means Testing</div>
+                        <div class="manifest-item"><span class="check-icon">☐</span> Creditor Address Matrix</div>
+                        <div class="manifest-item"><span class="check-icon">☐</span> Attorney signature (/s/) in CM/ECF</div>
                       </div>
                     </div>
 
                     <!-- File to Court Action Button -->
                     <div style="margin-top:16px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
                       <button type="button" id="btn-ecf-file-court" class="btn btn-primary btn-ecf-transmit" style="flex:1; min-width:240px;">
-                        <span class="btn-icon">⚡</span> Transmit & File to Court (CM/ECF Gateway)
+                        <span class="btn-icon">▶</span> Run Filing Simulation (nothing is sent)
                       </button>
                       <button type="button" id="btn-ecf-preflight-check" class="btn btn-secondary" style="padding: 0.65rem 1rem;">
                         Pre-Flight Lint
@@ -1223,7 +1222,7 @@
                       <div class="ecf-progress-header">
                         <div class="progress-status-title">
                           <span class="spinner-ring"></span>
-                          <span id="ecf-progress-stage-text">Connecting to CM/ECF Gateway (COB-PROD-01)...</span>
+                          <span id="ecf-progress-stage-text">Simulation starting…</span>
                         </div>
                         <span id="ecf-progress-percent" class="progress-pct">0%</span>
                       </div>
@@ -1233,52 +1232,43 @@
                       <div id="ecf-terminal-stream" class="ecf-terminal-log"></div>
                     </div>
 
-                    <!-- ECF Official Notice of Electronic Filing (NEF) Confirmation Card -->
-                    <div id="ecf-nef-receipt-container" class="ecf-nef-card" style="display:none; margin-top:16px;">
+                    <!-- Simulation result card. Deliberately NOT styled as a court Notice of Electronic Filing. -->
+                    <div id="ecf-nef-receipt-container" class="ecf-nef-card" style="display:none; margin-top:16px; border:2px dashed #fbbf24;">
                       <div class="nef-banner">
                         <div class="nef-title-block">
-                          <span class="seal-icon">⚖️</span>
                           <div>
-                            <h4 style="margin:0; font-size:1rem; color:#4ade80;">U.S. BANKRUPTCY COURT • DISTRICT OF COLORADO</h4>
-                            <div style="font-size:0.8rem; color:#94a3b8;">Notice of Electronic Filing (NEF) — Court Timestamp Certified</div>
+                            <h4 style="margin:0; font-size:1rem; color:#fbbf24;">SIMULATION FINISHED — NOTHING WAS FILED</h4>
+                            <div style="font-size:0.8rem; color:#94a3b8;">This is not a court document. No case number, judge, or § 341 meeting has been assigned.</div>
                           </div>
                         </div>
-                        <span class="docket-status-tag">STATUS: FILED & DOCKETED</span>
+                        <span class="docket-status-tag" style="background:rgba(234,179,8,0.2); color:#fbbf24;">STATUS: NOT FILED</span>
                       </div>
-                      
+
                       <div class="nef-details-grid" style="margin-top:12px;">
                         <div class="nef-detail-item">
-                          <span class="label">Assigned Case Number:</span>
-                          <strong id="nef-case-number" class="val highlight">26-10482-MER</strong>
+                          <span class="label">Simulation ID (not a case number):</span>
+                          <strong id="nef-case-number" class="val">—</strong>
                         </div>
                         <div class="nef-detail-item">
-                          <span class="label">Assigned Bankruptcy Judge:</span>
-                          <strong id="nef-judge-name" class="val">Hon. Michael E. Romero</strong>
+                          <span class="label">Chapter (draft):</span>
+                          <strong id="nef-chapter-val" class="val">—</strong>
                         </div>
                         <div class="nef-detail-item">
-                          <span class="label">Chapter:</span>
-                          <strong id="nef-chapter-val" class="val">Chapter 7 Voluntary</strong>
+                          <span class="label">Simulated at:</span>
+                          <strong id="nef-timestamp-val" class="val">—</strong>
                         </div>
                         <div class="nef-detail-item">
-                          <span class="label">Date & Time Filed:</span>
-                          <strong id="nef-timestamp-val" class="val">2026-08-17 08:30:14 MDT</strong>
-                        </div>
-                        <div class="nef-detail-item">
-                          <span class="label">Section 341 Meeting:</span>
-                          <strong id="nef-341-date" class="val">September 24, 2026 @ 9:30 AM MDT</strong>
-                        </div>
-                        <div class="nef-detail-item">
-                          <span class="label">Court Document Hash (SHA-256):</span>
-                          <span id="nef-doc-hash" class="val mono-hash">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</span>
+                          <span class="label">SHA-256 of draft case data:</span>
+                          <span id="nef-doc-hash" class="val mono-hash">—</span>
                         </div>
                       </div>
 
                       <div class="nef-action-buttons" style="margin-top:14px; display:flex; gap:10px;">
                         <button type="button" id="btn-download-nef-receipt" class="btn btn-secondary" style="font-size:0.85rem;">
-                          📄 Download Official NEF Receipt (HTML)
+                          📄 Download Simulation Log (HTML)
                         </button>
                         <button type="button" id="btn-reset-ecf-demo" class="btn btn-secondary" style="font-size:0.85rem; color:#94a3b8;">
-                          🔄 Reset ECF Simulator
+                          🔄 Reset Simulation
                         </button>
                       </div>
                     </div>
@@ -1296,7 +1286,7 @@
                         </div>
                         <h4 style="margin:4px 0 2px 0; font-size:1.05rem; color:#f8fafc;">Electronic Document Transmission & Filing Outbox</h4>
                         <p class="section-desc" style="margin:0;">
-                          Generate digital reports, verify certified court email paths, and connect mandatory statutory attachments. <strong>Zero auto-send: every document requires explicit approval.</strong>
+                          Draft transmission notes and an attachment checklist. Destination addresses are placeholders. <strong>Zero auto-send: every document requires explicit approval.</strong>
                         </p>
                       </div>
                       <div style="text-align:right;">
@@ -1329,8 +1319,8 @@
                             <div class="vessel-card-title">Outbound Firm Domain</div>
                           </div>
                           <div class="vessel-card-desc">
-                            <strong>filings@example.com</strong><br/>
-                            Mile High Bankruptcy Law Group electronic filing desk with Colorado Bar ID seal.
+                            <strong>filings@example.invalid</strong><br/>
+                            Firm filing desk address (entered by user; not verified).
                           </div>
                         </div>
 
@@ -1393,11 +1383,11 @@
 
                     <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                       <div style="font-size:0.8rem; color:#94a3b8;">
-                        <span>🔒 Cryptographic Provenance: All dispatches sealed with SHA-256 and DSN Delivery Receipts.</span>
+                        <span>Draft outbox: nothing is sent automatically. Compose links use placeholder (.invalid) addresses.</span>
                       </div>
                       <div style="display:flex; gap:8px;">
                         <button type="button" id="btn-approve-all-transmissions" class="btn btn-secondary btn-sm" style="color:#4ade80;">
-                          ✓ Approve All Verified Filings
+                          ✓ Mark All Drafts Reviewed
                         </button>
                         <button type="button" id="btn-reset-approvals" class="btn btn-secondary btn-sm" style="color:#f87171;">
                           🔄 Reset Approvals
@@ -1644,9 +1634,9 @@
 
             <!-- ABA Model Rule 5.3 & Ethical AI Provenance Card -->
             <div class="card" style="margin-top:1rem; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.06);">
-              <h4 style="font-size:0.85rem; color:#94a3b8;">⚖️ ABA Model Rule 5.3 Provenance Seal</h4>
+              <h4 style="font-size:0.85rem; color:#94a3b8;">⚖️ About These Calculations</h4>
               <p style="font-size:0.75rem; color:#64748b; line-height:1.4; margin:4px 0 0 0;">
-                All calculations in this audit engine are deterministic, rule-based, and maintain exact field-level provenance back to source tax forms, paystubs, and county records under attorney supervision.
+                Calculations here are deterministic and rule-based. Values come from intake entries and synthetic sample documents; no real tax forms, paystubs, or county records are read. Statutory caps and medians are unverified and need attorney review.
               </p>
             </div>
           </div>
@@ -1939,7 +1929,7 @@
             <div style="font-size:0.8rem; line-height:1.4;">
               <div><strong>To:</strong> <span id="modal-dest-to" style="color:#4ade80; font-weight:bold;">ecf_intake_filer@cob.uscourts.gov</span></div>
               <div><strong>Secondary:</strong> <span id="modal-dest-sec">USTP.Region19.CO@usdoj.gov</span></div>
-              <div><strong>CC:</strong> <span id="modal-dest-cc">docketing@example.com</span></div>
+              <div><strong>CC:</strong> <span id="modal-dest-cc">docketing@example.invalid</span></div>
               <div><strong>Receipts:</strong> <span style="color:#38bdf8;">DSN + Read Receipt Requested</span></div>
             </div>
           </div>
@@ -1947,15 +1937,15 @@
 
         <!-- 2. Reconnected Document Hash -->
         <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.06); padding:8px 12px; border-radius:6px; margin-bottom:12px;">
-          <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:2px;">🔗 Cryptographic Document Reconnection Hash (SHA-256):</div>
+          <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:2px;">Document hash:</div>
           <div id="modal-doc-hash" style="font-family:monospace; font-size:0.75rem; color:#38bdf8; word-break:break-all;">
-            SHA256:d8b2e59a1f49a0c3ee3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934
+            NOT COMPUTED (no document attached)
           </div>
         </div>
 
         <!-- 3. Certified Subject & Message Body -->
         <div style="margin-bottom:12px;">
-          <label style="font-size:0.78rem; color:#94a3b8; font-weight:600;">Certified Email Subject:</label>
+          <label style="font-size:0.78rem; color:#94a3b8; font-weight:600;">Draft Email Subject:</label>
           <input type="text" id="modal-email-subject" class="ecf-select" style="font-size:0.8rem; margin-top:2px;" readonly />
         </div>
 
@@ -1979,7 +1969,7 @@
           <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer; font-size:0.8rem; color:#f8fafc;">
             <input type="checkbox" id="modal-approval-checkbox" style="margin-top:2px;" />
             <span>
-              <strong>I explicitly approve and authorize this transmission.</strong> I certify that I have verified the destination path, sender identity, document hash, and all accompanying required exhibits under penalty of perjury and L.B.R. 5005-4.
+              <strong>I have reviewed this draft note.</strong> I understand the addresses are placeholders, no file is attached, and nothing is sent to a court by this app.
             </span>
           </label>
         </div>
