@@ -116,6 +116,21 @@ export class DualStateManager {
   }
 
   /**
+   * Rebuild the draft from the intake form so every intake edit reaches the draft
+   * (and therefore the form preview and downloads). Pending copilot-staged diffs are
+   * re-applied on top so they are not lost.
+   */
+  public syncFromIntake(intake: MasterCaseData) {
+    this.draftFiling = JSON.parse(JSON.stringify(intake));
+    this.draftFiling.chapter = this.activeChapter;
+    for (const diff of this.stagedDiffs) {
+      if (diff.status === 'STAGED') {
+        this.applyFieldToDraft(diff.schedule, diff.fieldKey, diff.newValue, diff.provenanceSource);
+      }
+    }
+  }
+
+  /**
    * Revert a staged diff item
    */
   public revertStagedDiff(diffId: string): boolean {

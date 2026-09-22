@@ -1,4 +1,5 @@
-import { 
+import {
+  generateDraftFormPdf,
   generateForm101Pdf, 
   generateForm121Pdf, 
   generateForm106ABPdf,
@@ -534,6 +535,17 @@ function buildMasterCaseDataFromUI(): MasterCaseData {
   data.schedule_j2 = {
     has_separate_household: createFieldWrapper(totalJ2Expenses > 0, 'j2.has_sep'),
     total_monthly_expenses: createFieldWrapper(totalJ2Expenses, 'j2.tot_exp')
+  };
+
+  // Form 122A-1 CMI inputs (six calendar months) and household size
+  const isJointFiling = (document.getElementById('has-joint-debtor-toggle') as HTMLInputElement)?.checked ?? false;
+  data.means_test_122a = {
+    ...(data.means_test_122a || {}),
+    household_size: createFieldWrapper(isJointFiling ? 2 : 1, '122a.household_size'),
+    ...Object.fromEntries([1, 2, 3, 4, 5, 6].map(i => [
+      `gross_wages_month_${i}`,
+      createFieldWrapper(getValNumber(`cmi-m${i}`, 0), `122a.gross_m${i}`)
+    ]))
   };
 
   // SOFA (Form 107)
@@ -1129,10 +1141,7 @@ function escapeHtml(str: string): string {
 function syncUIAndAudit() {
   const masterData = buildMasterCaseDataFromUI();
   if (dualStateManager) {
-    dualStateManager.stageScheduleBatch('FullSync', {
-      total_property_value: masterData.schedule_ab.total_property_value.value,
-      total_unsecured_claims: state.unsecuredClaims.reduce((s, u) => s + u.totalClaimAmount, 0)
-    }, 'Intake Form Auto-Sync');
+    dualStateManager.syncFromIntake(masterData);
   }
 
   updateDOMSummaries();
@@ -2308,15 +2317,17 @@ function switchCopilotDrawerTab(tabId: string) {
   if (auditsView) auditsView.style.display = tabId === 'tab-copilot-audits' ? 'flex' : 'none';
 }
 
-function triggerDownloadPdf(formId: string) {
+async function triggerDownloadPdf(formId: string) {
   const currentData = dualStateManager ? dualStateManager.getDraftFiling() : buildMasterCaseDataFromUI();
-  const courtHtml = renderCourtFormHtml(formId, currentData);
-  
-  const blob = new Blob([courtHtml], { type: 'text/html' });
+  // Real PDF built from the draft data. Official court templates are not bundled, so this is
+  // a watermarked data sheet per form, not a stamped official form.
+  const pdfBytes = await generateDraftFormPdf(formId, currentData);
+
+  const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `Colorado_${formId.toUpperCase()}_Petition_Draft.html`;
+  a.download = `Colorado_${formId.toUpperCase()}_UNOFFICIAL_DRAFT.pdf`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -2332,7 +2343,7 @@ function triggerDownloadAllPacket() {
     <html>
       <head>
         <meta charset="utf-8"/>
-        <title>Full Colorado Bankruptcy Petition & Document Routing Packet - Case ${currentData.case_id || '26-10892-EEB'}</title>
+        <title>Full Colorado Bankruptcy Petition & Document Routing Packet - UNOFFICIAL DRAFT</title>
         <style>
           body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Times New Roman", serif; background: #fff; color: #111; margin: 30px; line-height: 1.5; }
           .page-break { page-break-after: always; margin-top: 30px; }
@@ -2368,8 +2379,8 @@ function triggerDownloadAllPacket() {
               <div style="font-size:1rem; font-weight:600; color:#334155;">Official Master Document Filing & Transmission Next-Steps Directory</div>
             </div>
             <div style="text-align:right;">
-              <span class="badge-tag">CERTIFIED ECF READY</span>
-              <div style="font-size:0.75rem; color:#64748b; margin-top:4px;">Case: ${currentData.case_id || '26-10892-EEB'}</div>
+              <span class="badge-tag" style="background:#b45309;">UNOFFICIAL DRAFT — NOT FOR FILING</span>
+              <div style="font-size:0.75rem; color:#64748b; margin-top:4px;">Case: ${currentData.case_id || 'Not assigned (not filed)'}</div>
             </div>
           </div>
 
