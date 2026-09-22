@@ -367,7 +367,7 @@ export const AGENT_STEP_EXECUTIONS: Record<number, AgentStepExecution> = {
   },
   15: {
     stepNumber: 15,
-    title: 'Means Test Calculation & AI Document Vault',
+    title: 'Means Test Calculation & Source Documents',
     formId: 'meansTest',
     officialName: 'Official Form 122A-1 / 122A-2 (Chapter 7 Statement of Monthly Income & Means Test)',
     signaturesRequired: 'Debtor 1 (/s/ Jane Marie Doe) under penalty of perjury',
@@ -458,7 +458,7 @@ export class BankruptcyAutopilotAgent {
     this.isPaused = false;
     this.currentStep = fromStep;
     if (this.onStatusUpdateCallback) {
-      this.onStatusUpdateCallback(`🤖 Autopilot Active: Executing Step ${this.currentStep} of 16...`, true);
+      this.onStatusUpdateCallback(`▶ Walkthrough running: Step ${this.currentStep} of 16...`, true);
     }
     this.runStepLoop();
   }
@@ -467,7 +467,7 @@ export class BankruptcyAutopilotAgent {
     this.isPaused = true;
     if (this.timeoutHandle) clearTimeout(this.timeoutHandle);
     if (this.onStatusUpdateCallback) {
-      this.onStatusUpdateCallback(`⏸️ Autopilot Paused at Step ${this.currentStep} of 16.`, true);
+      this.onStatusUpdateCallback(`⏸️ Walkthrough paused at Step ${this.currentStep} of 16.`, true);
     }
   }
 
@@ -478,7 +478,7 @@ export class BankruptcyAutopilotAgent {
     }
     this.isPaused = false;
     if (this.onStatusUpdateCallback) {
-      this.onStatusUpdateCallback(`🤖 Autopilot Resumed: Executing Step ${this.currentStep} of 16...`, true);
+      this.onStatusUpdateCallback(`▶ Walkthrough resumed: Step ${this.currentStep} of 16...`, true);
     }
     this.runStepLoop();
   }
@@ -549,7 +549,7 @@ export class BankruptcyAutopilotAgent {
 
   private executeStepPayload(stepNumber: number, execution: AgentStepExecution) {
     // 1. Send Assistant guidance and log message to Copilot feed
-    const promptSummary = `🤖 [Agent Autopilot Executing Step ${stepNumber}/16]: ${execution.title}\n\n` +
+    const promptSummary = `▶ [Scripted walkthrough, step ${stepNumber}/16]: ${execution.title}\n\n` +
       `**Form Generated**: \`${execution.officialName}\`\n` +
       `**Signatures**: ${execution.signaturesRequired}\n` +
       `**Routing & Delivery**: ${execution.deliveryRouting.primaryMethod} (${execution.deliveryRouting.agency})\n` +

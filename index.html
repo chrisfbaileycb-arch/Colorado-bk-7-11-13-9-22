@@ -98,12 +98,12 @@
           <div>
             <h3 class="section-title">📊 Paralegal & Attorney Workflow Efficiency Analysis</h3>
             <p class="section-desc">
-              Detailed comparative assessment of traditional manual petition preparation vs. VoxelLex.AI automated staging.
+              Illustrative design targets — not measured results. No time study has been done.
             </p>
           </div>
           <div class="efficiency-summary-badge">
             <span class="efficiency-num">87%</span>
-            <span class="efficiency-label">Total Time Reduction<br/>(7.5h → 45m)</span>
+            <span class="efficiency-label">Target time reduction<br/>(illustrative, unmeasured)</span>
           </div>
         </div>
 
@@ -113,7 +113,7 @@
               <tr>
                 <th>Paralegal Operational Duty</th>
                 <th>Traditional Manual Workflow</th>
-                <th>VoxelLex.AI Automated Execution</th>
+                <th>This App (target)</th>
                 <th>Time Saved & Verify Action</th>
               </tr>
             </thead>
@@ -129,7 +129,7 @@
                 </td>
                 <td>
                   <span class="time-tag automated">5 – 10 Minutes</span>
-                  <div class="workflow-detail">Pluggable OCR document parsers extract provenanced facts with confidence scores directly into master store.</div>
+                  <div class="workflow-detail">Target once OCR exists. Today there is no OCR: values are entered by hand or loaded from structured JSON.</div>
                 </td>
                 <td>
                   <div class="savings-tag">⚡ 92% Time Savings</div>
@@ -351,8 +351,8 @@
 
       <!-- RIGHT: STATUS BADGES & FAST ACTIONS -->
       <div class="header-right-block">
-        <button type="button" id="btn-header-autopilot" class="btn btn-accent btn-sm" style="display:flex; align-items:center; gap:6px; font-weight:700; background:linear-gradient(135deg, #0284c7, #2563eb); border:none;" title="Run Full Autonomous AI Autopilot Across All Steps">
-          <span>⚡ AI Autopilot</span>
+        <button type="button" id="btn-header-autopilot" class="btn btn-accent btn-sm" style="display:flex; align-items:center; gap:6px; font-weight:700; background:linear-gradient(135deg, #0284c7, #2563eb); border:none;" title="Step through all 16 steps with a scripted walkthrough that fills synthetic sample data">
+          <span>▶ Guided Walkthrough</span>
         </button>
         <button type="button" id="btn-toggle-copilot" class="btn btn-secondary btn-sm active" style="display:flex; align-items:center; gap:5px;" title="Toggle Bankruptcy Filing Copilot Sidebar Agent">
           <span class="copilot-pulse-dot" style="width:7px; height:7px;"></span> <span>🤖 Sidebar Agent</span>
@@ -365,7 +365,7 @@
           <span>📤 Outbox</span>
           <span id="outbox-pending-badge" class="badge-mini" style="background:#f59e0b; color:#000;">15</span>
         </button>
-        <button type="button" id="btn-header-voice" class="btn btn-secondary btn-sm" style="display:flex; align-items:center; gap:5px;" title="Toggle Live Voice Copilot">
+        <button type="button" id="btn-header-voice" class="btn btn-secondary btn-sm" style="display:flex; align-items:center; gap:5px;" title="Toggle browser speech (text-to-speech / speech recognition)">
           <span id="header-mic-icon">🎙️</span> <span>Voice</span>
         </button>
         <button type="button" id="btn-header-export-pdf" class="btn btn-accent btn-sm" title="Download a watermarked draft PDF of the current form (not an official court form)">
@@ -389,7 +389,7 @@
             <span class="copilot-pulse-dot"></span>
             <div>
               <h3>Bankruptcy Filing Copilot</h3>
-              <p class="copilot-sub">Interactive Voice & Procedural Assistant</p>
+              <p class="copilot-sub">Rule-based assistant: keyword-matched, pre-written answers. No AI model, no network.</p>
             </div>
           </div>
           <div class="copilot-header-actions" style="display:flex; gap:6px; align-items:center;">
@@ -519,7 +519,7 @@
                     <option value="12">Step 12: Schedule J-2 Debtor 2 Household (106J-2)</option>
                     <option value="13">Step 13: Statement of Financial Affairs (107)</option>
                     <option value="14">Step 14: Statement of Intention (108)</option>
-                    <option value="15">Step 15: AI Document Extraction & Vault</option>
+                    <option value="15">Step 15: Source Documents (no OCR)</option>
                     <option value="16">Step 16: Attorney Review, ECF Gateway & Email Outbox</option>
                   </select>
                   <span class="step-indicator" id="step-indicator">Step 1 of 16</span>
@@ -527,15 +527,15 @@
               </div>
 
               <!-- ========================================================================= -->
-              <!-- AUTONOMOUS BANKRUPTCY WORKFLOW AGENT & PORTIONED FORMS HUB               -->
+              <!-- SCRIPTED GUIDED WALKTHROUGH & PORTIONED FORMS HUB                        -->
               <!-- ========================================================================= -->
               <div class="agent-autopilot-banner card" id="agent-autopilot-banner">
                 <div class="agent-banner-header">
                   <div class="agent-identity">
                     <span class="agent-pulse-icon">🤖</span>
                     <div>
-                      <div class="agent-badge-title">AUTONOMOUS BANKRUPTCY WORKFLOW AGENT</div>
-                      <h3 style="margin:2px 0 0 0; font-size:1.15rem; color:#f8fafc;">Autonomous Petition Execution & Cross-Pollination Engine</h3>
+                      <div class="agent-badge-title">SCRIPTED GUIDED WALKTHROUGH</div>
+                      <h3 style="margin:2px 0 0 0; font-size:1.15rem; color:#f8fafc;">Step-by-Step Walkthrough (pre-written steps, synthetic sample data — not an AI agent)</h3>
                     </div>
                   </div>
                   <div class="agent-approval-gate" id="agent-approval-gate-badge">
@@ -547,7 +547,7 @@
 
                 <div class="agent-controls-row">
                   <button type="button" id="btn-agent-run-autopilot" class="btn btn-accent" style="font-weight:700; display:flex; align-items:center; gap:6px; background:linear-gradient(135deg, #0284c7, #2563eb); border:none;">
-                    <span>⚡ Run Full AI Autopilot (Start to Finish)</span>
+                    <span>▶ Run Scripted Walkthrough (Start to Finish)</span>
                   </button>
                   <button type="button" id="btn-agent-pause-autopilot" class="btn btn-secondary" style="display:none;">
                     <span>⏸️ Pause</span>
@@ -556,7 +556,7 @@
                     <span>▶️ Execute Active Step</span>
                   </button>
                   <button type="button" id="btn-agent-ask-question" class="btn btn-secondary" style="display:flex; align-items:center; gap:6px;">
-                    <span>❓ Ask Procedural Question</span>
+                    <span>❓ Show Step Checklist Question</span>
                   </button>
                   <button type="button" id="btn-agent-toggle-voice" class="btn btn-secondary" style="display:flex; align-items:center; gap:6px;">
                     <span id="agent-voice-icon">🔊</span> <span id="agent-voice-label">Voice: ON</span>
@@ -742,11 +742,11 @@
                     <div class="gemini-banner-left">
                       <span class="gemini-sparkle-icon">✨</span>
                       <div>
-                        <div class="gemini-banner-title">Gemini Real Estate Valuation & Assessor Assistant</div>
-                        <div class="gemini-banner-sub">Cross-references county tax assessor records and Colorado homestead equity caps.</div>
+                        <div class="gemini-banner-title">Homestead Equity Check (rule-based)</div>
+                        <div class="gemini-banner-sub">Compares entered equity against the configured Colorado homestead cap. Does not look up assessor records.</div>
                       </div>
                     </div>
-                    <button type="button" class="btn-gemini-action" id="btn-gemini-assess-re">✨ Assess Equity & Homestead</button>
+                    <button type="button" class="btn-gemini-action" id="btn-gemini-assess-re">Check Equity vs. Cap</button>
                   </div>
                   
                   <div class="section-block">
@@ -788,11 +788,11 @@
                     <div class="gemini-banner-left">
                       <span class="gemini-sparkle-icon">✨</span>
                       <div>
-                        <div class="gemini-banner-title">Gemini C.R.S. 2026 Exemption Maximizer</div>
-                        <div class="gemini-banner-sub">Optimizes Colorado statutory exemption allocations (Homestead, Vehicle, Tools, ERISA).</div>
+                        <div class="gemini-banner-title">Exemption Cap Check (rule-based)</div>
+                        <div class="gemini-banner-sub">Checks claimed exemptions against the configured caps. Caps are unverified and need attorney review.</div>
                       </div>
                     </div>
-                    <button type="button" class="btn-gemini-action" id="btn-gemini-optimize-exemptions">✨ Optimize Schedule C Claims</button>
+                    <button type="button" class="btn-gemini-action" id="btn-gemini-optimize-exemptions">Check Schedule C Claims</button>
                   </div>
                   
                   <div class="grid-2 toggle-row">
@@ -1632,7 +1632,7 @@
               </div>
             </div>
 
-            <!-- ABA Model Rule 5.3 & Ethical AI Provenance Card -->
+            <!-- About these calculations -->
             <div class="card" style="margin-top:1rem; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.06);">
               <h4 style="font-size:0.85rem; color:#94a3b8;">⚖️ About These Calculations</h4>
               <p style="font-size:0.75rem; color:#64748b; line-height:1.4; margin:4px 0 0 0;">

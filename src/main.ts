@@ -2504,7 +2504,7 @@ function initAutopilotAgentUI() {
     },
     () => {
       const actionEl = document.getElementById('agent-action-pill');
-      if (actionEl) actionEl.innerText = '✓ Autopilot Finished — Gated at Attorney Approval';
+      if (actionEl) actionEl.innerText = '✓ Walkthrough finished — attorney signoff still required (Step 16)';
       const runBtn = document.getElementById('btn-agent-run-autopilot');
       const pauseBtn = document.getElementById('btn-agent-pause-autopilot');
       if (runBtn) runBtn.style.display = 'flex';
@@ -2593,7 +2593,7 @@ function initAutopilotAgentUI() {
           const replyMsg: CopilotMessage = {
             id: `q-reply-${Date.now()}`,
             role: 'assistant',
-            content: `✓ **Procedural Finding Registered** [${execution.proceduralQuestion.citation}]: ${opt.actionText}`,
+            content: `Noted [${execution.proceduralQuestion.citation}]: ${opt.actionText}\n\n_This is a pre-written response. Your answer is not saved to the petition._`,
             timestamp: new Date().toISOString()
           };
           appendCopilotMessage(replyMsg);
@@ -3480,29 +3480,29 @@ document.addEventListener('DOMContentLoaded', () => {
     printRoutingSlipForActiveTab();
   });
 
-  // Gemini AI Smart Action Banners (Steps 3, 5, 8, 10, 15, 17)
+  // Rule-based check banners (Steps 3, 5, 8, 10, 15, 17). These route to the keyword-matched copilot.
   document.getElementById('btn-gemini-assess-re')?.addEventListener('click', () => {
-    handleUserPrompt('✨ Run Gemini Real Estate & Homestead Equity Assessment: calculate unencumbered equity and C.R.S. § 38-41-201 statutory exemptions.');
+    handleUserPrompt('Run Real Estate & Homestead Equity Assessment: calculate unencumbered equity and C.R.S. § 38-41-201 statutory exemptions.');
   });
 
   document.getElementById('btn-gemini-optimize-exemptions')?.addEventListener('click', () => {
-    handleUserPrompt('✨ Run Gemini 2026 Colorado Exemption Optimizer: maximize statutory asset protections under C.R.S. Title 13 and Title 38.');
+    handleUserPrompt('Run 2026 Colorado Exemption Optimizer: maximize statutory asset protections under C.R.S. Title 13 and Title 38.');
   });
 
   document.getElementById('btn-gemini-audit-claims')?.addEventListener('click', () => {
-    handleUserPrompt('✨ Run Gemini Priority vs. General Unsecured Claims Audit: verify 11 U.S.C. § 507 priority classifications and codebtor protections.');
+    handleUserPrompt('Run Priority vs. General Unsecured Claims Audit: verify 11 U.S.C. § 507 priority classifications and codebtor protections.');
   });
 
   document.getElementById('btn-gemini-audit-budget')?.addEventListener('click', () => {
-    handleUserPrompt('✨ Run Gemini Budget Doctor & Disposable Income Diagnostic: analyze Schedule I vs Schedule J cash flow for § 707(b)(3) totality of circumstances.');
+    handleUserPrompt('Run Budget Doctor & Disposable Income Diagnostic: analyze Schedule I vs Schedule J cash flow for § 707(b)(3) totality of circumstances.');
   });
 
   document.getElementById('btn-gemini-means-diagnostic')?.addEventListener('click', () => {
-    handleUserPrompt('✨ Run Gemini Means Test & Safe Harbor Diagnostic: evaluate Colorado median income thresholds and 60-month disposable income deductions under § 707(b)(2).');
+    handleUserPrompt('Run Means Test & Safe Harbor Diagnostic: evaluate Colorado median income thresholds and 60-month disposable income deductions under § 707(b)(2).');
   });
 
   document.getElementById('btn-gemini-ethical-audit')?.addEventListener('click', () => {
-    handleUserPrompt('✨ Execute AI Provenance & ABA Model Rule 5.3 Audit: perform complete cross-schedule integrity checks and verify supervising attorney provenance.');
+    handleUserPrompt('Execute Provenance & ABA Model Rule 5.3 Audit: perform complete cross-schedule integrity checks and verify supervising attorney provenance.');
   });
 
   // Live Voice Conversation Engine & Audio Speech Synthesis
