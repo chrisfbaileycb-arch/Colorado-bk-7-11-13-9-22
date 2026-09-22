@@ -62,3 +62,26 @@ export function validateExemptionCapsAndSummaries(data: MasterCaseData) {
   }
   return { valid: issues.length === 0, issues };
 }
+
+export type ColoradoExemptionKey = 'HOMESTEAD' | 'VEHICLE' | 'HOUSEHOLD_GOODS' | 'TOOLS_OF_TRADE';
+
+/**
+ * Single source for exemption caps used by the UI. Reads the jurisdiction pack so that
+ * every screen applies the same joint-filer and elderly/disabled rules.
+ *
+ * ATTORNEY REVIEW REQUIRED: the pack's figures and joint_cap_multiplier values are marked
+ * UNVERIFIED. In particular, whether a cap doubles for joint debtors is a legal question
+ * (homestead is currently configured as NOT doubling; vehicle/goods/tools as doubling).
+ */
+export function getColoradoExemptionCap(
+  key: ColoradoExemptionKey,
+  opts: { isJoint: boolean; isElderlyOrDisabled: boolean }
+): number {
+  const rule = ColoradoJurisdictionPack.statutory_rules[key];
+  if (!rule || typeof rule.individual_cap !== 'number') {
+    throw new Error(`No numeric cap configured for ${key}`);
+  }
+  const special = opts.isElderlyOrDisabled ? rule.special_caps?.elderly_or_disabled : undefined;
+  const base = special ?? rule.individual_cap;
+  return base * (opts.isJoint ? rule.joint_cap_multiplier : 1);
+}

@@ -377,13 +377,13 @@ export const AGENT_STEP_EXECUTIONS: Record<number, AgentStepExecution> = {
       agency: 'U.S. Bankruptcy Court for the District of Colorado & U.S. Trustee Region 19',
       details: 'U.S. Trustee reviews Form 122A-1 within 10 days of § 341 meeting to file Statement of Presumed Abuse or No Abuse.'
     },
-    crossPollinationTargets: ['Schedule I Gross Wages', 'Colorado Median Threshold ($78,450)', 'Presumption of Abuse Verdict', 'Document Vault Provenance'],
-    clientDescription: '6-Month Current Monthly Income (CMI): $4,850.00/mo ($58,200 annualized vs Colorado Median of $78,450 for 1-person). Presumption of abuse does NOT arise under 11 U.S.C. § 707(b)(2). Safe Harbor Established.',
+    crossPollinationTargets: ['Schedule I Gross Wages', 'Colorado Median Threshold ($72,450 (app-configured, unverified))', 'Presumption of Abuse Verdict', 'Document Vault Provenance'],
+    clientDescription: '6-Month Current Monthly Income (CMI): $4,850.00/mo ($58,200 annualized vs Colorado Median of $72,450 (app-configured, unverified) for 1-person). Presumption of abuse does NOT arise under 11 U.S.C. § 707(b)(2). Safe Harbor Established.',
     proceduralQuestion: {
       question: 'Does the debtor qualify for the statutory Safe Harbor under 11 U.S.C. § 707(b)(7)?',
       citation: '11 U.S.C. § 707(b)(7) (Safe Harbor Exception to Means Test)',
       options: [
-        { label: '✓ Below Median Safe Harbor ($58,200 < $78,450 Limit)', actionText: 'Safe Harbor established! Form 122A-2 expense deductions not required.', patch: { safe_harbor: true } },
+        { label: '✓ Below Median Safe Harbor ($58,200 < $72,450 (app-configured, unverified) Limit)', actionText: 'Safe Harbor established! Form 122A-2 expense deductions not required.', patch: { safe_harbor: true } },
         { label: '⚠️ Above Median Income (Form 122A-2 Required)', actionText: 'Annualized CMI exceeds median; executed Form 122A-2 IRS National and Local expense deductions.', patch: { safe_harbor: false } }
       ]
     },

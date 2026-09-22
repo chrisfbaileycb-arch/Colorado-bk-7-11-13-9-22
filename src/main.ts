@@ -33,7 +33,8 @@ import {
   calculateNetCashFlow,
   runHardAuditFlags,
   validateExemptionCapsAndSummaries,
-  getColoradoMedianIncome
+  getColoradoMedianIncome,
+  getColoradoExemptionCap
 } from '../lib/index';
 import {
   parseTaxReturn,
@@ -1168,13 +1169,11 @@ function updateDOMSummaries() {
   const isJoint = (document.getElementById('joint-filing-toggle') as HTMLInputElement)?.checked ?? false;
   const isElderlyDisabled = (document.getElementById('elderly-disabled-toggle') as HTMLInputElement)?.checked ?? false;
 
-  const homesteadCap = isJoint 
-    ? (isElderlyDisabled ? 700000 : 500000) 
-    : (isElderlyDisabled ? 350000 : 250000);
-  const vehicleCap = isJoint 
-    ? (isElderlyDisabled ? 50000 : 30000) 
-    : (isElderlyDisabled ? 25000 : 15000);
-  const toolsCap = isJoint ? 60000 : 30000;
+  // All caps come from the jurisdiction pack (UNVERIFIED; attorney review required).
+  const capOpts = { isJoint, isElderlyOrDisabled: isElderlyDisabled };
+  const homesteadCap = getColoradoExemptionCap('HOMESTEAD', capOpts);
+  const vehicleCap = getColoradoExemptionCap('VEHICLE', capOpts);
+  const toolsCap = getColoradoExemptionCap('TOOLS_OF_TRADE', capOpts);
 
   const homesteadClaimed = state.exemptions
     .filter(e => e.statuteCitation.includes('38-41-201'))
@@ -2092,7 +2091,8 @@ function renderStage2AuditAndLedger() {
   const reTotal = state.realProperty.reduce((sum, r) => sum + r.currentValue, 0);
   const reLiens = state.realProperty.reduce((sum, r) => sum + r.totalLiens, 0);
   const reEquity = Math.max(0, reTotal - reLiens);
-  const homesteadCap = isElderlyOrDisabled ? 350000 : 250000;
+  const capOpts = { isJoint, isElderlyOrDisabled };
+  const homesteadCap = getColoradoExemptionCap('HOMESTEAD', capOpts);
   const reNonExempt = Math.max(0, reEquity - homesteadCap);
   const homesteadPct = Math.min(100, Math.round((reEquity / homesteadCap) * 100));
 
@@ -2128,7 +2128,7 @@ function renderStage2AuditAndLedger() {
   const vehTotal = vehicleItems.reduce((sum, v) => sum + v.currentValue, 0);
   const vehLiens = state.securedClaims.filter(s => s.collateralDescription.toLowerCase().includes('toyota') || s.collateralDescription.toLowerCase().includes('vehicle') || s.collateralPropertyRefId.startsWith('pp_')).reduce((sum, s) => sum + s.securedAmount, 0);
   const vehEquity = Math.max(0, vehTotal - vehLiens);
-  const vehCap = isJoint ? 30000 : (isElderlyOrDisabled ? 25000 : 15000);
+  const vehCap = getColoradoExemptionCap('VEHICLE', capOpts);
   const vehPct = Math.min(100, Math.round((vehEquity / vehCap) * 100));
 
   const vehEqEl = document.getElementById('stage2-vehicle-equity');
@@ -2147,7 +2147,7 @@ function renderStage2AuditAndLedger() {
   // 3. Household Goods C.R.S. § 13-54-102(1)(e)
   const goodsItems = state.personalProperty.filter(p => p.category === 'HOUSEHOLD_GOODS');
   const goodsTotal = goodsItems.reduce((sum, g) => sum + g.currentValue, 0);
-  const goodsCap = 6000;
+  const goodsCap = getColoradoExemptionCap('HOUSEHOLD_GOODS', capOpts);
   const goodsPct = Math.min(100, Math.round((goodsTotal / goodsCap) * 100));
 
   const goodsEqEl = document.getElementById('stage2-goods-equity');
@@ -4216,7 +4216,8 @@ function openExecutionReportModal() {
   const totalDebts = totalSecured + totalPriority + totalNonPriority;
 
   const reEquity = Math.max(0, state.realProperty.reduce((sum, r) => sum + r.currentValue, 0) - state.realProperty.reduce((sum, r) => sum + r.totalLiens, 0));
-  const homesteadCap = isElderlyDisabled ? 350000 : 250000;
+  const homesteadCap = getColoradoExemptionCap('HOMESTEAD', { isJoint, isElderlyOrDisabled: isElderlyDisabled });
+  const reNonExemptEquity = Math.max(0, reEquity - homesteadCap);
   const totalExemptionsClaimed = state.exemptions.reduce((sum, e) => sum + e.claimedAmount, 0);
 
   const m1 = getValNumber('cmi-m1', 4850);
@@ -4257,9 +4258,9 @@ function openExecutionReportModal() {
     <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.06); padding:12px; border-radius:8px; margin-bottom:14px;">
       <h4 style="margin:0 0 8px 0; font-size:0.9rem; color:#38bdf8;">1. Statutory Findings & Colorado Safe Harbor Analysis</h4>
       <div style="font-size:0.8rem; line-height:1.5; color:#cbd5e1;">
-        <div>• <strong>Form 122A Means Test:</strong> 6-Month Gross CMI is <strong>$${monthlyCmi.toLocaleString('en-US', { minimumFractionDigits: 2 })}/mo</strong> (Annualized <strong>$${annualizedCmi.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> vs. 2026 Colorado Median Income limit of <strong>$${coMedian.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> for household size of ${hhSize}). Presumption of abuse does <strong>NOT</strong> arise under 11 U.S.C. § 707(b)(2).</div>
-        <div>• <strong>Homestead Protection (C.R.S. § 38-41-201):</strong> Real property equity is <strong>$${reEquity.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> against statutory cap of <strong>$${homesteadCap.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> (${isElderlyDisabled ? 'Elderly/Disabled Rate' : 'Standard Rate'}). Non-exempt equity is <strong>$0.00 (100% Protected)</strong>.</div>
-        <div>• <strong>ERISA & Retirement Exemption (11 U.S.C. § 522(d)(12)):</strong> 100% of qualified retirement funds are fully excluded from bankruptcy estate property.</div>
+        <div>• <strong>Form 122A Means Test:</strong> 6-Month Gross CMI is <strong>$${monthlyCmi.toLocaleString('en-US', { minimumFractionDigits: 2 })}/mo</strong> (Annualized <strong>$${annualizedCmi.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> vs. 2026 Colorado Median Income limit of <strong>$${coMedian.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> for household size of ${hhSize}; app-configured, unverified). ${isBelowMedian ? 'Below the configured median: under § 707(b)(7) the presumption of abuse would not be raised on this figure.' : '<strong>Above the configured median: complete Form 122A-2.</strong>'}</div>
+        <div>• <strong>Homestead Protection (C.R.S. § 38-41-201):</strong> Real property equity is <strong>$${reEquity.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> against statutory cap of <strong>$${homesteadCap.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> (${isElderlyDisabled ? 'Elderly/Disabled Rate' : 'Standard Rate'}; cap unverified). Non-exempt equity: <strong>$${reNonExemptEquity.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong>${reNonExemptEquity > 0 ? ' (at risk)' : ''}.</div>
+        <div>• <strong>Retirement Funds (11 U.S.C. § 522(b)(3)(C); C.R.S. § 13-54-102(1)(s) — attorney to verify):</strong> Colorado is an opt-out state, so the federal § 522(d) list is not available; qualified retirement funds are claimed under § 522(b)(3)(C) and state law.</div>
       </div>
     </div>
 

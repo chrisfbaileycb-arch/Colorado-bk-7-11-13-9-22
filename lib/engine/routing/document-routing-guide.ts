@@ -707,7 +707,7 @@ export const COLORADO_DOCUMENT_ROUTING_REGISTRY: Record<string, DocumentRoutingI
     wetSignatureRetentionRule: 'Retain signed Form 122A-1 for 3 years post-case closing.',
     nextStepsChecklist: [
       'Calculate precise 6 full calendar month lookback period (excluding month of filing).',
-      'Compare Annualized CMI against Colorado Median: Family of 1 ($76,450), Family of 2 ($98,200), Family of 3 ($114,800), Family of 4 ($136,500).',
+      'Compare Annualized CMI against the current U.S. Trustee Program median family income table for Colorado (the figures configured in this app are unverified).',
       'If Below Median: Check "Presumption of Abuse does NOT arise" — Form 122A-2 not required!',
       'If Above Median: Proceed to complete Form 122A-2 expense deductions.'
     ]
