@@ -394,7 +394,7 @@ export const AGENT_STEP_EXECUTIONS: Record<number, AgentStepExecution> = {
     title: 'Supervising Attorney Review, ECF Gateway & Outbound Dispatch',
     formId: 'fullPacket',
     officialName: 'Official Form 106Dec, Master Petition Packet & Certified Outbox Manifest',
-    signaturesRequired: 'Debtor 1 (/s/), Joint Debtor (/s/ if joint), and Supervising Attorney (/s/ Christopher Bailey, CO Bar #49182)',
+    signaturesRequired: 'Debtor 1 (/s/), Joint Debtor (/s/ if joint), and Supervising Attorney (/s/ entered by the attorney at Step 16)',
     docketStatus: 'PUBLIC_DOCKET',
     deliveryRouting: {
       primaryMethod: 'NextGen CM/ECF Electronic Filing Portal',
@@ -407,7 +407,7 @@ export const AGENT_STEP_EXECUTIONS: Record<number, AgentStepExecution> = {
       question: 'Has supervising counsel reviewed all field provenance, statutory exemptions, and signed the ABA Rule 5.3 declaration?',
       citation: 'ABA Model Rule 5.3 & District of Colorado Local Rule 5005-4',
       options: [
-        { label: '⚖️ Execute Attorney Signoff & Authorize CM/ECF Filing', actionText: 'Supervising Attorney Christopher Bailey executed signoff. Petition unlocked for transmission!', patch: { attorney_approved: true } },
+        { label: '⚖️ I will complete the Step 16 signoff form myself', actionText: 'Noted. Signoff is only recorded when the attorney fills in and submits the Step 16 form; this answer does not approve anything.', patch: { attorney_approved: false } },
         { label: '⏳ Maintain "Waiting for Attorney Approval" Status', actionText: 'Maintained strict review hold pending formal supervisory counsel consultation.', patch: { attorney_approved: false } }
       ]
     },

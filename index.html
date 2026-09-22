@@ -248,53 +248,43 @@
             <div class="seal-icon">⚖️</div>
             <div>
               <h3>Supervising Attorney Registration & Access</h3>
-              <p class="auth-box-subtitle">ABA Model Rule 5.3 & Local Rule 5005-4 Compliance Seal</p>
+              <p class="auth-box-subtitle">Self-reported — not verified by this app</p>
             </div>
           </div>
 
           <form id="auth-form" class="attorney-auth-form">
-            <!-- Access Passcode Box -->
-            <div class="form-group-compact" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.35); padding: 8px 12px; border-radius: 6px; margin-bottom: 6px;">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <label for="cover-access-password" style="color: #4ade80; font-weight: 700; margin:0;">🔑 Law Firm Verification Passcode</label>
-                <span style="font-size:0.7rem; color:#10b981; font-weight:600;">ACTIVE KEY</span>
-              </div>
-              <div style="display: flex; gap: 6px; align-items: center; margin-top: 5px;">
-                <input type="password" id="cover-access-password" class="form-input-sm" value="VOXEL2026" placeholder="Enter password (e.g. VOXEL2026)" style="flex: 1; font-family: monospace; letter-spacing: 1.5px; font-weight:600;" />
-                <button type="button" id="btn-toggle-pwd-visibility" class="btn btn-secondary btn-sm" style="padding: 4px 8px; font-size: 0.72rem; white-space:nowrap;" title="Show/Hide Password">👁️ Show</button>
-              </div>
-              <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 3px;">
-                Default verification passcode <code>VOXEL2026</code> is pre-loaded for instant access and workflow testing.
-              </div>
+            <!-- No credentials are checked: this is a static, browser-only prototype with no server. -->
+            <div class="form-group-compact" style="background: rgba(234, 179, 8, 0.08); border: 1px solid rgba(234, 179, 8, 0.4); padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; font-size: 0.75rem; color: #fbbf24;">
+              <strong>Demo access — no login.</strong> This prototype runs entirely in your browser. Nothing below is verified: no password, bar-registry, or CM/ECF credential check exists. Use synthetic data only.
             </div>
 
             <div class="auth-fields-grid">
               <div class="form-group-compact">
                 <label for="cover-attorney-name">Supervising Attorney Full Name</label>
-                <input type="text" id="cover-attorney-name" class="form-input-sm" value="Jane Doe, Esq." required />
+                <input type="text" id="cover-attorney-name" class="form-input-sm" value="" placeholder="Supervising attorney name" />
               </div>
               <div class="form-group-compact">
-                <label for="cover-attorney-bar">Colorado Supreme Court Bar #</label>
-                <input type="text" id="cover-attorney-bar" class="form-input-sm" value="CO-54321" required />
+                <label for="cover-attorney-bar">Colorado Attorney Reg. # (unverified)</label>
+                <input type="text" id="cover-attorney-bar" class="form-input-sm" value="" placeholder="e.g. 12345" />
               </div>
               <div class="form-group-compact">
                 <label for="cover-attorney-firm">Law Firm / Practice Name</label>
-                <input type="text" id="cover-attorney-firm" class="form-input-sm" value="Denver Bankruptcy Law Group, P.C." required />
+                <input type="text" id="cover-attorney-firm" class="form-input-sm" value="" placeholder="Firm name" />
               </div>
               <div class="form-group-compact">
-                <label for="cover-attorney-ecf">CM/ECF Attorney Login ID</label>
-                <input type="text" id="cover-attorney-ecf" class="form-input-sm" value="ECF-CO-ATT-54321" required />
+                <label for="cover-attorney-ecf">CM/ECF Login ID (reference only, never used)</label>
+                <input type="text" id="cover-attorney-ecf" class="form-input-sm" value="" placeholder="optional" />
               </div>
             </div>
 
             <div class="auth-checkboxes">
               <label class="checkbox-label-compact">
-                <input type="checkbox" id="aba-rule-check" checked required />
+                <input type="checkbox" id="aba-rule-check" required />
                 <span>I certify that I am a licensed attorney supervising the paralegal preparation of this petition under ABA Model Rule 5.3 & Fed. R. Bankr. P. 9011.</span>
               </label>
 
               <label class="checkbox-label-compact">
-                <input type="checkbox" id="demo-acknowledgment" checked required />
+                <input type="checkbox" id="demo-acknowledgment" required />
                 <span>I understand this is an attorney-supervised demonstration environment using synthetic test data only.</span>
               </label>
             </div>
@@ -303,10 +293,10 @@
 
             <div style="display:flex; gap:8px; width:100%; margin-top:8px;">
               <button type="submit" id="btn-enter-workspace" class="btn btn-primary btn-enter-portal" style="flex:2;">
-                <span>🚀 Authenticate & Enter Law Firm Workspace</span>
+                <span>Enter Demo Workspace</span>
               </button>
-              <button type="button" id="btn-quick-bypass" class="btn btn-secondary btn-enter-portal" style="flex:1; border-color:#38bdf8; color:#38bdf8;" title="Instant direct access to verify workflows">
-                <span>⚡ Instant Access</span>
+              <button type="button" id="btn-quick-bypass" class="btn btn-secondary btn-enter-portal" style="flex:1; border-color:#38bdf8; color:#38bdf8;" title="Skip the form and enter the demo with synthetic data">
+                <span>Skip (Demo)</span>
               </button>
             </div>
           </form>
@@ -1128,18 +1118,18 @@
                   <div class="grid-2">
                     <div class="form-group">
                       <label for="attorney-name">Supervising Attorney Name *</label>
-                      <input type="text" id="attorney-name" value="Christopher Bailey, Esq." required />
+                      <input type="text" id="attorney-name" value="" placeholder="Supervising attorney name" required />
                     </div>
                     <div class="form-group">
-                      <label for="attorney-bar-number">Colorado Bar Number *</label>
-                      <input type="text" id="attorney-bar-number" value="CO-49182" required />
+                      <label for="attorney-bar">Colorado Attorney Reg. # * <span style="font-weight:normal; color:#94a3b8;">(format check only — not verified against the Colorado Supreme Court registry)</span></label>
+                      <input type="text" id="attorney-bar" value="" placeholder="e.g. 12345" required />
                     </div>
                   </div>
 
                   <div class="grid-2" style="margin-top:12px;">
                     <div class="form-group">
                       <label for="attorney-firm">Law Firm Name *</label>
-                      <input type="text" id="attorney-firm" value="Mile High Bankruptcy Law Group" required />
+                      <input type="text" id="attorney-firm" value="" placeholder="Firm name" required />
                     </div>
                     <div class="form-group">
                       <label for="attorney-ecf">CM/ECF Login ID (Audit Reference Only)</label>
@@ -1156,7 +1146,7 @@
 
                   <div style="margin-top:16px; background: rgba(255,255,255,0.03); padding:12px; border-radius:6px; border: 1px solid var(--panel-border);">
                     <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
-                      <input type="checkbox" id="attorney-declaration-check" checked />
+                      <input type="checkbox" id="attorney-declaration-check" />
                       <span>I declare under penalty of perjury under 11 U.S.C. and ABA Model Rule 5.3 that I have reviewed all SSOT field provenance, extracted financial values, and court form schedules for accuracy prior to court filing.</span>
                     </label>
                   </div>
@@ -1328,7 +1318,7 @@
                             <div class="vessel-card-title">Personal / Workspace Gmail</div>
                           </div>
                           <div class="vessel-card-desc">
-                            <strong>chrisfbailey.CB@gmail.com</strong><br/>
+                            <strong>sender@example.com</strong><br/>
                             Direct authenticated personal/counsel Google vessel with verified RFC-822 compose path.
                           </div>
                         </div>
@@ -1339,7 +1329,7 @@
                             <div class="vessel-card-title">Outbound Firm Domain</div>
                           </div>
                           <div class="vessel-card-desc">
-                            <strong>filings@milehighbankruptcy.com</strong><br/>
+                            <strong>filings@example.com</strong><br/>
                             Mile High Bankruptcy Law Group electronic filing desk with Colorado Bar ID seal.
                           </div>
                         </div>
@@ -1359,15 +1349,15 @@
                       <div class="grid-3" style="margin-top:10px; font-size:0.82rem;">
                         <div>
                           <label style="font-size:0.75rem; color:#94a3b8;">Sender Name:</label>
-                          <input type="text" id="vessel-sender-name" class="ecf-select" style="font-size:0.8rem; padding:4px 8px;" value="Attorney Christopher Bailey" />
+                          <input type="text" id="vessel-sender-name" class="ecf-select" style="font-size:0.8rem; padding:4px 8px;" value="" placeholder="Supervising attorney name" />
                         </div>
                         <div>
                           <label style="font-size:0.75rem; color:#94a3b8;">Sender Email Address:</label>
-                          <input type="email" id="vessel-sender-email" class="ecf-select" style="font-size:0.8rem; padding:4px 8px;" value="chrisfbailey.CB@gmail.com" />
+                          <input type="email" id="vessel-sender-email" class="ecf-select" style="font-size:0.8rem; padding:4px 8px;" value="" placeholder="sender@example.com" />
                         </div>
                         <div>
                           <label style="font-size:0.75rem; color:#94a3b8;">Firm / Vessel Entity:</label>
-                          <input type="text" id="vessel-sender-org" class="ecf-select" style="font-size:0.8rem; padding:4px 8px;" value="Law Offices of Christopher Bailey" />
+                          <input type="text" id="vessel-sender-org" class="ecf-select" style="font-size:0.8rem; padding:4px 8px;" value="" placeholder="Firm name" />
                         </div>
                       </div>
                     </div>
@@ -1937,8 +1927,8 @@
           <div class="panel" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px;">
             <div style="font-weight:700; font-size:0.78rem; color:#38bdf8; margin-bottom:4px;">📤 ORIGINATING SENDER VESSEL</div>
             <div style="font-size:0.8rem; line-height:1.4;">
-              <div><strong>Sender:</strong> <span id="modal-sender-name">Attorney Christopher Bailey</span></div>
-              <div><strong>From Address:</strong> <span id="modal-sender-email" style="color:#60a5fa;">chrisfbailey.CB@gmail.com</span></div>
+              <div><strong>Sender:</strong> <span id="modal-sender-name">[Supervising Attorney]</span></div>
+              <div><strong>From Address:</strong> <span id="modal-sender-email" style="color:#60a5fa;">sender@example.com</span></div>
               <div><strong>Vessel:</strong> <span id="modal-sender-vessel">Personal Gmail Vessel</span></div>
               <div><strong>Organization:</strong> <span id="modal-sender-org">Mile High Bankruptcy Law Group</span></div>
             </div>
@@ -1949,7 +1939,7 @@
             <div style="font-size:0.8rem; line-height:1.4;">
               <div><strong>To:</strong> <span id="modal-dest-to" style="color:#4ade80; font-weight:bold;">ecf_intake_filer@cob.uscourts.gov</span></div>
               <div><strong>Secondary:</strong> <span id="modal-dest-sec">USTP.Region19.CO@usdoj.gov</span></div>
-              <div><strong>CC:</strong> <span id="modal-dest-cc">docketing@milehighbankruptcy.com</span></div>
+              <div><strong>CC:</strong> <span id="modal-dest-cc">docketing@example.com</span></div>
               <div><strong>Receipts:</strong> <span style="color:#38bdf8;">DSN + Read Receipt Requested</span></div>
             </div>
           </div>

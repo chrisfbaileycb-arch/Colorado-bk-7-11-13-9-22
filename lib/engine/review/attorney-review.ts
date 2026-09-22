@@ -50,10 +50,20 @@ export function applyFieldOverride(data: MasterCaseData, override: FieldOverride
   return { success: true, errors: [], updated_data: data };
 }
 
+/**
+ * Format-only check for a Colorado attorney registration number (numeric, optionally
+ * prefixed with "CO", "#" or "-"). This does NOT confirm the number exists, is active,
+ * or belongs to the named attorney — there is no registry lookup in this app.
+ */
+export function checkColoradoBarNumberFormat(raw: string): { ok: boolean; normalized: string } {
+  const normalized = raw.trim().replace(/^(co)?[\s#-]*/i, '');
+  return { ok: /^\d{3,6}$/.test(normalized), normalized };
+}
+
 export function executeAttorneySignoff(data: MasterCaseData, signoff: AttorneySignoff) {
   const errors: string[] = [];
   if (!signoff.attorney_name.trim()) errors.push('Supervising Attorney Name is required.');
-  if (signoff.bar_number.trim().length < 4) errors.push('A valid Attorney Bar Number is required.');
+  if (!checkColoradoBarNumberFormat(signoff.bar_number).ok) errors.push('A valid Attorney Bar Number is required (3–6 digits; format check only, not a registry lookup).');
   if (!signoff.declaration_accepted) errors.push('The declaration under penalty of perjury must be accepted.');
   const summary = calculateReviewSummary(data, signoff);
   if (summary.hard_audit_critical_flags_count > 0) errors.push('Critical audit flags must be resolved.');

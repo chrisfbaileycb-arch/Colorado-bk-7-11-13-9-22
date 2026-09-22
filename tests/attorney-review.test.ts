@@ -4,7 +4,8 @@ import {
   extractAllFieldWrappers,
   calculateReviewSummary,
   applyFieldOverride,
-  executeAttorneySignoff
+  executeAttorneySignoff,
+  checkColoradoBarNumberFormat
 } from '../lib/engine/review';
 import type { FieldOverride, AttorneySignoff } from '../lib/engine/review/types';
 
@@ -83,7 +84,7 @@ describe('Phase 8: Attorney Review Console Test Suite', () => {
     const data = createSampleMasterCaseData();
     const signoff: AttorneySignoff = {
       attorney_name: 'Example Supervising Attorney',
-      bar_number: 'TEST-BAR-54321',
+      bar_number: '12345',
       firm_name: 'Mile High Bankruptcy Law Group',
       ecf_login_id: 'TEST_ECF_NOT_REAL',
       signed_at: new Date().toISOString(),
@@ -97,5 +98,27 @@ describe('Phase 8: Attorney Review Console Test Suite', () => {
 
     const wrappers = extractAllFieldWrappers(data);
     expect(wrappers.every(w => w.status === 'attorney_approved')).toBe(true);
+  });
+
+  it('7. checkColoradoBarNumberFormat is a format check only', () => {
+    expect(checkColoradoBarNumberFormat('12345').ok).toBe(true);
+    expect(checkColoradoBarNumberFormat('CO-12345').ok).toBe(true);
+    expect(checkColoradoBarNumberFormat('#4821').ok).toBe(true);
+    expect(checkColoradoBarNumberFormat('').ok).toBe(false);
+    expect(checkColoradoBarNumberFormat('TEST-BAR-54321').ok).toBe(false);
+    expect(checkColoradoBarNumberFormat('abcd').ok).toBe(false);
+  });
+
+  it('8. executeAttorneySignoff rejects a non-numeric bar number', () => {
+    const data = createSampleMasterCaseData();
+    const res = executeAttorneySignoff(data, {
+      attorney_name: 'Example Supervising Attorney',
+      bar_number: 'TEST-BAR-54321',
+      firm_name: 'Example Firm',
+      ecf_login_id: 'TEST_ECF_NOT_REAL',
+      signed_at: new Date().toISOString(),
+      declaration_accepted: true
+    });
+    expect(res.success).toBe(false);
   });
 });

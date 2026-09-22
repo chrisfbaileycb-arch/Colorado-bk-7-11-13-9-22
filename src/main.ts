@@ -1809,17 +1809,9 @@ function populateStepDomInputs(stepNumber: number) {
       if (m6) m6.value = '5850';
       break;
     }
-    case 16: {
-      const attName = document.getElementById('attorney-name') as HTMLInputElement;
-      const attBar = document.getElementById('attorney-bar') as HTMLInputElement;
-      const attFirm = document.getElementById('attorney-firm') as HTMLInputElement;
-      const attDecl = document.getElementById('attorney-declaration-check') as HTMLInputElement;
-      if (attName) attName.value = 'Christopher Bailey, Esq.';
-      if (attBar) attBar.value = 'CO-49182';
-      if (attFirm) attFirm.value = 'Mile High Bankruptcy Law Group';
-      if (attDecl) attDecl.checked = true;
+    case 16:
+      // Attorney identity and the penalty-of-perjury declaration are human-only inputs.
       break;
-    }
     default:
       break;
   }
@@ -2422,7 +2414,7 @@ function triggerDownloadAllPacket() {
 
           <div style="margin-top:16px; padding:10px; background:#e2e8f0; border-radius:6px; font-size:0.75rem; color:#1e293b;">
             <strong>Colorado Local Bankruptcy Rule 5005-4 Retention Notice:</strong> 
-            The supervising attorney (${(document.getElementById('attorney-name') as HTMLInputElement)?.value || 'Supervising Attorney'}, Bar: ${(document.getElementById('attorney-bar') as HTMLInputElement)?.value || 'CO-54321'}) must retain all original wet-ink signatures for a period of 3 years following the closure of this bankruptcy case.
+            The supervising attorney (${(document.getElementById('attorney-name') as HTMLInputElement)?.value || 'Supervising Attorney'}, Reg. #: ${(document.getElementById('attorney-bar') as HTMLInputElement)?.value || '[not entered]'}) must retain all original wet-ink signatures for a period of 3 years following the closure of this bankruptcy case.
           </div>
         </div>
 
@@ -2455,14 +2447,13 @@ function triggerDownloadAllPacket() {
 }
 
 function initAutopilotAgentUI() {
+  // The autopilot can only ever reset the gate to "waiting"; the green state is set
+  // exclusively by the btn-attorney-signoff handler after executeAttorneySignoff succeeds.
   function setApprovalGateStatus(isApproved: boolean) {
     const pill = document.getElementById('agent-approval-status-pill');
     if (pill) {
       if (isApproved) {
-        pill.innerHTML = '<span>✅ ATTORNEY SIGNED & APPROVED — CM/ECF DOCKET READY (CO Bar #49182)</span>';
-        pill.style.background = 'rgba(34,197,94,0.2)';
-        pill.style.color = '#4ade80';
-        pill.style.borderColor = 'rgba(34,197,94,0.4)';
+        return;
       } else {
         pill.innerHTML = '<span>⏳ WAITING FOR SUPERVISING ATTORNEY APPROVAL (ABA RULE 5.3 GATE)</span>';
         pill.style.background = 'rgba(234,179,8,0.2)';
@@ -2496,7 +2487,7 @@ function initAutopilotAgentUI() {
     (statusText: string, isWaitingApproval: boolean) => {
       const actionEl = document.getElementById('agent-action-pill');
       if (actionEl) actionEl.innerText = statusText;
-      setApprovalGateStatus(!isWaitingApproval);
+      if (isWaitingApproval) setApprovalGateStatus(false);
     },
     () => {
       const actionEl = document.getElementById('agent-action-pill');
@@ -2731,24 +2722,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Quick Bypass Button
   document.getElementById('btn-quick-bypass')?.addEventListener('click', () => {
-    unlockWorkspaceAndAuthenticate('Workspace unlocked in Verification Mode. Ready to test workflows and procedural audits.');
+    unlockWorkspaceAndAuthenticate('Entered demo workspace. No credentials were checked; use synthetic data only.');
   });
 
-  // Auth Form Submit with Password Verification
+  // Demo entry: there is no server, so there is nothing to authenticate against.
+  // The checkboxes are acknowledgments, not verification.
   authForm?.addEventListener('submit', (e) => {
     e.preventDefault();
-    const pwdValue = passwordInput?.value.trim();
-    // Allow any non-empty password or standard key
-    if (!pwdValue) {
-      if (authErr) {
-        authErr.style.display = 'block';
-        authErr.innerText = 'Please enter a verification passcode (default: VOXEL2026).';
-      }
-      return;
-    }
-
     if (demoAcknowledgment?.checked && (abaRuleCheck ? abaRuleCheck.checked : true)) {
-      unlockWorkspaceAndAuthenticate(`Attorney authentication verified with security key. All 3 workspace stages and Copilot Agent active.`);
+      unlockWorkspaceAndAuthenticate(`Entered demo workspace. Attorney details are self-reported and unverified.`);
     } else {
       if (authErr) {
         authErr.style.display = 'block';
@@ -2980,7 +2962,11 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Draft working copy already matches the official petition. No diffs to publish.');
       return;
     }
-    const result = dualStateManager.publishToOfficialPetition('Jane Attorney', 'CO-54321', 'Denver Bankruptcy Law Group');
+    const result = dualStateManager.publishToOfficialPetition(
+      (document.getElementById('attorney-name') as HTMLInputElement)?.value.trim() || '[attorney not entered]',
+      (document.getElementById('attorney-bar') as HTMLInputElement)?.value.trim() || '[not entered]',
+      (document.getElementById('attorney-firm') as HTMLInputElement)?.value.trim() || '[firm not entered]'
+    );
     if (!result.success) {
       alert(result.message);
       switchCopilotDrawerTab('tab-copilot-audits');
@@ -3220,16 +3206,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Attorney Signoff Step 17
   document.getElementById('btn-attorney-signoff')?.addEventListener('click', () => {
     const masterData = dualStateManager.getDraftFiling();
-    const attName = (document.getElementById('attorney-name') as HTMLInputElement)?.value || 'Supervising Attorney';
-    const attBar = (document.getElementById('attorney-bar') as HTMLInputElement)?.value || 'CO-54321';
-    const attFirm = (document.getElementById('attorney-firm') as HTMLInputElement)?.value || 'Denver Bankruptcy Law Group';
-    const isDeclChecked = (document.getElementById('attorney-declaration-check') as HTMLInputElement)?.checked ?? true;
+    const attName = (document.getElementById('attorney-name') as HTMLInputElement)?.value.trim() ?? '';
+    const attBar = (document.getElementById('attorney-bar') as HTMLInputElement)?.value.trim() ?? '';
+    const attFirm = (document.getElementById('attorney-firm') as HTMLInputElement)?.value.trim() ?? '';
+    const isDeclChecked = (document.getElementById('attorney-declaration-check') as HTMLInputElement)?.checked ?? false;
 
     const signoff: AttorneySignoff = {
       attorney_name: attName,
       bar_number: attBar,
       firm_name: attFirm,
-      ecf_login_id: 'ECF-CO-ATT',
+      ecf_login_id: (document.getElementById('attorney-ecf') as HTMLInputElement)?.value.trim() ?? '',
       signed_at: new Date().toISOString(),
       declaration_accepted: isDeclChecked
     };
@@ -3239,19 +3225,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (statusBox) {
       if (result.success) {
         statusBox.style.color = '#4ade80';
-        statusBox.innerHTML = `✓ Supervising Attorney Signoff Executed by ${attName} (${attBar}). Petition Locked & Ready for ECF Filing.`;
+        statusBox.innerHTML = `✓ Signoff recorded in this browser for ${escapeHtml(attName)} (Reg. # ${escapeHtml(attBar)} — format checked only, not verified against the Colorado registry). Nothing has been filed.`;
         dualStateManager.publishToOfficialPetition(attName, attBar, attFirm);
 
         const pill = document.getElementById('agent-approval-status-pill');
         if (pill) {
-          pill.innerHTML = `<span>✅ ATTORNEY SIGNED & APPROVED — CM/ECF DOCKET READY (CO Bar #${attBar})</span>`;
+          pill.innerHTML = `<span>✓ ATTORNEY SIGNOFF RECORDED (LOCAL DRAFT ONLY — REG. # ${escapeHtml(attBar)} UNVERIFIED)</span>`;
           pill.style.background = 'rgba(34,197,94,0.2)';
           pill.style.color = '#4ade80';
           pill.style.borderColor = 'rgba(34,197,94,0.4)';
         }
 
-        speakAssistantResponse(`Supervising attorney ${attName} signoff verified under ABA Model Rule 5.3. Case is approved and ready for ECF electronic filing.`);
-        handleUserPrompt(`Supervising attorney ${attName} has executed the signoff and verified all schedules under ABA Model Rule 5.3. Ready for ECF court transmission.`);
+        speakAssistantResponse(`Attorney signoff recorded locally for ${attName}. The registration number was not verified. Nothing has been filed.`);
+        handleUserPrompt(`Attorney signoff recorded locally for ${attName}. Registration number format-checked only. Nothing has been filed with any court.`);
         updateEcfManifestChecksum();
       } else {
         statusBox.style.color = '#ef4444';

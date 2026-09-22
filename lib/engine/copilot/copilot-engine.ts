@@ -364,8 +364,8 @@ All extracted items will receive strict provenance metadata (\`field_id\`, \`sou
 VoxelLex.AI enforces strict **Sender Vessel Recognition** and a **Mandatory Explicit Signoff Gate**:
 
 - **Sender Vessel Recognition**:
-  - **Personal Gmail**: Sent directly from authenticated user (\`chrisfbailey.CB@gmail.com\` / personal address).
-  - **Outbound Law Firm Vessel**: Transmitted via firm domain (\`filings@milehighbankruptcy.com\`) with attorney bar registration (\`CO-54321\`).
+  - **Personal email**: sender address entered by the user (not verified).
+  - **Law firm address**: firm address entered by the user (not verified).
   - **Private Pro Se Individual**: Routed directly from debtor's verified email to court emergency intake.
 - **Mandatory Approval Policy**: **Zero auto-sending**. Every document transmission report must be reviewed and signed off by the supervising attorney or filer before dispatch.
 - **Document Reconnection & Cryptographic Proof**: Each form is paired with its required statutory accompanying attachments (Paystubs, Tax Returns, Matrix, Form 121) and sealed with a verifiable SHA-256 hash.

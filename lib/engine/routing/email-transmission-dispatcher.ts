@@ -74,38 +74,38 @@ export interface FormEmailTransmissionPath {
 export const DEFAULT_SENDER_VESSELS: Record<SenderVesselType, SenderVesselProfile> = {
   GMAIL: {
     vesselType: 'GMAIL',
-    senderName: 'Attorney Christopher Bailey',
-    senderEmail: 'chrisfbailey.CB@gmail.com',
-    organizationOrFirm: 'Law Offices of Christopher Bailey',
+    senderName: '[Supervising Attorney]',
+    senderEmail: 'attorney@example.com',
+    organizationOrFirm: '[Law Firm]',
     senderRole: 'SUPERVISING_ATTORNEY',
-    barNumber: 'CO-54321',
+    barNumber: '',
     phone: '(303) 555-0199',
     requestReadReceipt: true,
     requestDeliveryConfirmation: true,
-    isVerified: true
+    isVerified: false
   },
   LAW_FIRM: {
     vesselType: 'LAW_FIRM',
     senderName: 'Mile High Bankruptcy Electronic Filing Desk',
-    senderEmail: 'filings@milehighbankruptcy.com',
-    organizationOrFirm: 'Mile High Bankruptcy Law Group, LLC',
+    senderEmail: 'filings@example.com',
+    organizationOrFirm: '[Law Firm]',
     senderRole: 'SUPERVISING_ATTORNEY',
-    barNumber: 'CO-54321',
-    phone: '(303) 861-2800',
+    barNumber: '',
+    phone: '(303) 555-0100',
     requestReadReceipt: true,
     requestDeliveryConfirmation: true,
-    isVerified: true
+    isVerified: false
   },
   PRIVATE_INDIVIDUAL: {
     vesselType: 'PRIVATE_INDIVIDUAL',
     senderName: 'Jane Elizabeth Doe (Debtor 1 Pro Se)',
-    senderEmail: 'jane.doe.debtor@gmail.com',
+    senderEmail: 'debtor@example.com',
     organizationOrFirm: 'Self-Represented Individual (Pro Se)',
     senderRole: 'PRO_SE_INDIVIDUAL',
     phone: '(303) 555-0142',
     requestReadReceipt: true,
     requestDeliveryConfirmation: true,
-    isVerified: true
+    isVerified: false
   }
 };
 
@@ -374,7 +374,7 @@ export function buildFormEmailTransmissionPath(
 
   if (senderVessel.senderRole === 'SUPERVISING_ATTORNEY' || senderVessel.senderRole === 'MANAGING_PARTNER') {
     destinationEmail = 'ecf_intake_filer@cob.uscourts.gov';
-    ccEmails.push('docketing@milehighbankruptcy.com');
+    ccEmails.push('docketing@example.com');
   }
 
   if (formId === 'form121') {
