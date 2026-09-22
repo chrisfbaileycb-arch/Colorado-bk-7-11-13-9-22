@@ -1,4 +1,7 @@
-import { 
+import {
+  sha256Hex,
+  canonicalJson,
+  generateDraftFormPdf,
   generateForm101Pdf, 
   generateForm121Pdf, 
   generateForm106ABPdf,
@@ -30,7 +33,8 @@ import {
   calculateNetCashFlow,
   runHardAuditFlags,
   validateExemptionCapsAndSummaries,
-  getColoradoMedianIncome
+  getColoradoMedianIncome,
+  getColoradoExemptionCap
 } from '../lib/index';
 import {
   parseTaxReturn,
@@ -534,6 +538,17 @@ function buildMasterCaseDataFromUI(): MasterCaseData {
   data.schedule_j2 = {
     has_separate_household: createFieldWrapper(totalJ2Expenses > 0, 'j2.has_sep'),
     total_monthly_expenses: createFieldWrapper(totalJ2Expenses, 'j2.tot_exp')
+  };
+
+  // Form 122A-1 CMI inputs (six calendar months) and household size
+  const isJointFiling = (document.getElementById('has-joint-debtor-toggle') as HTMLInputElement)?.checked ?? false;
+  data.means_test_122a = {
+    ...(data.means_test_122a || {}),
+    household_size: createFieldWrapper(isJointFiling ? 2 : 1, '122a.household_size'),
+    ...Object.fromEntries([1, 2, 3, 4, 5, 6].map(i => [
+      `gross_wages_month_${i}`,
+      createFieldWrapper(getValNumber(`cmi-m${i}`, 0), `122a.gross_m${i}`)
+    ]))
   };
 
   // SOFA (Form 107)
@@ -1129,10 +1144,7 @@ function escapeHtml(str: string): string {
 function syncUIAndAudit() {
   const masterData = buildMasterCaseDataFromUI();
   if (dualStateManager) {
-    dualStateManager.stageScheduleBatch('FullSync', {
-      total_property_value: masterData.schedule_ab.total_property_value.value,
-      total_unsecured_claims: state.unsecuredClaims.reduce((s, u) => s + u.totalClaimAmount, 0)
-    }, 'Intake Form Auto-Sync');
+    dualStateManager.syncFromIntake(masterData);
   }
 
   updateDOMSummaries();
@@ -1157,13 +1169,11 @@ function updateDOMSummaries() {
   const isJoint = (document.getElementById('joint-filing-toggle') as HTMLInputElement)?.checked ?? false;
   const isElderlyDisabled = (document.getElementById('elderly-disabled-toggle') as HTMLInputElement)?.checked ?? false;
 
-  const homesteadCap = isJoint 
-    ? (isElderlyDisabled ? 700000 : 500000) 
-    : (isElderlyDisabled ? 350000 : 250000);
-  const vehicleCap = isJoint 
-    ? (isElderlyDisabled ? 50000 : 30000) 
-    : (isElderlyDisabled ? 25000 : 15000);
-  const toolsCap = isJoint ? 60000 : 30000;
+  // All caps come from the jurisdiction pack (UNVERIFIED; attorney review required).
+  const capOpts = { isJoint, isElderlyOrDisabled: isElderlyDisabled };
+  const homesteadCap = getColoradoExemptionCap('HOMESTEAD', capOpts);
+  const vehicleCap = getColoradoExemptionCap('VEHICLE', capOpts);
+  const toolsCap = getColoradoExemptionCap('TOOLS_OF_TRADE', capOpts);
 
   const homesteadClaimed = state.exemptions
     .filter(e => e.statuteCitation.includes('38-41-201'))
@@ -1809,17 +1819,9 @@ function populateStepDomInputs(stepNumber: number) {
       if (m6) m6.value = '5850';
       break;
     }
-    case 16: {
-      const attName = document.getElementById('attorney-name') as HTMLInputElement;
-      const attBar = document.getElementById('attorney-bar') as HTMLInputElement;
-      const attFirm = document.getElementById('attorney-firm') as HTMLInputElement;
-      const attDecl = document.getElementById('attorney-declaration-check') as HTMLInputElement;
-      if (attName) attName.value = 'Christopher Bailey, Esq.';
-      if (attBar) attBar.value = 'CO-49182';
-      if (attFirm) attFirm.value = 'Mile High Bankruptcy Law Group';
-      if (attDecl) attDecl.checked = true;
+    case 16:
+      // Attorney identity and the penalty-of-perjury declaration are human-only inputs.
       break;
-    }
     default:
       break;
   }
@@ -2089,7 +2091,8 @@ function renderStage2AuditAndLedger() {
   const reTotal = state.realProperty.reduce((sum, r) => sum + r.currentValue, 0);
   const reLiens = state.realProperty.reduce((sum, r) => sum + r.totalLiens, 0);
   const reEquity = Math.max(0, reTotal - reLiens);
-  const homesteadCap = isElderlyOrDisabled ? 350000 : 250000;
+  const capOpts = { isJoint, isElderlyOrDisabled };
+  const homesteadCap = getColoradoExemptionCap('HOMESTEAD', capOpts);
   const reNonExempt = Math.max(0, reEquity - homesteadCap);
   const homesteadPct = Math.min(100, Math.round((reEquity / homesteadCap) * 100));
 
@@ -2125,7 +2128,7 @@ function renderStage2AuditAndLedger() {
   const vehTotal = vehicleItems.reduce((sum, v) => sum + v.currentValue, 0);
   const vehLiens = state.securedClaims.filter(s => s.collateralDescription.toLowerCase().includes('toyota') || s.collateralDescription.toLowerCase().includes('vehicle') || s.collateralPropertyRefId.startsWith('pp_')).reduce((sum, s) => sum + s.securedAmount, 0);
   const vehEquity = Math.max(0, vehTotal - vehLiens);
-  const vehCap = isJoint ? 30000 : (isElderlyOrDisabled ? 25000 : 15000);
+  const vehCap = getColoradoExemptionCap('VEHICLE', capOpts);
   const vehPct = Math.min(100, Math.round((vehEquity / vehCap) * 100));
 
   const vehEqEl = document.getElementById('stage2-vehicle-equity');
@@ -2144,7 +2147,7 @@ function renderStage2AuditAndLedger() {
   // 3. Household Goods C.R.S. § 13-54-102(1)(e)
   const goodsItems = state.personalProperty.filter(p => p.category === 'HOUSEHOLD_GOODS');
   const goodsTotal = goodsItems.reduce((sum, g) => sum + g.currentValue, 0);
-  const goodsCap = 6000;
+  const goodsCap = getColoradoExemptionCap('HOUSEHOLD_GOODS', capOpts);
   const goodsPct = Math.min(100, Math.round((goodsTotal / goodsCap) * 100));
 
   const goodsEqEl = document.getElementById('stage2-goods-equity');
@@ -2316,15 +2319,17 @@ function switchCopilotDrawerTab(tabId: string) {
   if (auditsView) auditsView.style.display = tabId === 'tab-copilot-audits' ? 'flex' : 'none';
 }
 
-function triggerDownloadPdf(formId: string) {
+async function triggerDownloadPdf(formId: string) {
   const currentData = dualStateManager ? dualStateManager.getDraftFiling() : buildMasterCaseDataFromUI();
-  const courtHtml = renderCourtFormHtml(formId, currentData);
-  
-  const blob = new Blob([courtHtml], { type: 'text/html' });
+  // Real PDF built from the draft data. Official court templates are not bundled, so this is
+  // a watermarked data sheet per form, not a stamped official form.
+  const pdfBytes = await generateDraftFormPdf(formId, currentData);
+
+  const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `Colorado_${formId.toUpperCase()}_Petition_Draft.html`;
+  a.download = `Colorado_${formId.toUpperCase()}_UNOFFICIAL_DRAFT.pdf`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -2340,7 +2345,7 @@ function triggerDownloadAllPacket() {
     <html>
       <head>
         <meta charset="utf-8"/>
-        <title>Full Colorado Bankruptcy Petition & Document Routing Packet - Case ${currentData.case_id || '26-10892-EEB'}</title>
+        <title>Full Colorado Bankruptcy Petition & Document Routing Packet - UNOFFICIAL DRAFT</title>
         <style>
           body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Times New Roman", serif; background: #fff; color: #111; margin: 30px; line-height: 1.5; }
           .page-break { page-break-after: always; margin-top: 30px; }
@@ -2376,8 +2381,8 @@ function triggerDownloadAllPacket() {
               <div style="font-size:1rem; font-weight:600; color:#334155;">Official Master Document Filing & Transmission Next-Steps Directory</div>
             </div>
             <div style="text-align:right;">
-              <span class="badge-tag">CERTIFIED ECF READY</span>
-              <div style="font-size:0.75rem; color:#64748b; margin-top:4px;">Case: ${currentData.case_id || '26-10892-EEB'}</div>
+              <span class="badge-tag" style="background:#b45309;">UNOFFICIAL DRAFT — NOT FOR FILING</span>
+              <div style="font-size:0.75rem; color:#64748b; margin-top:4px;">Case: ${currentData.case_id || 'Not assigned (not filed)'}</div>
             </div>
           </div>
 
@@ -2422,7 +2427,7 @@ function triggerDownloadAllPacket() {
 
           <div style="margin-top:16px; padding:10px; background:#e2e8f0; border-radius:6px; font-size:0.75rem; color:#1e293b;">
             <strong>Colorado Local Bankruptcy Rule 5005-4 Retention Notice:</strong> 
-            The supervising attorney (${(document.getElementById('attorney-name') as HTMLInputElement)?.value || 'Supervising Attorney'}, Bar: ${(document.getElementById('attorney-bar') as HTMLInputElement)?.value || 'CO-54321'}) must retain all original wet-ink signatures for a period of 3 years following the closure of this bankruptcy case.
+            The supervising attorney (${(document.getElementById('attorney-name') as HTMLInputElement)?.value || 'Supervising Attorney'}, Reg. #: ${(document.getElementById('attorney-bar') as HTMLInputElement)?.value || '[not entered]'}) must retain all original wet-ink signatures for a period of 3 years following the closure of this bankruptcy case.
           </div>
         </div>
 
@@ -2455,14 +2460,13 @@ function triggerDownloadAllPacket() {
 }
 
 function initAutopilotAgentUI() {
+  // The autopilot can only ever reset the gate to "waiting"; the green state is set
+  // exclusively by the btn-attorney-signoff handler after executeAttorneySignoff succeeds.
   function setApprovalGateStatus(isApproved: boolean) {
     const pill = document.getElementById('agent-approval-status-pill');
     if (pill) {
       if (isApproved) {
-        pill.innerHTML = '<span>✅ ATTORNEY SIGNED & APPROVED — CM/ECF DOCKET READY (CO Bar #49182)</span>';
-        pill.style.background = 'rgba(34,197,94,0.2)';
-        pill.style.color = '#4ade80';
-        pill.style.borderColor = 'rgba(34,197,94,0.4)';
+        return;
       } else {
         pill.innerHTML = '<span>⏳ WAITING FOR SUPERVISING ATTORNEY APPROVAL (ABA RULE 5.3 GATE)</span>';
         pill.style.background = 'rgba(234,179,8,0.2)';
@@ -2496,11 +2500,11 @@ function initAutopilotAgentUI() {
     (statusText: string, isWaitingApproval: boolean) => {
       const actionEl = document.getElementById('agent-action-pill');
       if (actionEl) actionEl.innerText = statusText;
-      setApprovalGateStatus(!isWaitingApproval);
+      if (isWaitingApproval) setApprovalGateStatus(false);
     },
     () => {
       const actionEl = document.getElementById('agent-action-pill');
-      if (actionEl) actionEl.innerText = '✓ Autopilot Finished — Gated at Attorney Approval';
+      if (actionEl) actionEl.innerText = '✓ Walkthrough finished — attorney signoff still required (Step 16)';
       const runBtn = document.getElementById('btn-agent-run-autopilot');
       const pauseBtn = document.getElementById('btn-agent-pause-autopilot');
       if (runBtn) runBtn.style.display = 'flex';
@@ -2589,7 +2593,7 @@ function initAutopilotAgentUI() {
           const replyMsg: CopilotMessage = {
             id: `q-reply-${Date.now()}`,
             role: 'assistant',
-            content: `✓ **Procedural Finding Registered** [${execution.proceduralQuestion.citation}]: ${opt.actionText}`,
+            content: `Noted [${execution.proceduralQuestion.citation}]: ${opt.actionText}\n\n_This is a pre-written response. Your answer is not saved to the petition._`,
             timestamp: new Date().toISOString()
           };
           appendCopilotMessage(replyMsg);
@@ -2731,24 +2735,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Quick Bypass Button
   document.getElementById('btn-quick-bypass')?.addEventListener('click', () => {
-    unlockWorkspaceAndAuthenticate('Workspace unlocked in Verification Mode. Ready to test workflows and procedural audits.');
+    unlockWorkspaceAndAuthenticate('Entered demo workspace. No credentials were checked; use synthetic data only.');
   });
 
-  // Auth Form Submit with Password Verification
+  // Demo entry: there is no server, so there is nothing to authenticate against.
+  // The checkboxes are acknowledgments, not verification.
   authForm?.addEventListener('submit', (e) => {
     e.preventDefault();
-    const pwdValue = passwordInput?.value.trim();
-    // Allow any non-empty password or standard key
-    if (!pwdValue) {
-      if (authErr) {
-        authErr.style.display = 'block';
-        authErr.innerText = 'Please enter a verification passcode (default: VOXEL2026).';
-      }
-      return;
-    }
-
     if (demoAcknowledgment?.checked && (abaRuleCheck ? abaRuleCheck.checked : true)) {
-      unlockWorkspaceAndAuthenticate(`Attorney authentication verified with security key. All 3 workspace stages and Copilot Agent active.`);
+      unlockWorkspaceAndAuthenticate(`Entered demo workspace. Attorney details are self-reported and unverified.`);
     } else {
       if (authErr) {
         authErr.style.display = 'block';
@@ -2980,7 +2975,11 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Draft working copy already matches the official petition. No diffs to publish.');
       return;
     }
-    const result = dualStateManager.publishToOfficialPetition('Jane Attorney', 'CO-54321', 'Denver Bankruptcy Law Group');
+    const result = dualStateManager.publishToOfficialPetition(
+      (document.getElementById('attorney-name') as HTMLInputElement)?.value.trim() || '[attorney not entered]',
+      (document.getElementById('attorney-bar') as HTMLInputElement)?.value.trim() || '[not entered]',
+      (document.getElementById('attorney-firm') as HTMLInputElement)?.value.trim() || '[firm not entered]'
+    );
     if (!result.success) {
       alert(result.message);
       switchCopilotDrawerTab('tab-copilot-audits');
@@ -3162,7 +3161,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     logExtractionEvent('Tax Return Form 1040', taxDoc.facts);
     dualStateManager.stageFieldUpdate('ScheduleI', 'debtor_1_gross_wages', 'Gross Wages', 4850, 'Tax Return Parser (1040)');
-    handleUserPrompt('Extracted 2025 Tax Return: Gross wages $58,200 ($4,850/mo) staged to Schedule I.');
+    handleUserPrompt('Loaded synthetic sample tax return (no OCR): gross wages $58,200 ($4,850/mo) staged to Schedule I for review.');
   });
 
   document.getElementById('btn-ocr-paystub')?.addEventListener('click', () => {
@@ -3176,7 +3175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     logExtractionEvent('60-Day Paystub', paystubDoc.facts);
     dualStateManager.stageFieldUpdate('ScheduleI', 'debtor_1_gross_wages', 'Gross Wages', 4850, 'Paystub 60-Day Parser');
-    handleUserPrompt('Extracted 60-Day Paystub: Bi-weekly pay $2,425 staged to Schedule I with 99.4% confidence.');
+    handleUserPrompt('Loaded synthetic sample paystub (no OCR): bi-weekly pay $2,425 staged to Schedule I for review.');
   });
 
   document.getElementById('btn-ocr-bank')?.addEventListener('click', () => {
@@ -3187,7 +3186,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ending_balance: 1420.50
     });
     logExtractionEvent('FirstBank Checking Statement', bankDoc.facts);
-    handleUserPrompt('Extracted Bank Statement: $1,420.50 ending balance reconciled to Schedule A/B line 17.1.');
+    handleUserPrompt('Loaded synthetic sample bank statement (no OCR): $1,420.50 ending balance, for review against Schedule A/B.');
   });
 
   document.getElementById('btn-ocr-credit')?.addEventListener('click', () => {
@@ -3196,7 +3195,7 @@ document.addEventListener('DOMContentLoaded', () => {
       { creditor_name: 'Toyota Motor Credit', current_balance: 14200, is_secured: true }
     ]);
     logExtractionEvent('Tri-Merge Credit Report', creditDoc.facts);
-    handleUserPrompt('Extracted Credit Report: Active tradelines mapped to Schedule D and Schedule E/F.');
+    handleUserPrompt('Loaded synthetic sample credit tradelines (no OCR) for review against Schedules D and E/F.');
   });
 
   document.getElementById('btn-process-upload')?.addEventListener('click', () => {
@@ -3206,30 +3205,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (fileInput?.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
-      handleUserPrompt(`Uploaded and processed financial document: ${file.name} (${docType}). Staging extracted facts into Draft working copy.`);
-      logExtractionEvent(`Uploaded: ${file.name}`, [{
-        field_id: 'document_vault',
-        raw_text: file.name,
-        confidence_score: 0.98
-      }]);
+      handleUserPrompt(`Received ${file.name} (${docType}). This app has no OCR and did not read its contents; nothing was extracted.`);
     } else {
-      handleUserPrompt(`Ran automated pipeline adapter for ${docType}. Verified provenanced facts.`);
+      handleUserPrompt(`No file selected. Note: this app has no OCR; only structured JSON can be mapped.`);
     }
   });
 
   // Attorney Signoff Step 17
   document.getElementById('btn-attorney-signoff')?.addEventListener('click', () => {
     const masterData = dualStateManager.getDraftFiling();
-    const attName = (document.getElementById('attorney-name') as HTMLInputElement)?.value || 'Supervising Attorney';
-    const attBar = (document.getElementById('attorney-bar') as HTMLInputElement)?.value || 'CO-54321';
-    const attFirm = (document.getElementById('attorney-firm') as HTMLInputElement)?.value || 'Denver Bankruptcy Law Group';
-    const isDeclChecked = (document.getElementById('attorney-declaration-check') as HTMLInputElement)?.checked ?? true;
+    const attName = (document.getElementById('attorney-name') as HTMLInputElement)?.value.trim() ?? '';
+    const attBar = (document.getElementById('attorney-bar') as HTMLInputElement)?.value.trim() ?? '';
+    const attFirm = (document.getElementById('attorney-firm') as HTMLInputElement)?.value.trim() ?? '';
+    const isDeclChecked = (document.getElementById('attorney-declaration-check') as HTMLInputElement)?.checked ?? false;
 
     const signoff: AttorneySignoff = {
       attorney_name: attName,
       bar_number: attBar,
       firm_name: attFirm,
-      ecf_login_id: 'ECF-CO-ATT',
+      ecf_login_id: (document.getElementById('attorney-ecf') as HTMLInputElement)?.value.trim() ?? '',
       signed_at: new Date().toISOString(),
       declaration_accepted: isDeclChecked
     };
@@ -3239,19 +3233,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (statusBox) {
       if (result.success) {
         statusBox.style.color = '#4ade80';
-        statusBox.innerHTML = `✓ Supervising Attorney Signoff Executed by ${attName} (${attBar}). Petition Locked & Ready for ECF Filing.`;
+        statusBox.innerHTML = `✓ Signoff recorded in this browser for ${escapeHtml(attName)} (Reg. # ${escapeHtml(attBar)} — format checked only, not verified against the Colorado registry). Nothing has been filed.`;
         dualStateManager.publishToOfficialPetition(attName, attBar, attFirm);
 
         const pill = document.getElementById('agent-approval-status-pill');
         if (pill) {
-          pill.innerHTML = `<span>✅ ATTORNEY SIGNED & APPROVED — CM/ECF DOCKET READY (CO Bar #${attBar})</span>`;
+          pill.innerHTML = `<span>✓ ATTORNEY SIGNOFF RECORDED (LOCAL DRAFT ONLY — REG. # ${escapeHtml(attBar)} UNVERIFIED)</span>`;
           pill.style.background = 'rgba(34,197,94,0.2)';
           pill.style.color = '#4ade80';
           pill.style.borderColor = 'rgba(34,197,94,0.4)';
         }
 
-        speakAssistantResponse(`Supervising attorney ${attName} signoff verified under ABA Model Rule 5.3. Case is approved and ready for ECF electronic filing.`);
-        handleUserPrompt(`Supervising attorney ${attName} has executed the signoff and verified all schedules under ABA Model Rule 5.3. Ready for ECF court transmission.`);
+        speakAssistantResponse(`Attorney signoff recorded locally for ${attName}. The registration number was not verified. Nothing has been filed.`);
+        handleUserPrompt(`Attorney signoff recorded locally for ${attName}. Registration number format-checked only. Nothing has been filed with any court.`);
         updateEcfManifestChecksum();
       } else {
         statusBox.style.color = '#ef4444';
@@ -3261,19 +3255,14 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ECF Court Filing Simulation Handlers
-  function updateEcfManifestChecksum() {
+  async function updateEcfManifestChecksum() {
     const checksumEl = document.getElementById('ecf-packet-checksum');
     if (checksumEl) {
-      const draft = dualStateManager.getDraftFiling();
-      const debtorName = `${draft.debtor_1.first_name.value}_${draft.debtor_1.last_name.value}`;
-      const hashSeed = `${debtorName}_${draft.chapter}_${new Date().toDateString()}`;
-      let hash = 0;
-      for (let i = 0; i < hashSeed.length; i++) {
-        hash = (hash << 5) - hash + hashSeed.charCodeAt(i);
-        hash |= 0;
-      }
-      const hex = Math.abs(hash).toString(16).padStart(8, '0');
-      checksumEl.innerText = `SHA-256: e8f9${hex}2a...`;
+      const digest = await sha256Hex(canonicalJson(dualStateManager.getDraftFiling()));
+      checksumEl.innerText = digest
+        ? `SHA-256 of draft data: ${digest.slice(0, 16)}…`
+        : 'SHA-256 unavailable (WebCrypto needs HTTPS or localhost)';
+      checksumEl.title = digest ?? '';
     }
   }
 
@@ -3290,9 +3279,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (criticalCount > 0) {
       alert(`Pre-Flight Lint Notice: ${criticalCount} critical audit flag(s) and ${warningCount} warning(s) detected. Please review before transmission.`);
     } else {
-      alert(`✓ Pre-Flight Verification Passed: 0 Critical Hard Audit Blockers. 100% PDF mapping integrity across all Official Forms.`);
+      alert(`Pre-Flight Lint: 0 critical hard-audit flags (${warningCount} warning(s)). This checks this app's own rules only; it is not a court-conformance check.`);
     }
-    handleUserPrompt(`Ran ECF pre-flight lint: ${flags.length === 0 ? 'All 100% clean' : flags.length + ' notices found'}. Court package conforms to District of Colorado standards.`);
+    handleUserPrompt(`Ran pre-flight lint: ${flags.length === 0 ? 'no audit flags' : flags.length + ' notices found'}. This checks this app's own audit rules only.`);
   });
 
   // Transmit & File to Court simulation
@@ -3315,7 +3304,7 @@ document.addEventListener('DOMContentLoaded', () => {
     isEcfFilingInProgress = true;
     if (fileBtn) {
       fileBtn.disabled = true;
-      fileBtn.innerHTML = `<span class="spinner-ring" style="width:12px; height:12px; margin-right:6px;"></span> Transmitting to ECF Gateway...`;
+      fileBtn.innerHTML = `<span class="spinner-ring" style="width:12px; height:12px; margin-right:6px;"></span> Simulating (nothing is sent)...`;
     }
 
     // Reset view
@@ -3328,62 +3317,53 @@ document.addEventListener('DOMContentLoaded', () => {
     const draft = dualStateManager.getDraftFiling();
     const debtorFullName = `${draft.debtor_1.first_name.value} ${draft.debtor_1.last_name.value}`;
     const chapter = draft.chapter || '7';
-    const courtTarget = (document.getElementById('ecf-court-target') as HTMLSelectElement)?.value || 'COB';
-    const filingType = (document.getElementById('ecf-filing-type') as HTMLSelectElement)?.value || 'NEW_PETITION';
     const feeMode = (document.getElementById('ecf-fee-mode') as HTMLSelectElement)?.value || 'PAY_ONLINE';
 
     function appendTerminal(text: string, type: 'info' | 'success' | 'accent' = 'info') {
       const line = document.createElement('div');
       line.className = `terminal-line ${type}`;
-      line.innerText = `[${new Date().toLocaleTimeString()}] ${text}`;
+      line.innerText = `[${new Date().toLocaleTimeString()}] [SIMULATION] ${text}`;
       terminalStream?.appendChild(line);
       if (terminalStream) terminalStream.scrollTop = terminalStream.scrollHeight;
     }
 
-    appendTerminal(`[INIT] Opening TLS 1.3 secure session with USBC-CO Gateway (${courtTarget})...`, 'info');
+    appendTerminal('No network connection is made. These are the steps an attorney performs in the court\'s own CM/ECF system.', 'info');
 
     const stages = [
       {
-        pct: 15,
-        stage: 'Authenticating CM/ECF Attorney Credentials & Digital Seal...',
-        log: '✓ State Bar & CM/ECF Login verified with PACER / NextGen ECF Auth Token.',
+        pct: 20,
+        stage: 'Step 1 of 5: Attorney logs in to CM/ECF (outside this app)',
+        log: 'Attorney signs in to the District of Colorado CM/ECF site with their own credentials. This app does not handle or check them.',
         type: 'info' as const,
         delay: 600
       },
       {
-        pct: 35,
-        stage: 'Validating PDF/A Standard Compliance & Docket Signatures (§ 101/521)...',
-        log: '✓ Form 101, Schedules A/B-J, SOFA 107, Form 108 validated. Total 38 pages rendered.',
+        pct: 40,
+        stage: 'Step 2 of 5: Attorney uploads the petition and schedules',
+        log: 'Final PDFs must come from the official forms. The draft PDFs from this app are watermarked and are not fileable.',
         type: 'info' as const,
         delay: 1200
       },
       {
-        pct: 55,
-        stage: 'Processing Pay.gov Filing Fee Authorization ($338.00)...',
-        log: `✓ Pay.gov Authorization Successful (Ref: PAYGOV-${Math.floor(100000 + Math.random() * 900000)}). Fee Mode: ${feeMode}.`,
+        pct: 60,
+        stage: 'Step 3 of 5: Filing fee',
+        log: `Fee handling selected here: ${feeMode}. No payment is attempted; fees are paid through the court's own process.`,
         type: 'accent' as const,
         delay: 1900
       },
       {
-        pct: 75,
-        stage: 'Uploading Creditor Address Matrix & Automatic Stay Lock (§ 362)...',
-        log: '✓ Uploaded 1-column raw ASCII creditor matrix. Automatic stay active nationwide.',
+        pct: 80,
+        stage: 'Step 4 of 5: Creditor matrix',
+        log: 'Attorney uploads the creditor matrix in the format the court requires.',
         type: 'info' as const,
         delay: 2600
       },
       {
-        pct: 90,
-        stage: 'Generating Notice of Electronic Filing (NEF) & Assigning Judge...',
-        log: '✓ Clerk of Court Docket Entry #1 Recorded. Random assignment: Hon. Michael E. Romero.',
-        type: 'info' as const,
-        delay: 3300
-      },
-      {
         pct: 100,
-        stage: 'Court Transmission Complete • Case Docketed!',
-        log: '✓ Transmitted successfully. Official Notice of Electronic Filing (NEF) issued.',
+        stage: 'Step 5 of 5: Court issues its own notice',
+        log: 'In a real filing the court assigns the case number and judge and sends its own notice. None of that happened here.',
         type: 'success' as const,
-        delay: 4000
+        delay: 3300
       }
     ];
 
@@ -3398,28 +3378,28 @@ document.addEventListener('DOMContentLoaded', () => {
           isEcfFilingInProgress = false;
           if (fileBtn) {
             fileBtn.disabled = false;
-            fileBtn.innerHTML = `<span class="btn-icon">⚡</span> Transmit & File to Court (CM/ECF Gateway)`;
+            fileBtn.innerHTML = `<span class="btn-icon">▶</span> Run Filing Simulation (nothing is sent)`;
           }
 
-          // Populate NEF details
-          const caseNumYear = new Date().getFullYear().toString().slice(-2);
-          const randomCaseNum = `${caseNumYear}-${Math.floor(10000 + Math.random() * 90000)}-MER`;
+          // Simulation summary. The ID is deliberately not shaped like a court case number.
+          const simId = `SIM-${Date.now().toString(36).toUpperCase()}`;
           const nefCaseEl = document.getElementById('nef-case-number');
           const nefChapterEl = document.getElementById('nef-chapter-val');
           const nefTimestampEl = document.getElementById('nef-timestamp-val');
           const nefDocHash = document.getElementById('nef-doc-hash');
 
-          if (nefCaseEl) nefCaseEl.innerText = randomCaseNum;
-          if (nefChapterEl) nefChapterEl.innerText = `Chapter ${chapter} Voluntary Individual Petition`;
-          if (nefTimestampEl) nefTimestampEl.innerText = `${new Date().toLocaleString()} (US/Mountain)`;
+          if (nefCaseEl) nefCaseEl.innerText = simId;
+          if (nefChapterEl) nefChapterEl.innerText = `Chapter ${chapter} (draft)`;
+          if (nefTimestampEl) nefTimestampEl.innerText = new Date().toLocaleString();
           if (nefDocHash) {
-            nefDocHash.innerText = `sha256:${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`;
+            nefDocHash.innerText = 'computing…';
+            sha256Hex(canonicalJson(draft)).then(d => { nefDocHash.innerText = d ?? 'unavailable (WebCrypto needs HTTPS or localhost)'; });
           }
 
           nefReceipt.style.display = 'block';
           nefReceipt.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-          handleUserPrompt(`Court filing simulation complete! Case docketed under Case No. ${randomCaseNum} in the U.S. Bankruptcy Court for the District of Colorado.`);
+          handleUserPrompt(`Filing simulation finished (${simId}). Nothing was sent to any court and no case exists.`);
         }
       }, delay);
     });
@@ -3431,64 +3411,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const nefReceipt = document.getElementById('ecf-nef-receipt-container');
     if (progressContainer) progressContainer.style.display = 'none';
     if (nefReceipt) nefReceipt.style.display = 'none';
-    handleUserPrompt('Reset ECF filing portal simulator to initial state.');
+    handleUserPrompt('Reset the filing simulation.');
   });
 
-  // Download NEF Receipt HTML
+  // Download simulation log. Deliberately not formatted as a court Notice of Electronic Filing:
+  // no court caption, no seal, no clerk certification, no case number or judge.
   document.getElementById('btn-download-nef-receipt')?.addEventListener('click', () => {
     const draft = dualStateManager.getDraftFiling();
-    const caseNum = document.getElementById('nef-case-number')?.innerText || '26-10482-MER';
-    const judge = document.getElementById('nef-judge-name')?.innerText || 'Hon. Michael E. Romero';
+    const simId = document.getElementById('nef-case-number')?.innerText || 'SIM';
     const timestamp = document.getElementById('nef-timestamp-val')?.innerText || new Date().toLocaleString();
-    const docHash = document.getElementById('nef-doc-hash')?.innerText || 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+    const docHash = document.getElementById('nef-doc-hash')?.innerText || 'not computed';
 
-    const nefReceiptHtml = `
+    const logHtml = `
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Notice of Electronic Filing — Case ${caseNum}</title>
+        <meta charset="utf-8"/>
+        <title>Filing Simulation Log ${escapeHtml(simId)} - NOT A COURT DOCUMENT</title>
         <style>
-          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; margin: 40px; color: #111; line-height: 1.5; }
-          .header { border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
-          .title { font-size: 18px; font-weight: bold; }
-          .subtitle { font-size: 14px; color: #555; }
-          .section { margin-top: 20px; }
-          .grid { display: grid; grid-template-columns: 200px 1fr; gap: 8px; margin-top: 10px; }
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 40px; color: #111; line-height: 1.5; }
+          .banner { border: 3px dashed #b45309; background: #fffbeb; padding: 14px; font-weight: bold; color: #92400e; }
+          .grid { display: grid; grid-template-columns: 220px 1fr; gap: 8px; margin-top: 16px; }
           .label { font-weight: bold; color: #333; }
-          .hash { font-family: monospace; font-size: 12px; background: #f0f0f0; padding: 4px; border-radius: 4px; }
-          .seal { float: right; font-size: 40px; }
+          .hash { font-family: monospace; font-size: 12px; word-break: break-all; }
         </style>
       </head>
       <body>
-        <div class="header">
-          <div class="seal">⚖️</div>
-          <div class="title">UNITED STATES BANKRUPTCY COURT</div>
-          <div class="subtitle">DISTRICT OF COLORADO (DENVER DIVISION)</div>
-          <h3>NOTICE OF ELECTRONIC FILING (NEF)</h3>
-        </div>
-        <p>The following transaction was entered on ${timestamp} and filed electronically.</p>
+        <div class="banner">SIMULATION LOG - NOT A COURT DOCUMENT. NOTHING WAS FILED. No case number, judge, fee payment, or court notice exists for this record.</div>
         <div class="grid">
-          <div class="label">Case Title:</div><div>In re: ${draft.debtor_1.first_name.value} ${draft.debtor_1.last_name.value}</div>
-          <div class="label">Case Number:</div><div><strong>${caseNum}</strong></div>
-          <div class="label">Chapter:</div><div>Chapter ${draft.chapter || '7'} Voluntary</div>
-          <div class="label">Assigned Judge:</div><div>${judge}</div>
-          <div class="label">Filer / Attorney:</div><div>${(document.getElementById('attorney-name') as HTMLInputElement)?.value || 'Supervising Attorney'} (Bar: ${(document.getElementById('attorney-bar') as HTMLInputElement)?.value || 'CO-54321'})</div>
-          <div class="label">Law Firm:</div><div>${(document.getElementById('attorney-firm') as HTMLInputElement)?.value || 'Denver Bankruptcy Law Group'}</div>
-          <div class="label">Filing Fee Status:</div><div>Paid in Full ($338.00 / Pay.gov Ref #PAYGOV-882194)</div>
-          <div class="label">Document Hash:</div><div class="hash">${docHash}</div>
-        </div>
-        <div class="section" style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 15px; font-size: 12px; color: #666;">
-          Electronic Document Certified by Clerk of Court, U.S. Bankruptcy Court for the District of Colorado.
+          <div class="label">Simulation ID:</div><div>${escapeHtml(simId)}</div>
+          <div class="label">Simulated at:</div><div>${escapeHtml(timestamp)}</div>
+          <div class="label">Draft debtor:</div><div>${escapeHtml(`${draft.debtor_1.first_name.value} ${draft.debtor_1.last_name.value}`)}</div>
+          <div class="label">Draft chapter:</div><div>${escapeHtml(String(draft.chapter || '7'))}</div>
+          <div class="label">SHA-256 of draft data:</div><div class="hash">${escapeHtml(docHash)}</div>
         </div>
       </body>
       </html>
     `;
 
-    const blob = new Blob([nefReceiptHtml], { type: 'text/html' });
+    const blob = new Blob([logHtml], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `USBC_CO_Notice_Of_Electronic_Filing_${caseNum}.html`;
+    a.download = `Filing_Simulation_Log_${simId}_NOT_FILED.html`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -3515,29 +3480,29 @@ document.addEventListener('DOMContentLoaded', () => {
     printRoutingSlipForActiveTab();
   });
 
-  // Gemini AI Smart Action Banners (Steps 3, 5, 8, 10, 15, 17)
+  // Rule-based check banners (Steps 3, 5, 8, 10, 15, 17). These route to the keyword-matched copilot.
   document.getElementById('btn-gemini-assess-re')?.addEventListener('click', () => {
-    handleUserPrompt('✨ Run Gemini Real Estate & Homestead Equity Assessment: calculate unencumbered equity and C.R.S. § 38-41-201 statutory exemptions.');
+    handleUserPrompt('Run Real Estate & Homestead Equity Assessment: calculate unencumbered equity and C.R.S. § 38-41-201 statutory exemptions.');
   });
 
   document.getElementById('btn-gemini-optimize-exemptions')?.addEventListener('click', () => {
-    handleUserPrompt('✨ Run Gemini 2026 Colorado Exemption Optimizer: maximize statutory asset protections under C.R.S. Title 13 and Title 38.');
+    handleUserPrompt('Run 2026 Colorado Exemption Optimizer: maximize statutory asset protections under C.R.S. Title 13 and Title 38.');
   });
 
   document.getElementById('btn-gemini-audit-claims')?.addEventListener('click', () => {
-    handleUserPrompt('✨ Run Gemini Priority vs. General Unsecured Claims Audit: verify 11 U.S.C. § 507 priority classifications and codebtor protections.');
+    handleUserPrompt('Run Priority vs. General Unsecured Claims Audit: verify 11 U.S.C. § 507 priority classifications and codebtor protections.');
   });
 
   document.getElementById('btn-gemini-audit-budget')?.addEventListener('click', () => {
-    handleUserPrompt('✨ Run Gemini Budget Doctor & Disposable Income Diagnostic: analyze Schedule I vs Schedule J cash flow for § 707(b)(3) totality of circumstances.');
+    handleUserPrompt('Run Budget Doctor & Disposable Income Diagnostic: analyze Schedule I vs Schedule J cash flow for § 707(b)(3) totality of circumstances.');
   });
 
   document.getElementById('btn-gemini-means-diagnostic')?.addEventListener('click', () => {
-    handleUserPrompt('✨ Run Gemini Means Test & Safe Harbor Diagnostic: evaluate Colorado median income thresholds and 60-month disposable income deductions under § 707(b)(2).');
+    handleUserPrompt('Run Means Test & Safe Harbor Diagnostic: evaluate Colorado median income thresholds and 60-month disposable income deductions under § 707(b)(2).');
   });
 
   document.getElementById('btn-gemini-ethical-audit')?.addEventListener('click', () => {
-    handleUserPrompt('✨ Execute AI Provenance & ABA Model Rule 5.3 Audit: perform complete cross-schedule integrity checks and verify supervising attorney provenance.');
+    handleUserPrompt('Execute Provenance & ABA Model Rule 5.3 Audit: perform complete cross-schedule integrity checks and verify supervising attorney provenance.');
   });
 
   // Live Voice Conversation Engine & Audio Speech Synthesis
@@ -3875,7 +3840,7 @@ function openEmailDispatchModal(formId: string) {
   const titleEl = document.getElementById('modal-dispatch-form-title');
   const trackEl = document.getElementById('modal-dispatch-tracking');
   if (titleEl) titleEl.innerText = `${path.officialFormNumber || path.formId.toUpperCase()} — Digital Email Transmission & Filing Path`;
-  if (trackEl) trackEl.innerText = `Provenance Tracking: ${path.deliveryConfirmationToken} • Case: ${draftData.case_id || '26-10482-MER'}`;
+  if (trackEl) trackEl.innerText = `Provenance Tracking: ${path.deliveryConfirmationToken} • Case: ${draftData.case_id || 'NOT FILED'}`;
 
   // Sender details
   const sName = document.getElementById('modal-sender-name');
@@ -3986,7 +3951,7 @@ function printSingleEmailTransmissionSlip(formId: string) {
 function printMasterTransmissionManifest() {
   const draftData = dualStateManager ? dualStateManager.getDraftFiling() : createSampleMasterCaseData();
   const debtorName = `${draftData.debtor_1.first_name.value} ${draftData.debtor_1.last_name.value}`;
-  const caseId = draftData.case_id || '26-10482-MER';
+  const caseId = draftData.case_id || 'NOT FILED';
   const now = new Date().toLocaleString();
 
   const manifestRows = ALL_COURT_FORMS.map(formId => {
@@ -4026,8 +3991,8 @@ function printMasterTransmissionManifest() {
     <body>
       <div class="header">
         <div>
-          <div class="title">U.S. BANKRUPTCY COURT • DISTRICT OF COLORADO</div>
-          <div class="subtitle">Master Outbound Electronic Filing & Transmission Manifest Docket</div>
+          <div class="title">DRAFT OUTBOX MANIFEST — NOT A COURT DOCUMENT</div>
+          <div class="subtitle">Prototype checklist. Nothing listed here has been sent or filed.</div>
         </div>
         <div style="text-align:right;">
           <strong>Date Generated:</strong> ${now}<br/>
@@ -4038,8 +4003,7 @@ function printMasterTransmissionManifest() {
       <div class="grid">
         <div>
           <strong>Debtor:</strong> ${debtorName}<br/>
-          <strong>Jurisdiction:</strong> U.S. Bankruptcy Court (District of Colorado)<br/>
-          <strong>Clerk Gateway:</strong> ecf_intake_filer@cob.uscourts.gov
+          <strong>Intended court:</strong> U.S. Bankruptcy Court (District of Colorado) — filed by the attorney via CM/ECF, not from this app
         </div>
         <div>
           <strong>Originating Sender:</strong> ${currentSenderVessel.senderName}<br/>
@@ -4056,7 +4020,7 @@ function printMasterTransmissionManifest() {
             <th style="width:20%;">Destination Email</th>
             <th style="width:26%;">Mandatory Accompanying Documents</th>
             <th style="width:12%;">Status</th>
-            <th style="width:10%;">Hash Link</th>
+            <th style="width:10%;">Hash</th>
           </tr>
         </thead>
         <tbody>
@@ -4064,13 +4028,8 @@ function printMasterTransmissionManifest() {
         </tbody>
       </table>
 
-      <div class="seal-box">
-        <strong>SUPERVISING COUNSEL CERTIFICATION & TRANSMISSION COVENANT:</strong><br/>
-        I declare under penalty of perjury and L.B.R. 5005-4 that each of the above 15 official filings and their respective statutory exhibits have been audited for accuracy and are authorized for transmission exclusively via the approved sender vessel.
-        <div style="margin-top:8px; display:flex; justify-content:space-between;">
-          <span>Digital Seal: <code>SHA256:${Array.from({ length: 32 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}</code></span>
-          <span>Signoff: <strong>${currentSenderVessel.senderName}</strong></span>
-        </div>
+      <div class="seal-box" style="background:#fffbeb; border-color:#b45309;">
+        <strong>DRAFT ONLY.</strong> This manifest carries no signature, seal, or certification. Any declaration to a court must be made by the attorney in the court's own filing system.
       </div>
     </body>
     </html>
@@ -4224,7 +4183,7 @@ function logExtractionEvent(title: string, facts: any[]) {
   const entryHtml = `
     <div style="margin-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 6px;">
       <div style="color: #60a5fa; font-weight: bold;">[${new Date().toLocaleTimeString()}] ${title}</div>
-      ${facts.map(f => `<div>• <strong>${f.field_id}</strong> (conf: ${((f.confidence_score || 0.95) * 100).toFixed(0)}%)</div>`).join('')}
+      ${facts.length ? facts.map(f => `<div>• <strong>${f.field_id}</strong> (field completeness: ${typeof f.confidence_score === 'number' ? (f.confidence_score * 100).toFixed(0) + '%' : 'n/a'}; unverified)</div>`).join('') : '<div>• No facts extracted (no OCR; sample data only).</div>'}
     </div>
   `;
 
@@ -4257,7 +4216,8 @@ function openExecutionReportModal() {
   const totalDebts = totalSecured + totalPriority + totalNonPriority;
 
   const reEquity = Math.max(0, state.realProperty.reduce((sum, r) => sum + r.currentValue, 0) - state.realProperty.reduce((sum, r) => sum + r.totalLiens, 0));
-  const homesteadCap = isElderlyDisabled ? 350000 : 250000;
+  const homesteadCap = getColoradoExemptionCap('HOMESTEAD', { isJoint, isElderlyOrDisabled: isElderlyDisabled });
+  const reNonExemptEquity = Math.max(0, reEquity - homesteadCap);
   const totalExemptionsClaimed = state.exemptions.reduce((sum, e) => sum + e.claimedAmount, 0);
 
   const m1 = getValNumber('cmi-m1', 4850);
@@ -4298,9 +4258,9 @@ function openExecutionReportModal() {
     <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.06); padding:12px; border-radius:8px; margin-bottom:14px;">
       <h4 style="margin:0 0 8px 0; font-size:0.9rem; color:#38bdf8;">1. Statutory Findings & Colorado Safe Harbor Analysis</h4>
       <div style="font-size:0.8rem; line-height:1.5; color:#cbd5e1;">
-        <div>• <strong>Form 122A Means Test:</strong> 6-Month Gross CMI is <strong>$${monthlyCmi.toLocaleString('en-US', { minimumFractionDigits: 2 })}/mo</strong> (Annualized <strong>$${annualizedCmi.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> vs. 2026 Colorado Median Income limit of <strong>$${coMedian.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> for household size of ${hhSize}). Presumption of abuse does <strong>NOT</strong> arise under 11 U.S.C. § 707(b)(2).</div>
-        <div>• <strong>Homestead Protection (C.R.S. § 38-41-201):</strong> Real property equity is <strong>$${reEquity.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> against statutory cap of <strong>$${homesteadCap.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> (${isElderlyDisabled ? 'Elderly/Disabled Rate' : 'Standard Rate'}). Non-exempt equity is <strong>$0.00 (100% Protected)</strong>.</div>
-        <div>• <strong>ERISA & Retirement Exemption (11 U.S.C. § 522(d)(12)):</strong> 100% of qualified retirement funds are fully excluded from bankruptcy estate property.</div>
+        <div>• <strong>Form 122A Means Test:</strong> 6-Month Gross CMI is <strong>$${monthlyCmi.toLocaleString('en-US', { minimumFractionDigits: 2 })}/mo</strong> (Annualized <strong>$${annualizedCmi.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> vs. 2026 Colorado Median Income limit of <strong>$${coMedian.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> for household size of ${hhSize}; app-configured, unverified). ${isBelowMedian ? 'Below the configured median: under § 707(b)(7) the presumption of abuse would not be raised on this figure.' : '<strong>Above the configured median: complete Form 122A-2.</strong>'}</div>
+        <div>• <strong>Homestead Protection (C.R.S. § 38-41-201):</strong> Real property equity is <strong>$${reEquity.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> against statutory cap of <strong>$${homesteadCap.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> (${isElderlyDisabled ? 'Elderly/Disabled Rate' : 'Standard Rate'}; cap unverified). Non-exempt equity: <strong>$${reNonExemptEquity.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong>${reNonExemptEquity > 0 ? ' (at risk)' : ''}.</div>
+        <div>• <strong>Retirement Funds (11 U.S.C. § 522(b)(3)(C); C.R.S. § 13-54-102(1)(s) — attorney to verify):</strong> Colorado is an opt-out state, so the federal § 522(d) list is not available; qualified retirement funds are claimed under § 522(b)(3)(C) and state law.</div>
       </div>
     </div>
 

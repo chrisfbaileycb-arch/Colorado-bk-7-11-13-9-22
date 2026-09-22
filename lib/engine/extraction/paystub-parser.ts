@@ -1,21 +1,30 @@
 import type { ExtractionResult } from './types';
+import { structuredFieldCompleteness } from './completeness';
 
+/** Structured-JSON field mapper for paystubs. No OCR; missing values stay empty. */
 export function parsePaystub(rawObj: any, filename: string = 'paystub.json'): ExtractionResult<import('./types').ExtractedPaystub> {
-  const gross = Number(rawObj.gross_pay_current || rawObj.gross || 2425);
-  const net = Number(rawObj.net_pay || rawObj.net || 1845);
+  const src = rawObj && typeof rawObj === 'object' ? rawObj : {};
+  const gross = src.gross_pay_current ?? src.gross;
+  const net = src.net_pay ?? src.net;
+  const { score, missing } = structuredFieldCompleteness({
+    employee_name: src.employee_name,
+    gross_pay_current: gross,
+    net_pay: net,
+    pay_date: src.pay_date
+  });
 
   return {
     document_type: 'PAYSTUB',
     extracted_data: {
-      employee_name: rawObj.employee_name || 'Jane Doe',
-      employer_name: rawObj.employer_name || 'TechCorp Inc',
-      gross_pay_current: gross,
-      net_pay: net,
-      pay_date: '2026-07-25'
+      employee_name: String(src.employee_name ?? ''),
+      employer_name: String(src.employer_name ?? ''),
+      gross_pay_current: Number(gross ?? 0),
+      net_pay: Number(net ?? 0),
+      pay_date: String(src.pay_date ?? '')
     },
-    confidence_score: 0.96,
+    confidence_score: score,
     validation_flags: [],
-    warnings: [],
+    warnings: missing.map(f => `Missing field: ${f}`),
     facts: [],
     source_filename: filename
   };

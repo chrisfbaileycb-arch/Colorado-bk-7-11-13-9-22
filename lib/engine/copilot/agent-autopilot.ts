@@ -367,7 +367,7 @@ export const AGENT_STEP_EXECUTIONS: Record<number, AgentStepExecution> = {
   },
   15: {
     stepNumber: 15,
-    title: 'Means Test Calculation & AI Document Vault',
+    title: 'Means Test Calculation & Source Documents',
     formId: 'meansTest',
     officialName: 'Official Form 122A-1 / 122A-2 (Chapter 7 Statement of Monthly Income & Means Test)',
     signaturesRequired: 'Debtor 1 (/s/ Jane Marie Doe) under penalty of perjury',
@@ -377,13 +377,13 @@ export const AGENT_STEP_EXECUTIONS: Record<number, AgentStepExecution> = {
       agency: 'U.S. Bankruptcy Court for the District of Colorado & U.S. Trustee Region 19',
       details: 'U.S. Trustee reviews Form 122A-1 within 10 days of § 341 meeting to file Statement of Presumed Abuse or No Abuse.'
     },
-    crossPollinationTargets: ['Schedule I Gross Wages', 'Colorado Median Threshold ($78,450)', 'Presumption of Abuse Verdict', 'Document Vault Provenance'],
-    clientDescription: '6-Month Current Monthly Income (CMI): $4,850.00/mo ($58,200 annualized vs Colorado Median of $78,450 for 1-person). Presumption of abuse does NOT arise under 11 U.S.C. § 707(b)(2). Safe Harbor Established.',
+    crossPollinationTargets: ['Schedule I Gross Wages', 'Colorado Median Threshold ($72,450 (app-configured, unverified))', 'Presumption of Abuse Verdict', 'Document Vault Provenance'],
+    clientDescription: '6-Month Current Monthly Income (CMI): $4,850.00/mo ($58,200 annualized vs Colorado Median of $72,450 (app-configured, unverified) for 1-person). Presumption of abuse does NOT arise under 11 U.S.C. § 707(b)(2). Safe Harbor Established.',
     proceduralQuestion: {
       question: 'Does the debtor qualify for the statutory Safe Harbor under 11 U.S.C. § 707(b)(7)?',
       citation: '11 U.S.C. § 707(b)(7) (Safe Harbor Exception to Means Test)',
       options: [
-        { label: '✓ Below Median Safe Harbor ($58,200 < $78,450 Limit)', actionText: 'Safe Harbor established! Form 122A-2 expense deductions not required.', patch: { safe_harbor: true } },
+        { label: '✓ Below Median Safe Harbor ($58,200 < $72,450 (app-configured, unverified) Limit)', actionText: 'Safe Harbor established! Form 122A-2 expense deductions not required.', patch: { safe_harbor: true } },
         { label: '⚠️ Above Median Income (Form 122A-2 Required)', actionText: 'Annualized CMI exceeds median; executed Form 122A-2 IRS National and Local expense deductions.', patch: { safe_harbor: false } }
       ]
     },
@@ -394,7 +394,7 @@ export const AGENT_STEP_EXECUTIONS: Record<number, AgentStepExecution> = {
     title: 'Supervising Attorney Review, ECF Gateway & Outbound Dispatch',
     formId: 'fullPacket',
     officialName: 'Official Form 106Dec, Master Petition Packet & Certified Outbox Manifest',
-    signaturesRequired: 'Debtor 1 (/s/), Joint Debtor (/s/ if joint), and Supervising Attorney (/s/ Christopher Bailey, CO Bar #49182)',
+    signaturesRequired: 'Debtor 1 (/s/), Joint Debtor (/s/ if joint), and Supervising Attorney (/s/ entered by the attorney at Step 16)',
     docketStatus: 'PUBLIC_DOCKET',
     deliveryRouting: {
       primaryMethod: 'NextGen CM/ECF Electronic Filing Portal',
@@ -407,7 +407,7 @@ export const AGENT_STEP_EXECUTIONS: Record<number, AgentStepExecution> = {
       question: 'Has supervising counsel reviewed all field provenance, statutory exemptions, and signed the ABA Rule 5.3 declaration?',
       citation: 'ABA Model Rule 5.3 & District of Colorado Local Rule 5005-4',
       options: [
-        { label: '⚖️ Execute Attorney Signoff & Authorize CM/ECF Filing', actionText: 'Supervising Attorney Christopher Bailey executed signoff. Petition unlocked for transmission!', patch: { attorney_approved: true } },
+        { label: '⚖️ I will complete the Step 16 signoff form myself', actionText: 'Noted. Signoff is only recorded when the attorney fills in and submits the Step 16 form; this answer does not approve anything.', patch: { attorney_approved: false } },
         { label: '⏳ Maintain "Waiting for Attorney Approval" Status', actionText: 'Maintained strict review hold pending formal supervisory counsel consultation.', patch: { attorney_approved: false } }
       ]
     },
@@ -458,7 +458,7 @@ export class BankruptcyAutopilotAgent {
     this.isPaused = false;
     this.currentStep = fromStep;
     if (this.onStatusUpdateCallback) {
-      this.onStatusUpdateCallback(`🤖 Autopilot Active: Executing Step ${this.currentStep} of 16...`, true);
+      this.onStatusUpdateCallback(`▶ Walkthrough running: Step ${this.currentStep} of 16...`, true);
     }
     this.runStepLoop();
   }
@@ -467,7 +467,7 @@ export class BankruptcyAutopilotAgent {
     this.isPaused = true;
     if (this.timeoutHandle) clearTimeout(this.timeoutHandle);
     if (this.onStatusUpdateCallback) {
-      this.onStatusUpdateCallback(`⏸️ Autopilot Paused at Step ${this.currentStep} of 16.`, true);
+      this.onStatusUpdateCallback(`⏸️ Walkthrough paused at Step ${this.currentStep} of 16.`, true);
     }
   }
 
@@ -478,7 +478,7 @@ export class BankruptcyAutopilotAgent {
     }
     this.isPaused = false;
     if (this.onStatusUpdateCallback) {
-      this.onStatusUpdateCallback(`🤖 Autopilot Resumed: Executing Step ${this.currentStep} of 16...`, true);
+      this.onStatusUpdateCallback(`▶ Walkthrough resumed: Step ${this.currentStep} of 16...`, true);
     }
     this.runStepLoop();
   }
@@ -549,7 +549,7 @@ export class BankruptcyAutopilotAgent {
 
   private executeStepPayload(stepNumber: number, execution: AgentStepExecution) {
     // 1. Send Assistant guidance and log message to Copilot feed
-    const promptSummary = `🤖 [Agent Autopilot Executing Step ${stepNumber}/16]: ${execution.title}\n\n` +
+    const promptSummary = `▶ [Scripted walkthrough, step ${stepNumber}/16]: ${execution.title}\n\n` +
       `**Form Generated**: \`${execution.officialName}\`\n` +
       `**Signatures**: ${execution.signaturesRequired}\n` +
       `**Routing & Delivery**: ${execution.deliveryRouting.primaryMethod} (${execution.deliveryRouting.agency})\n` +

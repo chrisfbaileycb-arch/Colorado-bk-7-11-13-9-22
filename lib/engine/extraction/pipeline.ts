@@ -13,6 +13,58 @@ export function fromCents(cents: number): number {
   return cents / 100;
 }
 
+/** There is no OCR. Only already-structured JSON is accepted; anything else yields no data. */
+function parseStructuredInput(content: string): Record<string, unknown> | null {
+  try {
+    const parsed = JSON.parse(content);
+    return parsed && typeof parsed === 'object' ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function nothingExtracted(document_type: DocumentType, filename: string): ExtractionResult {
+  return {
+    document_type,
+    extracted_data: null,
+    confidence_score: 0,
+    validation_flags: ['UNSUPPORTED_INPUT'],
+    warnings: ['No OCR is available: only structured JSON input can be read. Nothing was extracted.'],
+    facts: [],
+    source_filename: filename
+  };
+}
+
+function structuredFact(f: {
+  field_id: string;
+  document_type: DocumentType;
+  filename: string;
+  raw_text: string;
+  value: number;
+  completeness: number;
+  mapped_destinations: string[];
+}): ExtractedFact {
+  return {
+    field_id: f.field_id,
+    case_id: 'case_default',
+    document_id: `doc_${f.filename}`,
+    document_type: f.document_type,
+    source_filename: f.filename,
+    source_page: 1,
+    raw_text: f.raw_text,
+    normalized_value: f.value,
+    value_type: 'currency',
+    confidence_score: f.completeness,
+    extraction_method: 'STRUCTURED_JSON_FIELD_MAP',
+    model_name: 'none (deterministic JSON field mapping, no AI/OCR)',
+    model_version: 'n/a',
+    extracted_at: new Date().toISOString(),
+    // A person must verify every extracted fact; nothing is auto-verified.
+    verification_status: 'raw_extracted',
+    mapped_destinations: f.mapped_destinations
+  };
+}
+
 export interface DocumentAdapter {
   document_type: DocumentType;
   supportsExtension(filename: string): boolean;
@@ -33,64 +85,40 @@ export class PluggableExtractionPipeline {
   private registerDefaultAdapters() {
     this.registerAdapter({
       document_type: 'TAX_RETURN',
-      supportsExtension: (f) => /\.(pdf|json|txt|csv)$/i.test(f),
+      supportsExtension: (f) => /\.json$/i.test(f),
       extract: (content, filename) => {
-        let rawObj: any = {};
-        try { rawObj = JSON.parse(content); } catch {
-          rawObj = { primary_taxpayer_name: 'Jane M Doe', w2_gross_wages_debtor_1: 58200, employer_name_debtor_1: 'TechCorp Inc', tax_year: 2025 };
-        }
+        const rawObj = parseStructuredInput(content);
+        if (!rawObj) return nothingExtracted('TAX_RETURN', filename);
         const res = parseTaxReturn(rawObj, filename);
-        const facts: ExtractedFact[] = [{
+        const facts: ExtractedFact[] = res.warnings.length === 0 ? [structuredFact({
           field_id: `fact_tax_wages_${Date.now()}`,
-          case_id: 'case_default',
-          document_id: `doc_${filename}`,
           document_type: 'TAX_RETURN',
-          source_filename: filename,
-          source_page: 1,
-          raw_text: `Line 1a Gross Wages: $${res.extracted_data.w2_gross_wages_debtor_1}`,
-          normalized_value: fromCents(toCents(res.extracted_data.w2_gross_wages_debtor_1)),
-          value_type: 'currency',
-          confidence_score: res.confidence_score,
-          extraction_method: 'AI_STRUCTURED_OUTPUT',
-          model_name: 'VoxelLex-Extract-v1',
-          model_version: '1.0.0',
-          extracted_at: new Date().toISOString(),
-          verification_status: res.confidence_score >= 0.95 ? 'user_verified' : 'raw_extracted',
+          filename,
+          raw_text: `w2_gross_wages_debtor_1: ${res.extracted_data.w2_gross_wages_debtor_1}`,
+          value: fromCents(toCents(res.extracted_data.w2_gross_wages_debtor_1)),
+          completeness: res.confidence_score,
           mapped_destinations: ['schedule_i.debtor_1_gross_wages', 'form_1040.line1a']
-        }];
+        })] : [];
         return { ...res, facts, source_filename: filename };
       }
     });
 
     this.registerAdapter({
       document_type: 'PAYSTUB',
-      supportsExtension: (f) => /\.(pdf|json|txt|csv)$/i.test(f),
+      supportsExtension: (f) => /\.json$/i.test(f),
       extract: (content, filename) => {
-        let rawObj: any = {};
-        try { rawObj = JSON.parse(content); } catch {
-          rawObj = { gross_pay_current: 2425, net_pay: 1845, employee_name: 'Jane Doe', employer_name: 'TechCorp Inc' };
-        }
+        const rawObj = parseStructuredInput(content);
+        if (!rawObj) return nothingExtracted('PAYSTUB', filename);
         const res = parsePaystub(rawObj, filename);
-        const facts: ExtractedFact[] = [
-          {
-            field_id: `fact_stub_gross_${Date.now()}`,
-            case_id: 'case_default',
-            document_id: `doc_${filename}`,
-            document_type: 'PAYSTUB',
-            source_filename: filename,
-            source_page: 1,
-            raw_text: `Current Gross Pay: $${res.extracted_data.gross_pay_current}`,
-            normalized_value: fromCents(toCents(res.extracted_data.gross_pay_current)),
-            value_type: 'currency',
-            confidence_score: res.confidence_score,
-            extraction_method: 'AI_STRUCTURED_OUTPUT',
-            model_name: 'VoxelLex-Extract-v1',
-            model_version: '1.0.0',
-            extracted_at: new Date().toISOString(),
-            verification_status: res.confidence_score >= 0.95 ? 'user_verified' : 'raw_extracted',
-            mapped_destinations: ['schedule_i.monthly_gross']
-          }
-        ];
+        const facts: ExtractedFact[] = res.warnings.length === 0 ? [structuredFact({
+          field_id: `fact_stub_gross_${Date.now()}`,
+          document_type: 'PAYSTUB',
+          filename,
+          raw_text: `gross_pay_current: ${res.extracted_data.gross_pay_current}`,
+          value: fromCents(toCents(res.extracted_data.gross_pay_current)),
+          completeness: res.confidence_score,
+          mapped_destinations: ['schedule_i.monthly_gross']
+        })] : [];
         return { ...res, facts, source_filename: filename };
       }
     });

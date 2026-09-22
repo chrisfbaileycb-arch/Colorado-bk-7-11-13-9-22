@@ -1,22 +1,21 @@
 import type { ExtractionResult } from './types';
 
+/** Structured-JSON field mapper for credit report tradelines. No OCR; no placeholder creditors. */
 export function parseCreditReport(rawArray: any[], filename: string = 'credit_report.json'): ExtractionResult<import('./types').ExtractedCreditReportItem[]> {
-  const items = Array.isArray(rawArray) && rawArray.length > 0 ? rawArray : [
-    { creditor_name: 'Example Unsecured Creditor', current_balance: 4500, is_secured: false },
-    { creditor_name: 'Example Vehicle Creditor', current_balance: 14200, is_secured: true }
-  ];
+  const items = Array.isArray(rawArray) ? rawArray : [];
+  const complete = items.filter(c => c?.creditor_name && c?.current_balance !== undefined).length;
 
   return {
     document_type: 'CREDIT_REPORT',
     extracted_data: items.map((c, idx) => ({
       claim_id: `credit_${idx}`,
-      creditor_name: c.creditor_name || 'Unsecured Creditor',
-      current_balance: Number(c.current_balance || 0),
-      is_secured: Boolean(c.is_secured)
+      creditor_name: String(c?.creditor_name ?? ''),
+      current_balance: Number(c?.current_balance ?? 0),
+      is_secured: Boolean(c?.is_secured)
     })),
-    confidence_score: 0.95,
+    confidence_score: items.length ? complete / items.length : 0,
     validation_flags: [],
-    warnings: [],
+    warnings: items.length ? [] : ['No tradelines supplied.'],
     facts: [],
     source_filename: filename
   };

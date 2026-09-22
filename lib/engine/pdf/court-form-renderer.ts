@@ -16,13 +16,15 @@ import {
   mapForm122A1
 } from '../mappers';
 
+const usd = (n: number) => `$${Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
 export function renderCourtFormHtml(formId: string, data: MasterCaseData): string {
   const d1 = data.debtor_1;
   const d2 = data.debtor_2;
-  const debtorName = `${d1?.first_name?.value || 'Jane'} ${d1?.middle_name?.value || ''} ${d1?.last_name?.value || 'Doe'}`.trim();
-  const jointName = d2 ? `${d2.first_name?.value || ''} ${d2.middle_name?.value || ''} ${d2.last_name?.value || ''}`.trim() : 'None';
+  const debtorName = [d1?.first_name?.value, d1?.middle_name?.value, d1?.last_name?.value].filter(Boolean).join(' ') || '[debtor name not entered]';
+  const jointName = d2 ? [d2.first_name?.value, d2.middle_name?.value, d2.last_name?.value].filter(Boolean).join(' ') : 'None';
   const chapter = data.chapter || '7';
-  const caseId = data.case_id || '26-10892-EEB';
+  const caseId = data.case_id || 'Not assigned (not filed)';
   const courtName = 'UNITED STATES BANKRUPTCY COURT FOR THE DISTRICT OF COLORADO';
 
   const baseHeader = `
@@ -34,14 +36,14 @@ export function renderCourtFormHtml(formId: string, data: MasterCaseData): strin
           <div class="caption-debtor-box">
             <div><strong>${debtorName}</strong> (Debtor 1)</div>
             ${d2 ? `<div><strong>${jointName}</strong> (Debtor 2 / Joint Debtor)</div>` : ''}
-            <div class="caption-address">${d1?.street_address?.value || '100 Example Street'}, ${d1?.city?.value || 'Denver'}, ${d1?.state?.value || 'CO'} ${d1?.zip_code?.value || '80202'}</div>
+            <div class="caption-address">${d1?.street_address?.value || '[street]'}, ${d1?.city?.value || '[city]'}, ${d1?.state?.value || '[state]'} ${d1?.zip_code?.value || '[zip]'}</div>
           </div>
         </div>
         <div class="caption-right">
           <div><strong>Case No.:</strong> ${caseId}</div>
           <div><strong>Chapter:</strong> Chapter ${chapter} ${chapter === '11' ? '(Subchapter V Elected)' : ''}</div>
-          <div><strong>Judge:</strong> Hon. Elizabeth E. Brown</div>
-          <div><strong>SSOT Stamped:</strong> <span class="badge-tag">VERIFIED DRAFT</span></div>
+          <div><strong>Judge:</strong> Not assigned (not filed)</div>
+          <div><strong>Status:</strong> <span class="badge-tag" style="background:#b45309;">UNOFFICIAL DRAFT — NOT FOR FILING</span></div>
         </div>
       </div>
     </div>
@@ -60,10 +62,10 @@ export function renderCourtFormHtml(formId: string, data: MasterCaseData): strin
           <div class="form-section">
             <div class="section-title">Part 1: Identify Yourself</div>
             <div class="field-table">
-              <div class="tr"><div class="td-label">1. Debtor 1 Full Legal Name</div><div class="td-val">${f101.debtor_1_name}</div></div>
+              <div class="tr"><div class="td-label">1. Debtor 1 Full Legal Name</div><div class="td-val">${f101.debtor1_full_name || '[not entered]'}</div></div>
               <div class="tr"><div class="td-label">2. All other names used in past 8 years</div><div class="td-val">None reported</div></div>
-              <div class="tr"><div class="td-label">3. Restricted SSN (last 4 digits)</div><div class="td-val">***-**-${f101.debtor_1_ssn_last4 || '0000'}</div></div>
-              <div class="tr"><div class="td-label">4. Primary Residence Address</div><div class="td-val">${f101.debtor_1_street}, ${f101.debtor_1_city}, CO ${f101.debtor_1_zip}</div></div>
+              <div class="tr"><div class="td-label">3. Restricted SSN (last 4 digits)</div><div class="td-val">${f101.debtor1_ssn_last4 ? `***-**-${f101.debtor1_ssn_last4}` : '[not entered]'}</div></div>
+              <div class="tr"><div class="td-label">4. Primary Residence Address</div><div class="td-val">${f101.debtor1_street_address}, ${f101.debtor1_city}, ${f101.debtor1_state} ${f101.debtor1_zip_code}</div></div>
               <div class="tr"><div class="td-label">5. Joint Filing Status</div><div class="td-val">${f101.has_joint_debtor ? 'Joint Petition with Spouse under § 302' : 'Individual Debtor Only'}</div></div>
               <div class="tr"><div class="td-label">6. Chapter Requested</div><div class="td-val"><strong>Chapter ${chapter}</strong></div></div>
               <div class="tr"><div class="td-label">7. Nature of Debts</div><div class="td-val">Consumer / Primarily Personal, Family, or Household</div></div>
@@ -92,8 +94,8 @@ export function renderCourtFormHtml(formId: string, data: MasterCaseData): strin
           <div class="restricted-warning">⚠️ RESTRICTED ACCESS — Under Fed. R. Bankr. P. 9037, this document is filed under seal and excluded from public internet docket.</div>
           <div class="form-section">
             <div class="field-table">
-              <div class="tr"><div class="td-label">Debtor 1 Legal Name</div><div class="td-val">${f121.debtor1_name}</div></div>
-              <div class="tr"><div class="td-label">Full Social Security Number / ITIN</div><div class="td-val"><strong>${f121.debtor1_ssn_full}</strong> (9-Digit Restricted SSOT Verification)</div></div>
+              <div class="tr"><div class="td-label">Debtor 1 Legal Name</div><div class="td-val">${f121.debtor1_full_name}</div></div>
+              <div class="tr"><div class="td-label">Full Social Security Number / ITIN</div><div class="td-val"><strong>${f121.debtor1_ssn_full || '[not entered]'}</strong></div></div>
               ${f121.debtor2_ssn_full ? `<div class="tr"><div class="td-label">Joint Debtor 2 Full SSN</div><div class="td-val"><strong>${f121.debtor2_ssn_full}</strong></div></div>` : ''}
             </div>
           </div>
@@ -287,14 +289,13 @@ export function renderCourtFormHtml(formId: string, data: MasterCaseData): strin
           <table class="court-table">
             <thead><tr><th>Line Item</th><th>Monthly Amount</th></tr></thead>
             <tbody>
-              <tr><td>4. Rent or Home Mortgage</td><td>$1,850.00</td></tr>
-              <tr><td>5. Utilities (Electricity, Gas, Water, Trash)</td><td>$350.00</td></tr>
-              <tr><td>6. Food and Housekeeping Supplies</td><td>$750.00</td></tr>
-              <tr><td>7. Childcare and Education</td><td>$0.00</td></tr>
-              <tr><td>8. Clothing, Laundry, Dry Cleaning</td><td>$150.00</td></tr>
-              <tr><td>9. Medical and Dental Expenses</td><td>$180.00</td></tr>
-              <tr><td>10. Transportation and Gasoline</td><td>$420.00</td></tr>
-              <tr><td>15. Insurance (Auto, Home, Health)</td><td>$400.00</td></tr>
+              <tr><td>4. Rent or Home Mortgage</td><td>${usd(j.rental_or_home_ownership_expense)}</td></tr>
+              <tr><td>6. Utilities</td><td>${usd(j.utilities_total)}</td></tr>
+              <tr><td>7. Food and Housekeeping Supplies</td><td>${usd(j.food_housekeeping_supplies)}</td></tr>
+              <tr><td>8. Childcare and Children's Education</td><td>${usd(j.childcare_and_education)}</td></tr>
+              <tr><td>11. Medical and Dental Expenses</td><td>${usd(j.medical_and_dental)}</td></tr>
+              <tr><td>12. Transportation</td><td>${usd(j.transportation)}</td></tr>
+              <tr><td>15. Insurance</td><td>${usd(j.insurance)}</td></tr>
               <tr class="highlight-row"><td><strong>22. Total Monthly Expenses</strong></td><td><strong>$${j.total_monthly_expenses.toLocaleString()}</strong></td></tr>
             </tbody>
           </table>
@@ -303,10 +304,12 @@ export function renderCourtFormHtml(formId: string, data: MasterCaseData): strin
     }
 
     case 'form122a1': {
-      const cmi = data.means_test_122a?.gross_wages_past_6_months?.value ? (data.means_test_122a.gross_wages_past_6_months.value / 6) : 4850;
-      const annualized = cmi * 12;
-      const median = 78450;
-      const isAbove = annualized > median;
+      const m = mapForm122A1(data);
+      const verdict = !m.months_reported
+        ? '⚠️ CMI NOT ENTERED — No six-month income data in this draft; no means-test conclusion is drawn.'
+        : m.is_above_median
+          ? '⚠️ Annualized CMI exceeds the median figure configured in this app — Form 122A-2 would be required.'
+          : '✅ Annualized CMI is at or below the median figure configured in this app.';
       return `
         <div class="court-form-doc">
           ${baseHeader}
@@ -319,15 +322,15 @@ export function renderCourtFormHtml(formId: string, data: MasterCaseData): strin
             <table class="court-table">
               <thead><tr><th>Line</th><th>Description</th><th>Debtor 1</th><th>Debtor 2</th><th>Total</th></tr></thead>
               <tbody>
-                <tr><td>1</td><td>Gross wages, salary, tips, bonuses</td><td>$${cmi.toLocaleString()}</td><td>$0.00</td><td>$${cmi.toLocaleString()}</td></tr>
-                <tr class="highlight-row"><td>11</td><td><strong>Current Monthly Income (CMI)</strong></td><td>$${cmi.toLocaleString()}</td><td>$0.00</td><td><strong>$${cmi.toLocaleString()}</strong></td></tr>
-                <tr class="highlight-row"><td>12</td><td><strong>Annualized CMI (Line 11 × 12)</strong></td><td colspan="2"></td><td><strong>$${annualized.toLocaleString()}</strong></td></tr>
-                <tr><td>13</td><td>Applicable Colorado Median Income (1 person)</td><td colspan="2"></td><td><strong>$${median.toLocaleString()}</strong></td></tr>
+                <tr><td>2</td><td>Gross wages, salary, tips, bonuses (6-month average)</td><td>${usd(m.cmi_monthly)}</td><td>$0.00</td><td>${usd(m.cmi_monthly)}</td></tr>
+                <tr class="highlight-row"><td>11</td><td><strong>Current Monthly Income (CMI)</strong></td><td>${usd(m.cmi_monthly)}</td><td>$0.00</td><td><strong>${usd(m.cmi_monthly)}</strong></td></tr>
+                <tr class="highlight-row"><td>12b</td><td><strong>Annualized CMI (Line 11 × 12)</strong></td><td colspan="2"></td><td><strong>${usd(m.cmi_annualized)}</strong></td></tr>
+                <tr><td>13</td><td>Median family income, household of ${m.household_size} (app-configured figure — verify against current U.S. Trustee table)</td><td colspan="2"></td><td><strong>${usd(m.median_threshold)}</strong></td></tr>
               </tbody>
             </table>
           </div>
-          <div class="verdict-banner ${isAbove ? 'above' : 'below'}">
-            ${isAbove ? '⚠️ LINE 14b: ANNUALIZED INCOME EXCEEDS COLORADO MEDIAN — Complete Form 122A-2 Means Test' : '✅ LINE 14a: ANNUALIZED INCOME IS BELOW COLORADO MEDIAN — There is NO presumption of abuse under § 707(b)(2)'}
+          <div class="verdict-banner ${m.months_reported && m.is_above_median ? 'above' : 'below'}">
+            ${verdict}
           </div>
         </div>
       `;
@@ -342,7 +345,7 @@ export function renderCourtFormHtml(formId: string, data: MasterCaseData): strin
             <div class="form-subheading">Draft Bankruptcy Petition Schedule</div>
           </div>
           <div class="form-section">
-            <div class="info-note">Generated from Master Case Data SSOT. All field provenance verified by deterministic validation engine.</div>
+            <div class="info-note">A preview for this form is not implemented yet. No data has been rendered for it.</div>
           </div>
         </div>
       `;

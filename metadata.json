@@ -1,6 +1,7 @@
 {
   "name": "VoxelLex.AI Colorado",
-  "description": "Attorney-supervised Colorado Chapter 7, Chapter 11 (Subchapter V), and Chapter 13 petition preparation, interactive bankruptcy copilot with live voice conversation, document routing next steps, and outbound electronic filing & certified email dispatch manifest",
-  "requestFramePermissions": ["microphone"],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "description": "Attorney-supervised Colorado bankruptcy petition preparation prototype. Runs entirely in the browser: rule-based (keyword-matched) assistant, deterministic checks, watermarked draft PDFs, and a filing simulation. No AI model, no server, and nothing is filed or sent.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
 }

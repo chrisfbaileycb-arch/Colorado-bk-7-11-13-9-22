@@ -4,12 +4,6 @@ VoxelLex.AI Colorado is an attorney-supervised Colorado Chapter 7, Chapter 11 (S
 
 > **Important:** This project is not a law firm, filing service, substitute for counsel, or source of legal advice. Chapter 7 is the implemented prototype workflow. Chapter 11 and Chapter 13 are architectural plans only.
 
-## Live demonstration
-
-[Open the AppDeploy demonstration](https://lexpetition-ai-engine-8prkk7.v2.appdeploy.ai/)
-
-The public deployment is for synthetic demonstration data only. Its acknowledgment screen is not authentication and the deployment must not receive real client information.
-
 ## Current capabilities
 
 - Seventeen-step adaptive Chapter 7 intake interface
@@ -21,10 +15,12 @@ The public deployment is for synthetic demonstration data only. Its acknowledgme
 - Exemption-cap review and asset/debt reconciliation
 - Six-month current-monthly-income calculation
 - Net-cash-flow calculation
-- Structured tax-return, paystub, bank-statement, and credit-report extraction adapters
+- Structured-JSON field mappers for tax-return, paystub, bank-statement, and credit-report data (no OCR; PDFs and images are not read)
 - Hard-audit flags for unresolved discrepancies
-- Attorney override and declaration-gated signoff workflow
-- Browser-based draft PDF preview and generation
+- Attorney override and declaration-gated signoff workflow (browser-local; bar number is format-checked only)
+- Browser-based draft preview and watermarked draft PDFs (data sheets, not official court forms)
+- Rule-based, keyword-matched assistant and a scripted walkthrough (no AI model, no network calls)
+- Filing and email "outbox" flows that are **simulations only**
 - Synthetic fixtures and automated verification
 
 These capabilities describe implemented software paths, not independent confirmation that every form, statute, threshold, rule, or generated packet is legally current or filing-ready.
@@ -38,7 +34,11 @@ These capabilities describe implemented software paths, not independent confirma
 | Authentication and authorization | Not implemented in the public demo |
 | Real client data | Prohibited |
 | Attorney identity verification | Not implemented server-side |
-| CM/ECF filing | Not implemented |
+| CM/ECF filing | Not implemented (UI is a labeled simulation) |
+| OCR / AI extraction | Not implemented |
+| AI assistant | Not implemented (rule-based keyword matching) |
+| Official-form PDF stamping | Not implemented (official templates not bundled) |
+| Six-month CMI inputs in UI | Not implemented (engine is tested; UI inputs missing) |
 | Legal and form-currency certification | Required before production |
 | Security certification | Required before production |
 
@@ -65,12 +65,11 @@ Key directories:
 | `lib/engine/extraction/` | Structured document-extraction adapters |
 | `lib/engine/validators/` | Deterministic calculations and audit flags |
 | `lib/engine/mappers/` | Form-specific field mappings |
-| `lib/engine/pdf/` | Draft PDF stamping and continuation rendering |
+| `lib/engine/pdf/` | HTML preview renderer and watermarked draft PDF generator |
 | `lib/engine/review/` | Field overrides, review summaries, and signoff gate |
 | `lib/jurisdictions/` | Colorado jurisdiction configuration |
 | `forms/` | Form manifest and metadata |
 | `tests/` | Synthetic fixtures and automated tests |
-| `.github/workflows/` | Pull-request and main-branch CI |
 
 ## Data model and provenance
 
@@ -93,7 +92,7 @@ The intended flow is:
 6. Require supervising-attorney review.
 7. Generate a draft packet.
 
-See [the master data-model documentation](docs/data-model.md).
+The data model is defined in `lib/types/master-case.ts`.
 
 ## Requirements
 
@@ -110,16 +109,15 @@ bun run typecheck
 bun run build
 ```
 
-The CI workflow runs the same test, typecheck, and build gates for pull requests and pushes to `main`.
+There is no CI workflow in this repository yet (`.github/` is empty); run these commands locally.
 
-Current verified repository baseline:
+Current repository baseline:
 
-- 8 tests passing
-- 28 assertions passing
+- 29 tests across 8 files passing
 - TypeScript typecheck passing
 - production build passing
 
-Historical files may mention larger test totals from earlier development environments. Treat the current CI run as the authoritative repository baseline.
+Historical files previously cited "209 tests across 28 files"; that figure was not reproducible and has been corrected.
 
 ## Run the browser demonstration locally
 
@@ -184,24 +182,26 @@ The current suite covers:
 - attorney field overrides;
 - declaration rejection;
 - successful synthetic signoff;
-- form mapping and draft PDF pipeline integration.
+- form mapping and mapper/renderer key agreement;
+- intake-to-draft synchronization;
+- draft PDF generation (loadable, data-dependent, watermarked);
+- extraction honesty (no invented values, nothing auto-verified);
+- email dispatcher safety (no real court/government recipients);
+- exemption caps from the jurisdiction pack;
+- SHA-256 helper.
 
 Future coverage should add versioned golden-file PDF comparisons, every supported form edition, malformed extraction inputs, jurisdiction boundary cases, accessibility checks, and end-to-end server-side authorization tests.
 
 ## Deployment
 
-The public demonstration is deployed through AppDeploy:
+There is no public deployment. The app is licensed to law firms only and is not published.
 
-[https://lexpetition-ai-engine-8prkk7.v2.appdeploy.ai/](https://lexpetition-ai-engine-8prkk7.v2.appdeploy.ai/)
+Planned hosting is Cloudflare:
 
-Deployment verification currently covers:
+- **Marketing site:** static Cloudflare Pages site with descriptions and screenshots only. It must not ship the app bundle.
+- **App:** Cloudflare Pages behind Cloudflare Access, with per-firm access policies. Build command `bun run build`, output directory `dist`.
 
-- desktop demonstration entry;
-- mobile acknowledgment and step navigation;
-- rejection of attorney signoff without the required declaration;
-- absence of frontend, backend, and network errors during final QA.
-
-Deployment passing does not authorize real-data use.
+A deployment behind Access still does not authorize real client data until the production-readiness requirements below are met.
 
 ## Roadmap
 
@@ -234,8 +234,6 @@ Chapter 11 and Chapter 13 must remain disabled until their data models, calculat
 - [Security policy](SECURITY.md)
 - [Data handling and generated PDFs](docs/data-handling.md)
 - [Release checklist](docs/release-checklist.md)
-- [Master case data model](docs/data-model.md)
-- [Multi-chapter expansion architecture](docs/multi-chapter-expansion-architecture.md)
 - [Technical audit history](AUDIT_REPORT.md)
 - [Build status history](STATUS.md)
 - [State handoff history](STATE_HANDOFF.md)

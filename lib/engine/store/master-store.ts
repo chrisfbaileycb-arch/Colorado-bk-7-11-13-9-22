@@ -284,7 +284,7 @@ export class BankruptcyMasterStore {
     this.notify();
   }
 
-  public publishOfficialPetition(attorneyName: string, barNumber: string = 'CO-54321', firmName: string = 'Denver Bankruptcy Law Group') {
+  public publishOfficialPetition(attorneyName: string, barNumber: string, firmName: string) {
     const res = this.dualStateManager.publishToOfficialPetition(attorneyName, barNumber, firmName);
     this.notify();
     return res;

@@ -74,38 +74,38 @@ export interface FormEmailTransmissionPath {
 export const DEFAULT_SENDER_VESSELS: Record<SenderVesselType, SenderVesselProfile> = {
   GMAIL: {
     vesselType: 'GMAIL',
-    senderName: 'Attorney Christopher Bailey',
-    senderEmail: 'chrisfbailey.CB@gmail.com',
-    organizationOrFirm: 'Law Offices of Christopher Bailey',
+    senderName: '[Supervising Attorney]',
+    senderEmail: 'attorney@example.com',
+    organizationOrFirm: '[Law Firm]',
     senderRole: 'SUPERVISING_ATTORNEY',
-    barNumber: 'CO-54321',
+    barNumber: '',
     phone: '(303) 555-0199',
     requestReadReceipt: true,
     requestDeliveryConfirmation: true,
-    isVerified: true
+    isVerified: false
   },
   LAW_FIRM: {
     vesselType: 'LAW_FIRM',
     senderName: 'Mile High Bankruptcy Electronic Filing Desk',
-    senderEmail: 'filings@milehighbankruptcy.com',
-    organizationOrFirm: 'Mile High Bankruptcy Law Group, LLC',
+    senderEmail: 'filings@example.com',
+    organizationOrFirm: '[Law Firm]',
     senderRole: 'SUPERVISING_ATTORNEY',
-    barNumber: 'CO-54321',
-    phone: '(303) 861-2800',
+    barNumber: '',
+    phone: '(303) 555-0100',
     requestReadReceipt: true,
     requestDeliveryConfirmation: true,
-    isVerified: true
+    isVerified: false
   },
   PRIVATE_INDIVIDUAL: {
     vesselType: 'PRIVATE_INDIVIDUAL',
     senderName: 'Jane Elizabeth Doe (Debtor 1 Pro Se)',
-    senderEmail: 'jane.doe.debtor@gmail.com',
+    senderEmail: 'debtor@example.com',
     organizationOrFirm: 'Self-Represented Individual (Pro Se)',
     senderRole: 'PRO_SE_INDIVIDUAL',
     phone: '(303) 555-0142',
     requestReadReceipt: true,
     requestDeliveryConfirmation: true,
-    isVerified: true
+    isVerified: false
   }
 };
 
@@ -119,7 +119,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Creditor Address Matrix (.txt 1-column format)',
       statutoryBasis: '11 U.S.C. § 521(a)(1)(A) & L.B.R. 1007-1',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'ASCII_TXT'
     },
     {
@@ -127,7 +127,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Pre-Petition Credit Counseling Certificate (Approved Agency)',
       statutoryBasis: '11 U.S.C. § 109(h)(1)',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     },
     {
@@ -135,7 +135,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Official Form 121 (Statement of Social Security Number - Sealed)',
       statutoryBasis: 'Fed. R. Bankr. P. 1007(f)',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'ENCRYPTED_PDF'
     },
     {
@@ -143,7 +143,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Pay.gov Filing Fee Receipt ($338.00) or Form 103A Installment Application',
       statutoryBasis: '28 U.S.C. § 1930(a)(1)',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     }
   ],
@@ -153,7 +153,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Government Social Security Card Copy / W-2 Masked Verification',
       statutoryBasis: 'Local Rule Sealed Document Protocol',
       isRequired: false,
-      isAttached: true,
+      isAttached: false,
       format: 'ENCRYPTED_PDF'
     }
   ],
@@ -163,7 +163,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Recorded Real Property Warranty Deed & County Assessor Valuation Card',
       statutoryBasis: 'Schedule A/B Real Property Valuation Verification',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     },
     {
@@ -171,7 +171,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Bank Account Statements as of Petition Date (Checking/Savings)',
       statutoryBasis: '11 U.S.C. § 521(a)(1)(B)(iv)',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     },
     {
@@ -179,7 +179,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Vehicle Title & NADA / Kelley Blue Book Valuation Report',
       statutoryBasis: 'Schedule A/B Motor Vehicle Assessment',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     }
   ],
@@ -189,7 +189,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Colorado Homestead Exemption Calculation Sheet (C.R.S. § 38-41-201)',
       statutoryBasis: 'C.R.S. Title 38 Exemption Proof',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     },
     {
@@ -197,7 +197,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'VoxelLex.AI 2026 Colorado Statutory Exemption Audit Ledger',
       statutoryBasis: 'C.R.S. Title 13 Article 54 Compliance Proof',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     }
   ],
@@ -207,7 +207,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Current First & Second Mortgage Statements showing Payoff Balance',
       statutoryBasis: '11 U.S.C. § 506 Valuation of Secured Claim',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     },
     {
@@ -215,7 +215,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Vehicle Financing Note & Title Lienholder Verification',
       statutoryBasis: 'Secured Claim Perfected Lien Proof',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     }
   ],
@@ -225,7 +225,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Tri-Merge Credit Bureau Master Tradeline Extract',
       statutoryBasis: 'Fed. R. Bankr. P. 1007(a)(1)',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     },
     {
@@ -233,7 +233,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'IRS & Colorado Dept of Revenue Tax Assessment Notices (Priority Proof)',
       statutoryBasis: '11 U.S.C. § 507(a)(8) Priority Audit',
       isRequired: false,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     }
   ],
@@ -243,7 +243,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Signed Residential Apartment Lease Agreement',
       statutoryBasis: '11 U.S.C. § 365 Executory Contract Schedule',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     }
   ],
@@ -253,7 +253,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Co-Signed Promissory Note / Joint Loan Disclosure',
       statutoryBasis: '11 U.S.C. § 1301 / § 362 Codebtor Stay Roster',
       isRequired: false,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     }
   ],
@@ -263,7 +263,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: '60 Days of Sequential Payment Advices / Paystubs prior to filing',
       statutoryBasis: '11 U.S.C. § 521(a)(1)(B)(iv) MANDATORY FILING',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     },
     {
@@ -271,7 +271,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Prior Year Form W-2 / 1099 Wage & Tax Statements',
       statutoryBasis: 'Income Verification Protocol',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     }
   ],
@@ -281,7 +281,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Monthly Rent / Utility / Childcare Expense Receipts (30-day proof)',
       statutoryBasis: 'Schedule J Real Expense Substantiation',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     }
   ],
@@ -291,7 +291,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Separate Household Support / Lease Documentation for Dependents',
       statutoryBasis: 'Form 106J-2 Separate Budget Proof',
       isRequired: false,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     }
   ],
@@ -301,7 +301,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Most Recent 2 Years of Filed Federal & Colorado State Tax Returns',
       statutoryBasis: '11 U.S.C. § 521(e)(2)(A)(i) & SOFA Part 2',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     },
     {
@@ -309,7 +309,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Court Pleadings for Pending Lawsuits / Garnishments (Last 12 Mos)',
       statutoryBasis: 'SOFA Part 4 Line 9',
       isRequired: false,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     }
   ],
@@ -319,7 +319,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'Notice of Intent to Reaffirm / Retain / Surrender Collateral',
       statutoryBasis: '11 U.S.C. § 521(a)(2)(A)',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     }
   ],
@@ -329,7 +329,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: '6-Month Current Monthly Income (CMI) Calculation Worksheet',
       statutoryBasis: '11 U.S.C. § 707(b)(7) Safe Harbor Ledger',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     },
     {
@@ -337,7 +337,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'U.S. Trustee Program 2026 Colorado Median Family Income Reference Table',
       statutoryBasis: 'Census Bureau Median Income Benchmark',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     }
   ],
@@ -347,7 +347,7 @@ export const FORM_ACCOMPANYING_ATTACHMENTS: Record<string, RequiredAccompanyingD
       documentTitle: 'IRS National & Local Standards Deduction Substantiation Worksheet',
       statutoryBasis: '11 U.S.C. § 707(b)(2) Means Test Expense Proof',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     }
   ]
@@ -363,63 +363,59 @@ export function buildFormEmailTransmissionPath(
 ): FormEmailTransmissionPath {
   const routing = COLORADO_DOCUMENT_ROUTING_REGISTRY[formId] || COLORADO_DOCUMENT_ROUTING_REGISTRY.form101;
   const debtorName = `${masterData.debtor_1.first_name.value} ${masterData.debtor_1.last_name.value}`;
-  const caseId = masterData.case_id || '26-10892-EEB';
+  const caseId = masterData.case_id || 'NOT FILED';
   const chapter = masterData.chapter || '7';
 
-  // Determine Destination Email based on form category and sender role
-  let destinationEmail = 'cob_emergency_filings@cob.uscourts.gov';
-  let secondaryEmail = 'USTP.Region19.CO@usdoj.gov';
-  const ccEmails: string[] = ['USTP.Region19.CO@usdoj.gov'];
+  // Placeholder destinations on the reserved .invalid TLD so a compose link can never deliver
+  // to a real court or government mailbox. Bankruptcy petitions are filed through CM/ECF by the
+  // attorney, not emailed from this app.
+  let destinationEmail = 'clerk-intake@example.invalid';
+  let secondaryEmail = 'us-trustee@example.invalid';
+  const ccEmails: string[] = ['us-trustee@example.invalid'];
   const bccEmails: string[] = [senderVessel.senderEmail];
 
   if (senderVessel.senderRole === 'SUPERVISING_ATTORNEY' || senderVessel.senderRole === 'MANAGING_PARTNER') {
-    destinationEmail = 'ecf_intake_filer@cob.uscourts.gov';
-    ccEmails.push('docketing@milehighbankruptcy.com');
+    destinationEmail = 'attorney-filing-desk@example.invalid';
+    ccEmails.push('docketing@example.invalid');
   }
 
   if (formId === 'form121') {
-    destinationEmail = 'cob_sealed_intake@cob.uscourts.gov';
+    // Form 121 carries full SSNs and must never be emailed.
+    destinationEmail = 'do-not-email-form-121@example.invalid';
     ccEmails.length = 0; // Sealed document - do not CC external parties
   }
 
-  // Certified Subject Line with court case caption
-  const certifiedSubject = `[OFFICIAL E-FILING] In re: ${debtorName} | Chapter ${chapter} | ${routing.officialFormNumber} (${routing.title}) | Case #${caseId}`;
+  const certifiedSubject = `[DRAFT - NOT A COURT FILING] In re: ${debtorName} | Chapter ${chapter} | ${routing.officialFormNumber} (${routing.title})`;
 
-  // Deterministic Document Hash
-  const hashSeed = `${caseId}_${formId}_${debtorName}_${senderVessel.senderEmail}_${new Date().toDateString()}`;
-  let hashVal = 0;
-  for (let i = 0; i < hashSeed.length; i++) {
-    hashVal = (hashVal << 5) - hashVal + hashSeed.charCodeAt(i);
-    hashVal |= 0;
-  }
-  const hexHash = Math.abs(hashVal).toString(16).padStart(8, '0');
-  const documentHash = `SHA256:d8b2e${hexHash}71f49a0c3e${hexHash.split('').reverse().join('')}`;
-  const deliveryConfirmationToken = `DSN-COB-${caseId.replace(/[^0-9]/g, '')}-${formId.toUpperCase()}-${Math.floor(100000 + Math.random() * 900000)}`;
+  // No document is attached by this app, so there is nothing to hash. The old value was a
+  // 32-bit string hash dressed up as SHA-256; say so plainly instead.
+  const documentHash = 'NOT COMPUTED (no document attached)';
+  const deliveryConfirmationToken = `DRAFT-REF-${formId.toUpperCase()}-${Date.now().toString(36).toUpperCase()}`;
 
   const requiredAttachments = FORM_ACCOMPANYING_ATTACHMENTS[formId] || [
     {
       documentId: `att_${formId}_pdf`,
-      documentTitle: `Certified Official ${routing.officialFormNumber} PDF`,
+      documentTitle: `${routing.officialFormNumber} (official form PDF, prepared outside this app)`,
       statutoryBasis: 'Official Bankruptcy Form Requirement',
       isRequired: true,
-      isAttached: true,
+      isAttached: false,
       format: 'PDF'
     }
   ];
 
   // Digital Email Body Text
   const emailBodyText = `
-CLERK OF COURT / U.S. TRUSTEE REGION 19
-UNITED STATES BANKRUPTCY COURT FOR THE DISTRICT OF COLORADO
+DRAFT TRANSMISSION NOTE - NOT A COURT FILING
+Generated by a prototype. Not reviewed by any court. Do not send to a court or trustee.
 
-TRANSMISSION DISPATCH MANIFEST
+DRAFT MANIFEST
 =======================================================
 CASE CAPTION: In re ${debtorName}
 CASE NUMBER: ${caseId} (Chapter ${chapter} Voluntary Petition)
 OFFICIAL DOCUMENT: ${routing.officialFormNumber} — ${routing.title}
 DOCKET CLASSIFICATION: ${routing.publicDocketStatus}
-DOCUMENT SHA-256 HASH: ${documentHash}
-DELIVERY CONFIRMATION TRACKING: ${deliveryConfirmationToken}
+DOCUMENT HASH: ${documentHash}
+DRAFT REFERENCE (not a tracking number): ${deliveryConfirmationToken}
 =======================================================
 
 SENDER IDENTITY & VESSEL:
@@ -437,17 +433,11 @@ CC Recipients: ${ccEmails.join(', ') || 'None (Sealed Record)'}
 BCC Filer Copy: ${bccEmails.join(', ')}
 
 MANDATORY STATUTORY ACCOMPANYING ATTACHMENTS (${requiredAttachments.length} Documents):
-${requiredAttachments.map((att, idx) => `${idx + 1}. [${att.format}] ${att.documentTitle} — Required under: ${att.statutoryBasis} (${att.isAttached ? '✓ ATTACHED' : '⚠️ PENDING'})`).join('\n')}
+${requiredAttachments.map((att, idx) => `${idx + 1}. [${att.format}] ${att.documentTitle} — Required under: ${att.statutoryBasis} (${att.isAttached ? 'listed' : 'pending'})`).join('\n')}
 
-CERTIFICATION & APPROVAL DECLARATION:
-Under penalty of perjury and local rule L.B.R. 5005-4, the undersigned confirms that this document and all accompanying attachments have been reviewed, audited, and approved for official transmission to the Court.
+ATTACHMENTS: This app does not attach any files. The attachment list above is a checklist only.
 
-REQUESTED CONFIRMATION PROTOCOLS:
-[X] Return-Receipt-To: ${senderVessel.senderEmail}
-[X] Disposition-Notification-To: ${senderVessel.senderEmail}
-[X] Delivery Status Notification (DSN): SUCCESS, FAILURE, DELAY
-
-Generated via VoxelLex.AI Colorado Petition Engine
+Generated by a prototype petition-preparation tool. Draft only.
 `.trim();
 
   return {
@@ -510,7 +500,7 @@ export function renderPrintableEmailTransmissionSlipHtml(
   masterData: MasterCaseData
 ): string {
   const debtorName = `${masterData.debtor_1.first_name.value} ${masterData.debtor_1.last_name.value}`;
-  const caseId = masterData.case_id || '26-10892-EEB';
+  const caseId = masterData.case_id || 'NOT FILED';
   const chapter = masterData.chapter || '7';
 
   return `
@@ -518,7 +508,7 @@ export function renderPrintableEmailTransmissionSlipHtml(
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Digital Email Transmission Slip — ${path.officialFormNumber} — Case ${caseId}</title>
+  <title>DRAFT Transmission Note — ${path.officialFormNumber} — NOT A COURT DOCUMENT</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Times New Roman", serif; background: #fff; color: #0f172a; margin: 30px; line-height: 1.45; font-size: 13px; }
     .slip-container { border: 2px solid #0f172a; padding: 24px; border-radius: 6px; }
@@ -547,8 +537,8 @@ export function renderPrintableEmailTransmissionSlipHtml(
   <div class="slip-container">
     <div class="header-bar">
       <div>
-        <div class="court-title">UNITED STATES BANKRUPTCY COURT — DISTRICT OF COLORADO</div>
-        <div class="sub-court">DIGITAL OUTBOUND TRANSMISSION SLIP & EMAIL ROUTING AUDIT</div>
+        <div class="court-title">DRAFT TRANSMISSION NOTE — NOT A COURT DOCUMENT</div>
+        <div class="sub-court">Prototype output. Not issued by or filed with any court.</div>
       </div>
       <div style="text-align: right;">
         <span class="badge ${path.approvalStatus === 'APPROVED_FOR_TRANSMISSION' || path.approvalStatus === 'DELIVERY_CONFIRMED' ? 'badge-approved' : 'badge-pending'}">
@@ -594,7 +584,7 @@ export function renderPrintableEmailTransmissionSlipHtml(
 
     <!-- CERTIFIED SUBJECT & ATTACHMENTS -->
     <div class="panel" style="margin-bottom: 14px;">
-      <div class="panel-title">📑 Certified Subject & Accompanying Statutory Document Packet</div>
+      <div class="panel-title">📑 Subject & Attachment Checklist</div>
       <div style="font-weight: 700; margin-bottom: 8px; color: #0f172a;">
         Subject: <span style="font-weight: normal; color: #334155;">${path.certifiedSubject}</span>
       </div>
@@ -615,7 +605,7 @@ export function renderPrintableEmailTransmissionSlipHtml(
               <td>${att.documentTitle}</td>
               <td>${att.statutoryBasis}</td>
               <td style="color: ${att.isAttached ? '#15803d' : '#dc2626'}; font-weight: bold;">
-                ${att.isAttached ? '✓ VERIFIED' : '⚠️ REQUIRED'}
+                ${att.isAttached ? 'Listed (not attached by app)' : 'Required'}
               </td>
             </tr>
           `).join('')}

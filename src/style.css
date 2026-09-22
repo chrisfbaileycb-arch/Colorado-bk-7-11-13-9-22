@@ -3124,3 +3124,39 @@ iframe {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
+
+/* Persistent disclaimer banner (always visible, cannot be closed) */
+:root { --disclaimer-h: 34px; }
+.global-disclaimer-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--disclaimer-h);
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0 0.75rem;
+  background: #7c2d12;
+  color: #fff7ed;
+  font-size: 0.74rem;
+  line-height: 1.2;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border-bottom: 2px solid #fbbf24;
+}
+.global-disclaimer-banner span { overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 720px) {
+  .global-disclaimer-banner span { display: none; }
+}
+body { padding-top: var(--disclaimer-h); }
+#app.app-root-container { height: calc(100vh - var(--disclaimer-h)); }
+.landing-overlay,
+.modal-overlay {
+  top: var(--disclaimer-h);
+  height: calc(100vh - var(--disclaimer-h));
+}

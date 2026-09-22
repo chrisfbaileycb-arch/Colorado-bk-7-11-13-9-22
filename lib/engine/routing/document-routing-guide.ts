@@ -59,8 +59,8 @@ export const COLORADO_DOCUMENT_ROUTING_REGISTRY: Record<string, DocumentRoutingI
     },
     whereToEmail: {
       ecfGatewayUrl: 'https://ecf.cob.uscourts.gov (NextGen CM/ECF Login Required for Attorneys)',
-      proSeEmergencyEmail: 'cob_emergency_filings@cob.uscourts.gov (Pro Se Emergency Petitions Only)',
-      usTrusteeEmail: 'USTP.Region19.CO@usdoj.gov (Office of the U.S. Trustee - Region 19)',
+      proSeEmergencyEmail: 'Unverified - confirm current procedure with the Clerk\'s Office (cob.uscourts.gov); petitions are not filed by email from this app',
+      usTrusteeEmail: 'Unverified - confirm contact details with the U.S. Trustee Program, Region 19',
       trusteeDocumentPortal: 'Transmit case docket number to assigned Chapter 7 Panel Trustee upon receipt of NEF'
     },
     whereToDropOff: {
@@ -111,8 +111,8 @@ export const COLORADO_DOCUMENT_ROUTING_REGISTRY: Record<string, DocumentRoutingI
     },
     whereToEmail: {
       ecfGatewayUrl: 'CM/ECF Event: "Statement of Social Security Number (Form 121)" [Restricted Sealed Document Event - Auto-Masked from Public PACER]',
-      proSeEmergencyEmail: 'cob_emergency_filings@cob.uscourts.gov (Subject: CONFIDENTIAL FORM 121 - [Debtor Name])',
-      usTrusteeEmail: 'Provided automatically through restricted BAP/ECF court feed',
+      proSeEmergencyEmail: 'Unverified - confirm current procedure with the Clerk\'s Office (cob.uscourts.gov); petitions are not filed by email from this app',
+      usTrusteeEmail: 'Unverified - confirm contact details with the U.S. Trustee Program, Region 19',
       trusteeDocumentPortal: 'Do not email over unencrypted channels'
     },
     whereToDropOff: {
@@ -159,8 +159,8 @@ export const COLORADO_DOCUMENT_ROUTING_REGISTRY: Record<string, DocumentRoutingI
     },
     whereToEmail: {
       ecfGatewayUrl: 'CM/ECF Event: "Schedules A-J" (Included in Master Schedules Package)',
-      proSeEmergencyEmail: 'cob_emergency_filings@cob.uscourts.gov',
-      usTrusteeEmail: 'USTP.Region19.CO@usdoj.gov',
+      proSeEmergencyEmail: 'Unverified - confirm current procedure with the Clerk\'s Office (cob.uscourts.gov); petitions are not filed by email from this app',
+      usTrusteeEmail: 'Unverified - confirm contact details with the U.S. Trustee Program, Region 19',
       trusteeDocumentPortal: 'Send appraisals, vehicle titles, and bank statements to Trustee document portal 7 days prior to 341 meeting.'
     },
     whereToDropOff: {
@@ -208,8 +208,8 @@ export const COLORADO_DOCUMENT_ROUTING_REGISTRY: Record<string, DocumentRoutingI
     },
     whereToEmail: {
       ecfGatewayUrl: 'CM/ECF Schedules Module',
-      proSeEmergencyEmail: 'cob_emergency_filings@cob.uscourts.gov',
-      usTrusteeEmail: 'USTP.Region19.CO@usdoj.gov',
+      proSeEmergencyEmail: 'Unverified - confirm current procedure with the Clerk\'s Office (cob.uscourts.gov); petitions are not filed by email from this app',
+      usTrusteeEmail: 'Unverified - confirm contact details with the U.S. Trustee Program, Region 19',
       trusteeDocumentPortal: 'Provide retirement 401(k)/IRA plan qualifying trust documents to Trustee.'
     },
     whereToDropOff: {
@@ -255,8 +255,8 @@ export const COLORADO_DOCUMENT_ROUTING_REGISTRY: Record<string, DocumentRoutingI
     },
     whereToEmail: {
       ecfGatewayUrl: 'CM/ECF Schedules Module',
-      proSeEmergencyEmail: 'cob_emergency_filings@cob.uscourts.gov',
-      usTrusteeEmail: 'USTP.Region19.CO@usdoj.gov',
+      proSeEmergencyEmail: 'Unverified - confirm current procedure with the Clerk\'s Office (cob.uscourts.gov); petitions are not filed by email from this app',
+      usTrusteeEmail: 'Unverified - confirm contact details with the U.S. Trustee Program, Region 19',
       trusteeDocumentPortal: 'Provide mortgage statements and vehicle loan payoff statements to Trustee.'
     },
     whereToDropOff: {
@@ -302,8 +302,8 @@ export const COLORADO_DOCUMENT_ROUTING_REGISTRY: Record<string, DocumentRoutingI
     },
     whereToEmail: {
       ecfGatewayUrl: 'CM/ECF Schedules Module',
-      proSeEmergencyEmail: 'cob_emergency_filings@cob.uscourts.gov',
-      usTrusteeEmail: 'USTP.Region19.CO@usdoj.gov',
+      proSeEmergencyEmail: 'Unverified - confirm current procedure with the Clerk\'s Office (cob.uscourts.gov); petitions are not filed by email from this app',
+      usTrusteeEmail: 'Unverified - confirm contact details with the U.S. Trustee Program, Region 19',
       trusteeDocumentPortal: 'Provide priority tax assessments or child support enforcement records if applicable.'
     },
     whereToDropOff: {
@@ -349,8 +349,8 @@ export const COLORADO_DOCUMENT_ROUTING_REGISTRY: Record<string, DocumentRoutingI
     },
     whereToEmail: {
       ecfGatewayUrl: 'CM/ECF Schedules Module',
-      proSeEmergencyEmail: 'cob_emergency_filings@cob.uscourts.gov',
-      usTrusteeEmail: 'USTP.Region19.CO@usdoj.gov',
+      proSeEmergencyEmail: 'Unverified - confirm current procedure with the Clerk\'s Office (cob.uscourts.gov); petitions are not filed by email from this app',
+      usTrusteeEmail: 'Unverified - confirm contact details with the U.S. Trustee Program, Region 19',
       trusteeDocumentPortal: 'Provide copy of residential lease agreement to Trustee upon request.'
     },
     whereToDropOff: {
@@ -396,8 +396,8 @@ export const COLORADO_DOCUMENT_ROUTING_REGISTRY: Record<string, DocumentRoutingI
     },
     whereToEmail: {
       ecfGatewayUrl: 'CM/ECF Schedules Module',
-      proSeEmergencyEmail: 'cob_emergency_filings@cob.uscourts.gov',
-      usTrusteeEmail: 'USTP.Region19.CO@usdoj.gov',
+      proSeEmergencyEmail: 'Unverified - confirm current procedure with the Clerk\'s Office (cob.uscourts.gov); petitions are not filed by email from this app',
+      usTrusteeEmail: 'Unverified - confirm contact details with the U.S. Trustee Program, Region 19',
       trusteeDocumentPortal: 'N/A'
     },
     whereToDropOff: {
@@ -443,8 +443,8 @@ export const COLORADO_DOCUMENT_ROUTING_REGISTRY: Record<string, DocumentRoutingI
     },
     whereToEmail: {
       ecfGatewayUrl: 'CM/ECF Schedules Module',
-      proSeEmergencyEmail: 'cob_emergency_filings@cob.uscourts.gov',
-      usTrusteeEmail: 'USTP.Region19.CO@usdoj.gov',
+      proSeEmergencyEmail: 'Unverified - confirm current procedure with the Clerk\'s Office (cob.uscourts.gov); petitions are not filed by email from this app',
+      usTrusteeEmail: 'Unverified - confirm contact details with the U.S. Trustee Program, Region 19',
       trusteeDocumentPortal: 'Upload 60 days of pay stubs / employer wage advices to Trustee portal (11 U.S.C. § 521(a)(1)(B)(iv)).'
     },
     whereToDropOff: {
@@ -491,8 +491,8 @@ export const COLORADO_DOCUMENT_ROUTING_REGISTRY: Record<string, DocumentRoutingI
     },
     whereToEmail: {
       ecfGatewayUrl: 'CM/ECF Schedules Module',
-      proSeEmergencyEmail: 'cob_emergency_filings@cob.uscourts.gov',
-      usTrusteeEmail: 'USTP.Region19.CO@usdoj.gov',
+      proSeEmergencyEmail: 'Unverified - confirm current procedure with the Clerk\'s Office (cob.uscourts.gov); petitions are not filed by email from this app',
+      usTrusteeEmail: 'Unverified - confirm contact details with the U.S. Trustee Program, Region 19',
       trusteeDocumentPortal: 'Provide utility bills, lease, or childcare expense receipts to Trustee if requested.'
     },
     whereToDropOff: {
@@ -538,8 +538,8 @@ export const COLORADO_DOCUMENT_ROUTING_REGISTRY: Record<string, DocumentRoutingI
     },
     whereToEmail: {
       ecfGatewayUrl: 'CM/ECF Schedules Module',
-      proSeEmergencyEmail: 'cob_emergency_filings@cob.uscourts.gov',
-      usTrusteeEmail: 'USTP.Region19.CO@usdoj.gov',
+      proSeEmergencyEmail: 'Unverified - confirm current procedure with the Clerk\'s Office (cob.uscourts.gov); petitions are not filed by email from this app',
+      usTrusteeEmail: 'Unverified - confirm contact details with the U.S. Trustee Program, Region 19',
       trusteeDocumentPortal: 'Provide Debtor 2 lease agreement.'
     },
     whereToDropOff: {
@@ -583,8 +583,8 @@ export const COLORADO_DOCUMENT_ROUTING_REGISTRY: Record<string, DocumentRoutingI
     },
     whereToEmail: {
       ecfGatewayUrl: 'CM/ECF Statements Module',
-      proSeEmergencyEmail: 'cob_emergency_filings@cob.uscourts.gov',
-      usTrusteeEmail: 'USTP.Region19.CO@usdoj.gov',
+      proSeEmergencyEmail: 'Unverified - confirm current procedure with the Clerk\'s Office (cob.uscourts.gov); petitions are not filed by email from this app',
+      usTrusteeEmail: 'Unverified - confirm contact details with the U.S. Trustee Program, Region 19',
       trusteeDocumentPortal: 'Provide lawsuit pleadings, divorce decrees, and closing statements to Trustee.'
     },
     whereToDropOff: {
@@ -631,8 +631,8 @@ export const COLORADO_DOCUMENT_ROUTING_REGISTRY: Record<string, DocumentRoutingI
     },
     whereToEmail: {
       ecfGatewayUrl: 'CM/ECF Form 108 Module',
-      proSeEmergencyEmail: 'cob_emergency_filings@cob.uscourts.gov',
-      usTrusteeEmail: 'USTP.Region19.CO@usdoj.gov',
+      proSeEmergencyEmail: 'Unverified - confirm current procedure with the Clerk\'s Office (cob.uscourts.gov); petitions are not filed by email from this app',
+      usTrusteeEmail: 'Unverified - confirm contact details with the U.S. Trustee Program, Region 19',
       trusteeDocumentPortal: 'Serve copy directly on secured lenders and lessors'
     },
     whereToDropOff: {
@@ -678,8 +678,8 @@ export const COLORADO_DOCUMENT_ROUTING_REGISTRY: Record<string, DocumentRoutingI
     },
     whereToEmail: {
       ecfGatewayUrl: 'CM/ECF Means Test Module',
-      proSeEmergencyEmail: 'cob_emergency_filings@cob.uscourts.gov',
-      usTrusteeEmail: 'USTP.Region19.CO@usdoj.gov',
+      proSeEmergencyEmail: 'Unverified - confirm current procedure with the Clerk\'s Office (cob.uscourts.gov); petitions are not filed by email from this app',
+      usTrusteeEmail: 'Unverified - confirm contact details with the U.S. Trustee Program, Region 19',
       trusteeDocumentPortal: 'Provide 6-month historical wage records / bank deposits to Trustee.'
     },
     whereToDropOff: {
@@ -707,7 +707,7 @@ export const COLORADO_DOCUMENT_ROUTING_REGISTRY: Record<string, DocumentRoutingI
     wetSignatureRetentionRule: 'Retain signed Form 122A-1 for 3 years post-case closing.',
     nextStepsChecklist: [
       'Calculate precise 6 full calendar month lookback period (excluding month of filing).',
-      'Compare Annualized CMI against Colorado Median: Family of 1 ($76,450), Family of 2 ($98,200), Family of 3 ($114,800), Family of 4 ($136,500).',
+      'Compare Annualized CMI against the current U.S. Trustee Program median family income table for Colorado (the figures configured in this app are unverified).',
       'If Below Median: Check "Presumption of Abuse does NOT arise" — Form 122A-2 not required!',
       'If Above Median: Proceed to complete Form 122A-2 expense deductions.'
     ]
@@ -727,8 +727,8 @@ export const COLORADO_DOCUMENT_ROUTING_REGISTRY: Record<string, DocumentRoutingI
     },
     whereToEmail: {
       ecfGatewayUrl: 'CM/ECF Means Test Module',
-      proSeEmergencyEmail: 'cob_emergency_filings@cob.uscourts.gov',
-      usTrusteeEmail: 'USTP.Region19.CO@usdoj.gov',
+      proSeEmergencyEmail: 'Unverified - confirm current procedure with the Clerk\'s Office (cob.uscourts.gov); petitions are not filed by email from this app',
+      usTrusteeEmail: 'Unverified - confirm contact details with the U.S. Trustee Program, Region 19',
       trusteeDocumentPortal: 'Provide proof of IRS standard expense deductions, health insurance, and tax payments.'
     },
     whereToDropOff: {
@@ -783,7 +783,7 @@ export function renderPrintableRoutingSlipHtml(formKey: string, caseData?: any):
   const debtorName = caseData?.debtor_1?.first_name?.value 
     ? `${caseData.debtor_1.first_name.value} ${caseData.debtor_1.last_name?.value || ''}` 
     : 'Jane Marie Doe';
-  const caseNumber = caseData?.case_id || '26-10482-MER';
+  const caseNumber = caseData?.case_id || 'NOT FILED';
   const chapter = caseData?.chapter || '7';
 
   return `

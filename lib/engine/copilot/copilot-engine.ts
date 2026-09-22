@@ -28,7 +28,7 @@ export class BankruptcyCopilotEngine {
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       content: `👋 **Welcome to your Bankruptcy Filing Copilot!**
 
-I am your interactive procedural assistant, embedded directly alongside your petition workspace. I will guide you methodically through **one section at a time**, verify Colorado statutory exemptions (C.R.S. 2026), calculate Means Testing under 11 U.S.C. § 707(b), and run deterministic Hard Audits.
+I am a **rule-based assistant**: I match keywords in your message to pre-written guidance and run this app's deterministic checks. I am not an AI model, I make no network calls, and my answers are not legal advice. Statutory caps and median figures in this app are unverified and need attorney review.
 
 All suggested updates are safely staged in your **Draft Filing** working copy first so you and your supervising attorney can review them before publishing to the **Official Petition**.
 
@@ -351,7 +351,7 @@ All extracted items will receive strict provenance metadata (\`field_id\`, \`sou
       };
 
       suggestedActions = [
-        { label: '📑 Jump to AI Document Vault (Step 16)', actionPrompt: 'Go to Step 16 Document Extraction' },
+        { label: '📑 Jump to Source Documents (Step 15)', actionPrompt: 'Go to Step 16 Document Extraction' },
         { label: '💵 Extract Sample Paystub ($2,425 gross)', actionPrompt: 'Extract sample paystub into draft schedule I' },
         { label: '🏦 Extract Sample Bank Statement', actionPrompt: 'Extract sample bank statement into draft schedule A/B' }
       ];
@@ -364,8 +364,8 @@ All extracted items will receive strict provenance metadata (\`field_id\`, \`sou
 VoxelLex.AI enforces strict **Sender Vessel Recognition** and a **Mandatory Explicit Signoff Gate**:
 
 - **Sender Vessel Recognition**:
-  - **Personal Gmail**: Sent directly from authenticated user (\`chrisfbailey.CB@gmail.com\` / personal address).
-  - **Outbound Law Firm Vessel**: Transmitted via firm domain (\`filings@milehighbankruptcy.com\`) with attorney bar registration (\`CO-54321\`).
+  - **Personal email**: sender address entered by the user (not verified).
+  - **Law firm address**: firm address entered by the user (not verified).
   - **Private Pro Se Individual**: Routed directly from debtor's verified email to court emergency intake.
 - **Mandatory Approval Policy**: **Zero auto-sending**. Every document transmission report must be reviewed and signed off by the supervising attorney or filer before dispatch.
 - **Document Reconnection & Cryptographic Proof**: Each form is paired with its required statutory accompanying attachments (Paystubs, Tax Returns, Matrix, Form 121) and sealed with a verifiable SHA-256 hash.
