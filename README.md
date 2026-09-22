@@ -4,12 +4,6 @@ VoxelLex.AI Colorado is an attorney-supervised Colorado Chapter 7, Chapter 11 (S
 
 > **Important:** This project is not a law firm, filing service, substitute for counsel, or source of legal advice. Chapter 7 is the implemented prototype workflow. Chapter 11 and Chapter 13 are architectural plans only.
 
-## Live demonstration
-
-[Open the AppDeploy demonstration](https://lexpetition-ai-engine-8prkk7.v2.appdeploy.ai/)
-
-The public deployment is for synthetic demonstration data only. Its acknowledgment screen is not authentication and the deployment must not receive real client information.
-
 ## Current capabilities
 
 - Seventeen-step adaptive Chapter 7 intake interface
@@ -200,18 +194,14 @@ Future coverage should add versioned golden-file PDF comparisons, every supporte
 
 ## Deployment
 
-The public demonstration is deployed through AppDeploy:
+There is no public deployment. The app is licensed to law firms only and is not published.
 
-[https://lexpetition-ai-engine-8prkk7.v2.appdeploy.ai/](https://lexpetition-ai-engine-8prkk7.v2.appdeploy.ai/)
+Planned hosting is Cloudflare:
 
-Deployment verification currently covers:
+- **Marketing site:** static Cloudflare Pages site with descriptions and screenshots only. It must not ship the app bundle.
+- **App:** Cloudflare Pages behind Cloudflare Access, with per-firm access policies. Build command `bun run build`, output directory `dist`.
 
-- desktop demonstration entry;
-- mobile acknowledgment and step navigation;
-- rejection of attorney signoff without the required declaration;
-- absence of frontend, backend, and network errors during final QA.
-
-Deployment passing does not authorize real-data use.
+A deployment behind Access still does not authorize real client data until the production-readiness requirements below are met.
 
 ## Roadmap
 
