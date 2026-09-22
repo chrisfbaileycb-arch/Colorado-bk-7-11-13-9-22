@@ -1,0 +1,31 @@
+{
+  "name": "bk-agent-petition-engine",
+  "version": "1.0.0",
+  "description": "Attorney-supervised Colorado Chapter 7 petition preparation and deterministic validation prototype",
+  "main": "lib/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 3000",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 3000",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "bankruptcy",
+    "chapter7",
+    "validation-engine",
+    "pdf-stamping",
+    "colorado"
+  ],
+  "author": "BK Architect Agent",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "vite": "^8.2.1"
+  },
+  "dependencies": {
+    "pdf-lib": "^1.17.1"
+  }
+}

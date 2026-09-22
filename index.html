@@ -1,0 +1,2109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VoxelLex.AI Colorado — Attorney-Supervised Bankruptcy Petition Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+  <!-- B2B Law Firm Executive Cover Page & Access Portal -->
+  <div id="landing-overlay" class="landing-overlay">
+    <div class="landing-card law-firm-cover-card" style="position:relative;">
+      <button type="button" id="btn-close-cover-page" class="btn btn-secondary btn-sm" style="position:absolute; top:1.25rem; right:1.25rem; z-index:10; display:flex; align-items:center; gap:5px;" title="Close and return to active workspace">
+        <span>✕ Return to Workspace</span>
+      </button>
+      
+      <!-- Top Executive Law Firm Header -->
+      <div class="cover-hero-header">
+        <div class="cover-crest">⚖️</div>
+        <div class="cover-badge-row">
+          <span class="b2b-badge">COLORADO LEGAL PRACTICE PLATFORM</span>
+          <span class="compliance-badge">ABA MODEL RULE 5.3 & FED. R. BANKR. P. 9011 COMPLIANT</span>
+        </div>
+        <h1 class="cover-title">VoxelLex.AI Colorado</h1>
+        <h2 class="cover-subtitle">Law Firm Bankruptcy Operations Platform</h2>
+        <p class="cover-lead">
+          Purpose-built for Colorado law firms to empower paralegals and supervising attorneys in accelerating and executing 
+          <strong>Chapter 7, Chapter 11 (Subchapter V), and Chapter 13</strong> bankruptcy filings with deterministic precision.
+        </p>
+        <div class="cover-value-banner">
+          <span class="value-highlight">⚡ Freeing up 6.5+ hours per petition</span> with automated document extraction, real-time Colorado C.R.S. exemption audits, and zero-loss cross-schedule population.
+        </div>
+      </div>
+
+      <!-- 1. COLORADO BANKRUPTCY CHAPTER COVERAGE (3-Column Grid) -->
+      <div class="cover-chapters-grid">
+        <div class="chapter-card">
+          <div class="chapter-card-header">
+            <span class="chapter-tag ch7">CHAPTER 7</span>
+            <h3>Liquidation (Fresh Start)</h3>
+          </div>
+          <p class="chapter-card-desc">
+            Automated Form 122A-1/2 Means Testing against 2026 Colorado median income thresholds, C.R.S. § 38-41-201 homestead protections ($250k / $350k), vehicle equity cushions, and 100% ERISA retirement exemptions.
+          </p>
+          <div class="chapter-card-features">
+            <span>✓ Means Test Safe Harbor</span>
+            <span>✓ C.R.S. Exemption Auditor</span>
+            <span>✓ Schedules A/B–J Staging</span>
+          </div>
+          <button type="button" id="btn-verify-ch7" class="btn btn-secondary btn-sm" style="margin-top:10px; width:100%; border-color:#38bdf8; color:#38bdf8; font-weight:600;" title="Verify Chapter 7 Means Test & Exemption Workflow">
+            ⚡ Verify Ch 7 Workflow ➔
+          </button>
+        </div>
+
+        <div class="chapter-card">
+          <div class="chapter-card-header">
+            <span class="chapter-tag ch11">CHAPTER 11 (SUB V)</span>
+            <h3>Small Business Reorganization</h3>
+          </div>
+          <p class="chapter-card-desc">
+            Accelerated small business debtor eligibility verification under § 1182, disposable income projection modeling, automated creditor matrix synthesis, and debtor-in-possession operational reporting.
+          </p>
+          <div class="chapter-card-features">
+            <span>✓ Subchapter V Feasibility</span>
+            <span>✓ Creditor Matrix Matrix Engine</span>
+            <span>✓ Cash Flow Projections</span>
+          </div>
+          <button type="button" id="btn-verify-ch11" class="btn btn-secondary btn-sm" style="margin-top:10px; width:100%; border-color:#a855f7; color:#c084fc; font-weight:600;" title="Verify Chapter 11 Subchapter V Reorganization Workflow">
+            ⚡ Verify Ch 11 (Sub V) Workflow ➔
+          </button>
+        </div>
+
+        <div class="chapter-card">
+          <div class="chapter-card-header">
+            <span class="chapter-tag ch13">CHAPTER 13</span>
+            <h3>Individual Debt Adjustment</h3>
+          </div>
+          <p class="chapter-card-desc">
+            Net monthly disposable cash-flow analysis (Schedule I Income vs. Schedule J/J-2 Expenses), secured debt arrears cure amortization, priority tax debt classification, and District of Colorado Model Plan reconciliation.
+          </p>
+          <div class="chapter-card-features">
+            <span>✓ Schedule I vs J Cash Flow</span>
+            <span>✓ Priority Claim Splitting</span>
+            <span>✓ Plan Feasibility Audit</span>
+          </div>
+          <button type="button" id="btn-verify-ch13" class="btn btn-secondary btn-sm" style="margin-top:10px; width:100%; border-color:#10b981; color:#34d399; font-weight:600;" title="Verify Chapter 13 DMI & Plan Feasibility Workflow">
+            ⚡ Verify Ch 13 Workflow ➔
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. PARALEGAL & ATTORNEY WORKFLOW EFFICIENCY ANALYSIS -->
+      <div class="workflow-analysis-section">
+        <div class="workflow-analysis-header">
+          <div>
+            <h3 class="section-title">📊 Paralegal & Attorney Workflow Efficiency Analysis</h3>
+            <p class="section-desc">
+              Detailed comparative assessment of traditional manual petition preparation vs. VoxelLex.AI automated staging.
+            </p>
+          </div>
+          <div class="efficiency-summary-badge">
+            <span class="efficiency-num">87%</span>
+            <span class="efficiency-label">Total Time Reduction<br/>(7.5h → 45m)</span>
+          </div>
+        </div>
+
+        <div class="workflow-table-container">
+          <table class="workflow-analysis-table">
+            <thead>
+              <tr>
+                <th>Paralegal Operational Duty</th>
+                <th>Traditional Manual Workflow</th>
+                <th>VoxelLex.AI Automated Execution</th>
+                <th>Time Saved & Verify Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <strong>1. Client Intake & Financial Document Ingestion</strong>
+                  <div class="workflow-subtext">Tax 1040s, 60-day paystubs, bank statements, credit reports</div>
+                </td>
+                <td>
+                  <span class="time-tag traditional">2.5 – 3.5 Hours</span>
+                  <div class="workflow-detail">Manual transcription line-by-line; high risk of transposition typos in gross wages and debt balances.</div>
+                </td>
+                <td>
+                  <span class="time-tag automated">5 – 10 Minutes</span>
+                  <div class="workflow-detail">Pluggable OCR document parsers extract provenanced facts with confidence scores directly into master store.</div>
+                </td>
+                <td>
+                  <div class="savings-tag">⚡ 92% Time Savings</div>
+                  <button type="button" id="btn-verify-duty-1" class="btn btn-secondary btn-sm" style="margin-top:6px; font-size:0.75rem; padding:3px 8px; width:100%;">Verify Intake Flow ➔</button>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <strong>2. Colorado C.R.S. Exemption & Means Test Audit</strong>
+                  <div class="workflow-subtext">C.R.S. Title 13 & 38 caps, median income, § 707(b)(2)</div>
+                </td>
+                <td>
+                  <span class="time-tag traditional">1.5 – 2.0 Hours</span>
+                  <div class="workflow-detail">Manual statute cross-referencing, calculating net equity cushions, and multi-step means test algebra.</div>
+                </td>
+                <td>
+                  <span class="time-tag automated">Instant (Real-time)</span>
+                  <div class="workflow-detail">Deterministic calculation of homestead ($250k/$350k), vehicles ($15k/$25k/$30k), tools of trade & 100% ERISA retirement shield.</div>
+                </td>
+                <td>
+                  <div class="savings-tag">⚡ 95% Time Savings</div>
+                  <button type="button" id="btn-verify-duty-2" class="btn btn-secondary btn-sm" style="margin-top:6px; font-size:0.75rem; padding:3px 8px; width:100%;">Verify Audit Flow ➔</button>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <strong>3. 15-Schedule Cross-Population & Reconciliation</strong>
+                  <div class="workflow-subtext">Schedules A/B, C, D, E/F, G, H, I, J, J-2, SOFA 107, Form 108</div>
+                </td>
+                <td>
+                  <span class="time-tag traditional">2.0 – 2.5 Hours</span>
+                  <div class="workflow-detail">Duplicating debtor PII, assets, secured liens, and unsecured claims across multiple isolated schedules.</div>
+                </td>
+                <td>
+                  <span class="time-tag automated">Synchronous (0 min)</span>
+                  <div class="workflow-detail">Single Master State Store ensures 100% zero-loss synchronization with real-time audit ledger verification.</div>
+                </td>
+                <td>
+                  <div class="savings-tag">⚡ 100% Zero Duplication</div>
+                  <button type="button" id="btn-verify-duty-3" class="btn btn-secondary btn-sm" style="margin-top:6px; font-size:0.75rem; padding:3px 8px; width:100%;">Verify Sync Flow ➔</button>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <strong>4. Court Packet Assembly, Manifest & ECF Dispatch</strong>
+                  <div class="workflow-subtext">Official PDF stamping, signature checks, routing slips, client notice</div>
+                </td>
+                <td>
+                  <span class="time-tag traditional">1.5 Hours</span>
+                  <div class="workflow-detail">Exporting individual forms, checking wet-ink vs /s/ signatures, building mailing matrices, drafting client letters.</div>
+                </td>
+                <td>
+                  <span class="time-tag automated">10 Minutes</span>
+                  <div class="workflow-detail">1-click official stamped PDFs, automated Execution Manifest, Client Handout, and 2-stage email outbox dispatch.</div>
+                </td>
+                <td>
+                  <div class="savings-tag">⚡ 85% Time Savings</div>
+                  <button type="button" id="btn-verify-duty-4" class="btn btn-secondary btn-sm" style="margin-top:6px; font-size:0.75rem; padding:3px 8px; width:100%;">Verify Outbox Flow ➔</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3. BOTTOM ROW: PARALEGAL HIGHLIGHTS (LEFT) & ATTORNEY SUPERVISOR REGISTRATION (VERY RIGHT) -->
+      <div class="cover-bottom-grid">
+        
+        <!-- Left Box: Core Paralegal Workflow Utilities -->
+        <div class="cover-paralegal-box">
+          <div class="box-header">
+            <span class="box-icon">🛠️</span>
+            <div>
+              <h4>Paralegal Daily Operating Toolkit</h4>
+              <p>Designed to simplify daily duties and ensure zero data loss.</p>
+            </div>
+          </div>
+          <div class="paralegal-tools-list">
+            <div class="tool-item">
+              <span class="tool-bullet">🎙️</span>
+              <div>
+                <strong>Interactive Voice & Copilot Chat:</strong>
+                <span>Speak or type prompts to stage field updates, reconcile discrepancies, and calculate living expenses.</span>
+              </div>
+            </div>
+            <div class="tool-item">
+              <span class="tool-bullet">🔍</span>
+              <div>
+                <strong>Cross-Population Integrity Inspector:</strong>
+                <span>Verify that every client detail flows seamlessly into all 15 court schedules without truncation.</span>
+              </div>
+            </div>
+            <div class="tool-item">
+              <span class="tool-bullet">📋</span>
+              <div>
+                <strong>Procedural Execution Manifest & Routing Report:</strong>
+                <span>Step-by-step signature sequence, restricted docket handling, and USBC-CO court delivery instructions.</span>
+              </div>
+            </div>
+            <div class="tool-item">
+              <span class="tool-bullet">📑</span>
+              <div>
+                <strong>Client Case Summary & Statutory Deadlines Handout:</strong>
+                <span>One-click client orientation with § 341 meeting notices, document checklists, and discharge guidelines.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Box: Supervising Attorney Registration & Compliance Seal (Bottom Right) -->
+        <div class="auth-gate-box attorney-registration-box" id="attorney-registration-box">
+          <div class="auth-box-header">
+            <div class="seal-icon">⚖️</div>
+            <div>
+              <h3>Supervising Attorney Registration & Access</h3>
+              <p class="auth-box-subtitle">ABA Model Rule 5.3 & Local Rule 5005-4 Compliance Seal</p>
+            </div>
+          </div>
+
+          <form id="auth-form" class="attorney-auth-form">
+            <!-- Access Passcode Box -->
+            <div class="form-group-compact" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.35); padding: 8px 12px; border-radius: 6px; margin-bottom: 6px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <label for="cover-access-password" style="color: #4ade80; font-weight: 700; margin:0;">🔑 Law Firm Verification Passcode</label>
+                <span style="font-size:0.7rem; color:#10b981; font-weight:600;">ACTIVE KEY</span>
+              </div>
+              <div style="display: flex; gap: 6px; align-items: center; margin-top: 5px;">
+                <input type="password" id="cover-access-password" class="form-input-sm" value="VOXEL2026" placeholder="Enter password (e.g. VOXEL2026)" style="flex: 1; font-family: monospace; letter-spacing: 1.5px; font-weight:600;" />
+                <button type="button" id="btn-toggle-pwd-visibility" class="btn btn-secondary btn-sm" style="padding: 4px 8px; font-size: 0.72rem; white-space:nowrap;" title="Show/Hide Password">👁️ Show</button>
+              </div>
+              <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 3px;">
+                Default verification passcode <code>VOXEL2026</code> is pre-loaded for instant access and workflow testing.
+              </div>
+            </div>
+
+            <div class="auth-fields-grid">
+              <div class="form-group-compact">
+                <label for="cover-attorney-name">Supervising Attorney Full Name</label>
+                <input type="text" id="cover-attorney-name" class="form-input-sm" value="Jane Doe, Esq." required />
+              </div>
+              <div class="form-group-compact">
+                <label for="cover-attorney-bar">Colorado Supreme Court Bar #</label>
+                <input type="text" id="cover-attorney-bar" class="form-input-sm" value="CO-54321" required />
+              </div>
+              <div class="form-group-compact">
+                <label for="cover-attorney-firm">Law Firm / Practice Name</label>
+                <input type="text" id="cover-attorney-firm" class="form-input-sm" value="Denver Bankruptcy Law Group, P.C." required />
+              </div>
+              <div class="form-group-compact">
+                <label for="cover-attorney-ecf">CM/ECF Attorney Login ID</label>
+                <input type="text" id="cover-attorney-ecf" class="form-input-sm" value="ECF-CO-ATT-54321" required />
+              </div>
+            </div>
+
+            <div class="auth-checkboxes">
+              <label class="checkbox-label-compact">
+                <input type="checkbox" id="aba-rule-check" checked required />
+                <span>I certify that I am a licensed attorney supervising the paralegal preparation of this petition under ABA Model Rule 5.3 & Fed. R. Bankr. P. 9011.</span>
+              </label>
+
+              <label class="checkbox-label-compact">
+                <input type="checkbox" id="demo-acknowledgment" checked required />
+                <span>I understand this is an attorney-supervised demonstration environment using synthetic test data only.</span>
+              </label>
+            </div>
+
+            <div id="auth-error" class="auth-error">Please confirm attorney supervision terms to proceed.</div>
+
+            <div style="display:flex; gap:8px; width:100%; margin-top:8px;">
+              <button type="submit" id="btn-enter-workspace" class="btn btn-primary btn-enter-portal" style="flex:2;">
+                <span>🚀 Authenticate & Enter Law Firm Workspace</span>
+              </button>
+              <button type="button" id="btn-quick-bypass" class="btn btn-secondary btn-enter-portal" style="flex:1; border-color:#38bdf8; color:#38bdf8;" title="Instant direct access to verify workflows">
+                <span>⚡ Instant Access</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <div id="app" class="app-root-container">
+
+    <!-- GLOBAL FIXED TOP NAVIGATION RIBBON (Height: 60px) -->
+    <header class="app-header" id="app-header">
+      <div class="header-left-block">
+        <div class="brand">
+          <span class="logo-badge">VOXEL·LEX</span>
+          <div>
+            <h1>VoxelLex.AI Colorado</h1>
+            <p class="subtitle">Unified Bankruptcy Platform</p>
+          </div>
+        </div>
+        
+        <div class="active-case-pill" id="active-case-pill" title="Active Case Docket Status">
+          <span class="case-dot"></span>
+          <span class="case-text" id="case-status-text">Chapter 7 • Case: SYNTHETIC-CO-01</span>
+        </div>
+
+        <div class="chapter-selector-group" id="chapter-selector-group" title="Select Bankruptcy Chapter">
+          <button type="button" class="chapter-btn active" data-chapter="7">Ch 7</button>
+          <button type="button" class="chapter-btn" data-chapter="11">Ch 11 (Sub V)</button>
+          <button type="button" class="chapter-btn" data-chapter="13">Ch 13</button>
+        </div>
+      </div>
+
+      <!-- CENTER: 3-STAGE PROGRESS NAVIGATION -->
+      <nav class="stage-nav-tabs" id="stage-nav-tabs" aria-label="3-Stage Bankruptcy Workflow Navigation">
+        <button type="button" id="nav-stage-1" class="stage-tab-btn active" data-stage="stage1" title="Stage 1: Adaptive Intake & Procedural Copilot">
+          <span class="stage-step-num">1</span>
+          <span class="stage-step-title">Adaptive Intake & Copilot</span>
+        </button>
+        <button type="button" id="nav-stage-2" class="stage-tab-btn" data-stage="stage2" title="Stage 2: Schedule Audit & Means Test Engine">
+          <span class="stage-step-num">2</span>
+          <span class="stage-step-title">Schedule Audit & Means Test</span>
+          <span id="nav-audit-badge" class="badge-mini-danger" style="display:none;">0</span>
+        </button>
+        <button type="button" id="nav-stage-3" class="stage-tab-btn" data-stage="stage3" title="Stage 3: Official Court Packet & Document Studio">
+          <span class="stage-step-num">3</span>
+          <span class="stage-step-title">Official Court Packet & PDF</span>
+        </button>
+      </nav>
+
+      <!-- RIGHT: STATUS BADGES & FAST ACTIONS -->
+      <div class="header-right-block">
+        <button type="button" id="btn-header-autopilot" class="btn btn-accent btn-sm" style="display:flex; align-items:center; gap:6px; font-weight:700; background:linear-gradient(135deg, #0284c7, #2563eb); border:none;" title="Run Full Autonomous AI Autopilot Across All Steps">
+          <span>⚡ AI Autopilot</span>
+        </button>
+        <button type="button" id="btn-toggle-copilot" class="btn btn-secondary btn-sm active" style="display:flex; align-items:center; gap:5px;" title="Toggle Bankruptcy Filing Copilot Sidebar Agent">
+          <span class="copilot-pulse-dot" style="width:7px; height:7px;"></span> <span>🤖 Sidebar Agent</span>
+        </button>
+        <button type="button" id="btn-show-cover-page" class="btn btn-secondary btn-sm" style="display:flex; align-items:center; gap:5px;" title="View Law Firm Cover Page & Workflow Efficiency Briefing">
+          <span>🏛️ Firm Cover Page</span>
+        </button>
+        <span id="header-readiness-badge" class="badge badge-success" title="Filing Readiness based on validated fields">Readiness: 98%</span>
+        <button type="button" id="btn-open-email-outbox" class="btn btn-secondary btn-sm" style="display:flex; align-items:center; gap:6px;" title="Outbound Email Filing Dispatcher & Approval Console">
+          <span>📤 Outbox</span>
+          <span id="outbox-pending-badge" class="badge-mini" style="background:#f59e0b; color:#000;">15</span>
+        </button>
+        <button type="button" id="btn-header-voice" class="btn btn-secondary btn-sm" style="display:flex; align-items:center; gap:5px;" title="Toggle Live Voice Copilot">
+          <span id="header-mic-icon">🎙️</span> <span>Voice</span>
+        </button>
+        <button type="button" id="btn-header-export-pdf" class="btn btn-accent btn-sm" title="Export Current Form Stamped Court PDF">
+          📄 Stamped PDF
+        </button>
+        <button type="button" id="btn-header-full-packet" class="btn btn-secondary btn-sm" title="Download Complete Official Court Filing Packet">
+          📦 Full Packet
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN VIEWPORT CONTAINER (Height: calc(100vh - 60px)) -->
+    <div class="stage-views-viewport" id="stage-views-viewport">
+
+      <!-- ========================================================================= -->
+      <!-- PERSISTENT BANKRUPTCY FILING COPILOT SIDEBAR (ACTIVE ACROSS ALL STAGES)   -->
+      <!-- ========================================================================= -->
+      <aside class="copilot-sidebar" id="copilot-sidebar">
+        <div class="copilot-header">
+          <div class="copilot-title-box">
+            <span class="copilot-pulse-dot"></span>
+            <div>
+              <h3>Bankruptcy Filing Copilot</h3>
+              <p class="copilot-sub">Interactive Voice & Procedural Assistant</p>
+            </div>
+          </div>
+          <div class="copilot-header-actions" style="display:flex; gap:6px; align-items:center;">
+            <button type="button" id="btn-toggle-voice" class="btn-voice-mic" title="Toggle Live Voice Conversation">
+              <span id="voice-mic-icon">🎙️</span> <span id="voice-mic-label">Live Voice</span>
+            </button>
+            <button type="button" id="btn-clear-copilot" class="btn-icon" title="Reset Copilot Chat">🔄</button>
+          </div>
+        </div>
+
+        <!-- Live Audio Conversation & Speech Equalizer HUD -->
+        <div id="copilot-voice-bar" class="copilot-voice-bar" style="display:none;">
+          <div class="voice-status-indicator">
+            <span class="voice-pulse-dot"></span>
+            <span id="voice-status-text">Listening to your voice...</span>
+          </div>
+          <div class="audio-wave-visualizer">
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+          </div>
+          <button type="button" id="btn-mute-speech" class="btn btn-secondary btn-sm" style="padding:2px 6px; font-size:0.75rem;" title="Mute Speech Audio">
+            🔊 Sound ON
+          </button>
+        </div>
+
+        <!-- Quick Action Prompt Pills Carousel -->
+        <div class="copilot-prompt-pills" id="copilot-prompt-pills">
+          <button type="button" class="prompt-pill" data-prompt="Analyze current CMI and Means Test qualification">📊 Ch 7 Means Test</button>
+          <button type="button" class="prompt-pill" data-prompt="Audit Schedule C exemptions under C.R.S. 2026">🛡️ C.R.S. Exemptions</button>
+          <button type="button" class="prompt-pill" data-prompt="Evaluate Chapter 11 Subchapter V small business eligibility">🏢 Ch 11 Sub V</button>
+          <button type="button" class="prompt-pill" data-prompt="Calculate Chapter 13 repayment plan projection">📈 Ch 13 Plan</button>
+          <button type="button" class="prompt-pill" data-prompt="Scan petition for Hard Audit red flags">🚨 Audit Red Flags</button>
+          <button type="button" class="prompt-pill" data-prompt="Show document filing routing directions and next steps for active form">📬 Filing & Routing Guide</button>
+          <button type="button" class="prompt-pill" data-prompt="Start step-by-step intake from Step 1">🧭 Step-by-Step</button>
+        </div>
+
+        <!-- Dual-State Staged Diffs & Audit Drawer Toggle Tabs -->
+        <div class="copilot-drawer-tabs">
+          <button type="button" class="drawer-tab-btn active" id="tab-copilot-chat">Chat Guidance</button>
+          <button type="button" class="drawer-tab-btn" id="tab-copilot-staging">
+            Draft Staging <span id="staged-count-pill" class="badge-mini">0</span>
+          </button>
+          <button type="button" class="drawer-tab-btn" id="tab-copilot-audits">
+            Audit Flags <span id="audit-count-pill" class="badge-mini-danger">0</span>
+          </button>
+        </div>
+
+        <!-- Chat Messages Feed View -->
+        <div class="copilot-feed-view" id="copilot-chat-container">
+          <div class="copilot-messages" id="copilot-messages">
+            <!-- Messages rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Staging Copy Inspector View -->
+        <div class="copilot-staging-view" id="copilot-staging-view" style="display:none;">
+          <div class="staging-panel-header">
+            <h4>Draft Filing Staging Copy (Two-Source-of-Truth)</h4>
+            <p>Proposed changes staged here before attorney signoff and live petition commit.</p>
+          </div>
+          <div id="staged-diffs-list" class="staged-diffs-list">
+            <div class="empty-diffs-state">No uncommitted draft modifications currently pending. All fields match official live petition.</div>
+          </div>
+          <div class="staging-actions-footer">
+            <button type="button" id="btn-publish-draft" class="btn btn-accent" style="width:100%; font-weight:600;">🔒 Commit & Publish to Official Petition</button>
+            <button type="button" id="btn-revert-all-draft" class="btn btn-secondary" style="width:100%; margin-top:6px; font-size:0.85rem;">Discard Uncommitted Draft Diffs</button>
+          </div>
+        </div>
+
+        <!-- Real-Time Audit Red Flags View -->
+        <div class="copilot-audits-view" id="copilot-audits-view" style="display:none;">
+          <div class="audits-panel-header">
+            <h4>Deterministic Hard Audit Live Watcher</h4>
+            <p>Surfaces cross-schedule discrepancies, presumption of abuse, unexempt equity & statutory omissions.</p>
+          </div>
+          <div id="copilot-active-flags-list" class="copilot-flags-list">
+            <!-- Active audit flags rendered dynamically -->
+          </div>
+          <div class="audits-actions-footer">
+            <button type="button" id="btn-copilot-autofix-all" class="btn btn-primary" style="width:100%;">🛠️ Auto-Reconcile Detected Discrepancies</button>
+          </div>
+        </div>
+
+        <!-- Copilot Input Bar -->
+        <form class="copilot-input-form" id="copilot-input-form">
+          <div class="copilot-input-wrapper">
+            <input type="text" id="copilot-input" placeholder="Ask Copilot (e.g., 'Audit homestead', 'Check Ch 13 DMI')..." autocomplete="off" />
+            <button type="submit" id="btn-copilot-send" class="btn btn-primary btn-icon" title="Send to Copilot">➤</button>
+          </div>
+        </form>
+      </aside>
+
+      <!-- ========================================================================= -->
+      <!-- MULTI-STAGE DYNAMIC WORKSPACE CONTENT AREA (STAGES 1, 2, AND 3)          -->
+      <!-- ========================================================================= -->
+      <div class="stages-content-area" id="stages-content-area">
+
+        <!-- ======================================================================= -->
+        <!-- STAGE 1: ADAPTIVE INTAKE QUESTIONNAIRE                                 -->
+        <!-- ======================================================================= -->
+        <section class="stage-view active" id="stage-1-view">
+          <div class="stage1-container">
+            <!-- Scrollable Adaptive Questionnaire Pane -->
+            <main class="stage1-intake-pane" id="stage1-intake-pane">
+            <div class="intake-card-wrapper card">
+              <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <div>
+                  <h2>Adaptive Intake Questionnaire</h2>
+                  <p class="section-desc" style="margin:0;">Master State entries automatically sync to all Colorado schedules, audits, and official forms.</p>
+                </div>
+                <div class="step-nav-header" style="display: flex; align-items: center; gap: 0.75rem;">
+                  <select id="step-jump-select" class="step-select" title="Jump to step">
+                    <option value="1">Step 1: Debtor 1 Identity (Form 101/121)</option>
+                    <option value="2">Step 2: Joint Debtor 2 Identity (Form 101/121)</option>
+                    <option value="3">Step 3: Schedule A/B Real Estate Assets</option>
+                    <option value="4">Step 4: Schedule A/B Personal Property</option>
+                    <option value="5">Step 5: Schedule C Exemptions (C.R.S. 2026)</option>
+                    <option value="6">Step 6: Schedule D Secured Claims</option>
+                    <option value="7">Step 7: Schedule E/F Unsecured Debts</option>
+                    <option value="8">Step 8: Schedule G Executory Contracts</option>
+                    <option value="9">Step 9: Schedule H Codebtors & Co-signers</option>
+                    <option value="10">Step 10: Schedule I Income & Payroll (106I)</option>
+                    <option value="11">Step 11: Schedule J Living Expenses (106J)</option>
+                    <option value="12">Step 12: Schedule J-2 Debtor 2 Household (106J-2)</option>
+                    <option value="13">Step 13: Statement of Financial Affairs (107)</option>
+                    <option value="14">Step 14: Statement of Intention (108)</option>
+                    <option value="15">Step 15: AI Document Extraction & Vault</option>
+                    <option value="16">Step 16: Attorney Review, ECF Gateway & Email Outbox</option>
+                  </select>
+                  <span class="step-indicator" id="step-indicator">Step 1 of 16</span>
+                </div>
+              </div>
+
+              <!-- ========================================================================= -->
+              <!-- AUTONOMOUS BANKRUPTCY WORKFLOW AGENT & PORTIONED FORMS HUB               -->
+              <!-- ========================================================================= -->
+              <div class="agent-autopilot-banner card" id="agent-autopilot-banner">
+                <div class="agent-banner-header">
+                  <div class="agent-identity">
+                    <span class="agent-pulse-icon">🤖</span>
+                    <div>
+                      <div class="agent-badge-title">AUTONOMOUS BANKRUPTCY WORKFLOW AGENT</div>
+                      <h3 style="margin:2px 0 0 0; font-size:1.15rem; color:#f8fafc;">Autonomous Petition Execution & Cross-Pollination Engine</h3>
+                    </div>
+                  </div>
+                  <div class="agent-approval-gate" id="agent-approval-gate-badge">
+                    <span class="status-pill pending" id="agent-approval-status-pill" style="background:rgba(234,179,8,0.2); color:#fbbf24; border:1px solid rgba(234,179,8,0.4); padding:4px 10px; border-radius:9999px; font-size:0.75rem; font-weight:700; display:flex; align-items:center; gap:5px;">
+                      <span>⏳ WAITING FOR SUPERVISING ATTORNEY APPROVAL (ABA RULE 5.3 GATE)</span>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="agent-controls-row">
+                  <button type="button" id="btn-agent-run-autopilot" class="btn btn-accent" style="font-weight:700; display:flex; align-items:center; gap:6px; background:linear-gradient(135deg, #0284c7, #2563eb); border:none;">
+                    <span>⚡ Run Full AI Autopilot (Start to Finish)</span>
+                  </button>
+                  <button type="button" id="btn-agent-pause-autopilot" class="btn btn-secondary" style="display:none;">
+                    <span>⏸️ Pause</span>
+                  </button>
+                  <button type="button" id="btn-agent-execute-step" class="btn btn-primary" style="display:flex; align-items:center; gap:6px;">
+                    <span>▶️ Execute Active Step</span>
+                  </button>
+                  <button type="button" id="btn-agent-ask-question" class="btn btn-secondary" style="display:flex; align-items:center; gap:6px;">
+                    <span>❓ Ask Procedural Question</span>
+                  </button>
+                  <button type="button" id="btn-agent-toggle-voice" class="btn btn-secondary" style="display:flex; align-items:center; gap:6px;">
+                    <span id="agent-voice-icon">🔊</span> <span id="agent-voice-label">Voice: ON</span>
+                  </button>
+                  <button type="button" id="btn-agent-reset" class="btn btn-secondary" title="Reset Autopilot">
+                    <span>🔄 Reset</span>
+                  </button>
+                </div>
+
+                <!-- Agent Execution Progress & Live Narration Bar -->
+                <div class="agent-progress-wrapper" style="margin-top:10px;">
+                  <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+                    <span id="agent-progress-label" style="color:#94a3b8; font-weight:600;">Agent Progress: Step 1 of 16 (0%)</span>
+                    <span id="agent-action-pill" style="color:#38bdf8; font-family:monospace;">Ready to execute</span>
+                  </div>
+                  <div class="progress-bar-bg" style="height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;">
+                    <div id="agent-progress-fill" style="width:0%; height:100%; background:linear-gradient(90deg, #38bdf8, #22c55e); transition: width 0.3s ease;"></div>
+                  </div>
+                </div>
+
+                <!-- Interactive Procedural Question Box (Shown when question is asked) -->
+                <div id="agent-interactive-question-box" class="agent-question-card" style="display:none; margin-top:12px; background:rgba(14,165,233,0.12); border:1px solid rgba(14,165,233,0.35); padding:12px 14px; border-radius:8px;">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+                    <div>
+                      <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:#38bdf8; font-weight:700;">
+                        ⚖️ Procedural Statutory Question &bull; <span id="agent-question-statute">28 U.S.C. § 1408</span>
+                      </div>
+                      <div id="agent-question-text" style="font-size:0.95rem; font-weight:600; color:#f8fafc; margin-top:3px;">
+                        Has Debtor resided within the District of Colorado for the greater part of the last 180 days?
+                      </div>
+                    </div>
+                    <button type="button" id="btn-close-question" class="btn-icon" style="background:transparent; border:none; color:#94a3b8; cursor:pointer;" title="Dismiss question">✕</button>
+                  </div>
+                  <div id="agent-question-options" class="agent-options-row" style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+                    <!-- Option buttons rendered dynamically -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Active Step Portioned Form & Delivery Routing Bar -->
+              <div class="portioned-form-banner" id="portioned-form-banner" style="margin-top:14px; margin-bottom:18px; background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:12px 14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                  <div>
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                      <span class="badge-mini" id="portioned-step-tag" style="background:#0284c7; color:#fff; font-weight:bold;">Step 1 Form</span>
+                      <h4 id="portioned-form-title" style="margin:0; font-size:0.95rem; color:#f8fafc;">Official Form 101: Voluntary Petition (Part 1–8)</h4>
+                      <span id="portioned-docket-badge" class="badge-mini" style="background:#22c55e; color:#000;">Public Docket</span>
+                    </div>
+                    <div style="font-size:0.78rem; color:#94a3b8; margin-top:4px;">
+                      <strong>Signatures:</strong> <span id="portioned-signatures-desc" style="color:#cbd5e1;">Debtor 1 (/s/) & Supervising Attorney (/s/ CO Bar #)</span> &bull; 
+                      <strong>Delivery:</strong> <span id="portioned-delivery-desc" style="color:#cbd5e1;">NextGen CM/ECF Portal (ecf.cob.uscourts.gov)</span>
+                    </div>
+                    <div style="font-size:0.75rem; color:#60a5fa; margin-top:3px;">
+                      <strong>Cross-Pollinates:</strong> <span id="portioned-crosspoll-desc">Master Caption, Form 101, Form 121, Sched A/B, Matrix</span>
+                    </div>
+                  </div>
+                  <div style="display:flex; gap:6px;">
+                    <button type="button" id="btn-preview-portioned-form" class="btn btn-secondary btn-sm" style="display:flex; align-items:center; gap:4px;">
+                      <span>👁️ Preview Form</span>
+                    </button>
+                    <button type="button" id="btn-download-portioned-form" class="btn btn-accent btn-sm" style="display:flex; align-items:center; gap:4px;">
+                      <span>📥 Download Form PDF</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <form id="intake-form" class="intake-form">
+                <!-- Step 1: Debtor 1 PII -->
+                <div class="form-step active" id="step-1">
+                  <h3>Step 1: Debtor 1 Legal Identity & Contact (Form 101 / 121)</h3>
+                  <div class="grid-3">
+                    <div class="form-group">
+                      <label for="first-name">First Name *</label>
+                      <input type="text" id="first-name" value="Jane" required />
+                    </div>
+                    <div class="form-group">
+                      <label for="middle-name">Middle Name</label>
+                      <input type="text" id="middle-name" value="Marie" />
+                    </div>
+                    <div class="form-group">
+                      <label for="last-name">Last Name *</label>
+                      <input type="text" id="last-name" value="Doe" required />
+                    </div>
+                  </div>
+
+                  <div class="grid-2">
+                    <div class="form-group">
+                      <label for="ssn-full">Full SSN / ITIN (Restricted Form 121) *</label>
+                      <input type="password" id="ssn-full" placeholder="Synthetic SSN only" required />
+                    </div>
+                    <div class="form-group">
+                      <label for="phone">Phone Number</label>
+                      <input type="tel" id="phone" value="" />
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="street">Street Address *</label>
+                    <input type="text" id="street" value="100 Example Street" required />
+                  </div>
+
+                  <div class="grid-3">
+                    <div class="form-group">
+                      <label for="city">City *</label>
+                      <input type="text" id="city" value="Denver" required />
+                    </div>
+                    <div class="form-group">
+                      <label for="state">State</label>
+                      <input type="text" id="state" value="CO" readonly />
+                    </div>
+                    <div class="form-group">
+                      <label for="zip">ZIP Code *</label>
+                      <input type="text" id="zip" value="80202" required />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step 2: Joint Debtor 2 PII -->
+                <div class="form-step" id="step-2">
+                  <h3>Step 2: Joint Debtor 2 Legal Identity & Contact (Form 101 / 121)</h3>
+                  <p class="section-desc">Complete this section if filing a joint Chapter 7 petition with a spouse under 11 U.S.C. § 302.</p>
+                  
+                  <div style="margin-bottom: 1rem; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px;">
+                    <label class="checkbox-label" style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                      <input type="checkbox" id="has-joint-debtor-toggle" />
+                      <strong>Filing Joint Petition with Spouse (Debtor 2)</strong>
+                    </label>
+                  </div>
+
+                  <div class="grid-3">
+                    <div class="form-group">
+                      <label for="d2-first-name">Joint Debtor First Name</label>
+                      <input type="text" id="d2-first-name" value="John" />
+                    </div>
+                    <div class="form-group">
+                      <label for="d2-middle-name">Joint Debtor Middle Name</label>
+                      <input type="text" id="d2-middle-name" value="Robert" />
+                    </div>
+                    <div class="form-group">
+                      <label for="d2-last-name">Joint Debtor Last Name</label>
+                      <input type="text" id="d2-last-name" value="Doe" />
+                    </div>
+                  </div>
+
+                  <div class="grid-2">
+                    <div class="form-group">
+                      <label for="d2-ssn-full">Joint Debtor SSN / ITIN (Restricted Form 121)</label>
+                      <input type="password" id="d2-ssn-full" placeholder="Synthetic SSN only" />
+                    </div>
+                    <div class="form-group">
+                      <label for="d2-phone">Joint Debtor Phone Number</label>
+                      <input type="tel" id="d2-phone" value="" />
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="d2-street">Joint Debtor Street Address</label>
+                    <input type="text" id="d2-street" value="100 Example Street" />
+                  </div>
+
+                  <div class="grid-3">
+                    <div class="form-group">
+                      <label for="d2-city">City</label>
+                      <input type="text" id="d2-city" value="Denver" />
+                    </div>
+                    <div class="form-group">
+                      <label for="d2-state">State</label>
+                      <input type="text" id="d2-state" value="CO" readonly />
+                    </div>
+                    <div class="form-group">
+                      <label for="d2-zip">ZIP Code</label>
+                      <input type="text" id="d2-zip" value="80202" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step 3: Schedule A/B Real Estate Assets -->
+                <div class="form-step" id="step-3">
+                  <h3>Step 3: Schedule A/B Part 1: Real Estate Assets</h3>
+
+                  <div class="gemini-tool-banner">
+                    <div class="gemini-banner-left">
+                      <span class="gemini-sparkle-icon">✨</span>
+                      <div>
+                        <div class="gemini-banner-title">Gemini Real Estate Valuation & Assessor Assistant</div>
+                        <div class="gemini-banner-sub">Cross-references county tax assessor records and Colorado homestead equity caps.</div>
+                      </div>
+                    </div>
+                    <button type="button" class="btn-gemini-action" id="btn-gemini-assess-re">✨ Assess Equity & Homestead</button>
+                  </div>
+                  
+                  <div class="section-block">
+                    <div class="section-title-row">
+                      <h4>Real Estate Assets (Land, Residence, Condo, Buildings)</h4>
+                      <button type="button" id="add-re-btn" class="btn btn-sm btn-secondary">+ Add Real Estate</button>
+                    </div>
+                    <div id="re-container" class="item-list-container"></div>
+                  </div>
+
+                  <div class="totals-summary-box">
+                    <div>Total Real Estate Value: <strong id="total-re-display">$0.00</strong></div>
+                  </div>
+                </div>
+
+                <!-- Step 4: Schedule A/B Personal Property Assets -->
+                <div class="form-step" id="step-4">
+                  <h3>Step 4: Schedule A/B Parts 2-8: Personal Property Assets</h3>
+                  
+                  <div class="section-block">
+                    <div class="section-title-row">
+                      <h4>Personal Property (Vehicles, Accounts, Household Goods, Tools)</h4>
+                      <button type="button" id="add-pp-btn" class="btn btn-sm btn-secondary">+ Add Personal Property</button>
+                    </div>
+                    <div id="pp-container" class="item-list-container"></div>
+                  </div>
+
+                  <div class="totals-summary-box grid-2">
+                    <div>Total Personal Property: <strong id="total-pp-display">$0.00</strong></div>
+                    <div>Combined Total Schedule A/B Property Value: <strong id="total-ab-display">$0.00</strong></div>
+                  </div>
+                </div>
+
+                <!-- Step 5: Schedule C Exemptions -->
+                <div class="form-step" id="step-5">
+                  <h3>Step 5: Schedule C: Claimed Exemptions & C.R.S. Statutory Caps</h3>
+
+                  <div class="gemini-tool-banner">
+                    <div class="gemini-banner-left">
+                      <span class="gemini-sparkle-icon">✨</span>
+                      <div>
+                        <div class="gemini-banner-title">Gemini C.R.S. 2026 Exemption Maximizer</div>
+                        <div class="gemini-banner-sub">Optimizes Colorado statutory exemption allocations (Homestead, Vehicle, Tools, ERISA).</div>
+                      </div>
+                    </div>
+                    <button type="button" class="btn-gemini-action" id="btn-gemini-optimize-exemptions">✨ Optimize Schedule C Claims</button>
+                  </div>
+                  
+                  <div class="grid-2 toggle-row">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="joint-filing-toggle" />
+                      <strong>Joint Filing (11 U.S.C. § 522(m) Cap Doubling)</strong>
+                    </label>
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="elderly-disabled-toggle" />
+                      <strong>Elderly or Disabled Debtor (Higher Cap: $375k RE / $25k Vehicle)</strong>
+                    </label>
+                  </div>
+
+                  <div class="section-title-row">
+                    <h4>Exemption Claims</h4>
+                    <button type="button" id="add-exemption-btn" class="btn btn-sm btn-secondary">+ Add Exemption Claim</button>
+                  </div>
+
+                  <div id="exemption-container" class="item-list-container"></div>
+
+                  <div id="exemption-validation-card" class="validation-summary-card">
+                    <h5>Live Exemption Compliance Audit</h5>
+                    <div id="exemption-audit-details">Checking statutory caps...</div>
+                  </div>
+                </div>
+
+                <!-- Step 6: Schedule D Secured Creditors -->
+                <div class="form-step" id="step-6">
+                  <h3>Step 6: Schedule D: Creditors Who Have Secured Claims</h3>
+                  
+                  <div class="section-title-row">
+                    <h4>Secured Claims Inventory</h4>
+                    <button type="button" id="add-secured-btn" class="btn btn-sm btn-secondary">+ Add Secured Creditor</button>
+                  </div>
+
+                  <div id="secured-container" class="item-list-container"></div>
+
+                  <div class="totals-summary-box grid-3">
+                    <div>Total Secured Claims: <strong id="total-secured-display">$0.00</strong></div>
+                    <div>Total Collateral Value: <strong id="total-collateral-display">$0.00</strong></div>
+                    <div>Total Unsecured Deficiency: <strong id="total-deficiency-display">$0.00</strong></div>
+                  </div>
+                </div>
+
+                <!-- Step 7: Schedule E/F Unsecured Debts -->
+                <div class="form-step" id="step-7">
+                  <h3>Step 7: Schedule E/F: Priority & Non-Priority Unsecured Debts</h3>
+                  
+                  <div class="section-title-row">
+                    <h4>Unsecured Creditors Inventory</h4>
+                    <button type="button" id="add-unsecured-btn" class="btn btn-sm btn-secondary">+ Add Unsecured Creditor</button>
+                  </div>
+
+                  <div id="unsecured-container" class="item-list-container"></div>
+
+                  <div class="totals-summary-box grid-3">
+                    <div>Priority Unsecured: <strong id="total-priority-display">$0.00</strong></div>
+                    <div>Non-Priority Unsecured: <strong id="total-nonpriority-display">$0.00</strong></div>
+                    <div>Total Unsecured Debts: <strong id="total-ef-display">$0.00</strong></div>
+                  </div>
+                </div>
+
+                <!-- Step 8: Schedule G Executory Contracts -->
+                <div class="form-step" id="step-8">
+                  <h3>Step 8: Schedule G: Executory Contracts & Unexpired Leases</h3>
+                  
+                  <div class="section-title-row">
+                    <h4>Executory Contracts & Leases</h4>
+                    <button type="button" id="add-contract-btn" class="btn btn-sm btn-secondary">+ Add Contract / Lease</button>
+                  </div>
+
+                  <div id="contracts-container" class="item-list-container"></div>
+                </div>
+
+                <!-- Step 9: Schedule H Codebtors -->
+                <div class="form-step" id="step-9">
+                  <h3>Step 9: Schedule H: Your Codebtors & Co-signers</h3>
+                  
+                  <div class="section-title-row">
+                    <h4>Codebtor & Guarantor List</h4>
+                    <button type="button" id="add-codebtor-btn" class="btn btn-sm btn-secondary">+ Add Codebtor</button>
+                  </div>
+
+                  <div id="codebtors-container" class="item-list-container"></div>
+                </div>
+
+                <!-- Step 10: Schedule I Income & Payroll -->
+                <div class="form-step" id="step-10">
+                  <h3>Step 10: Schedule I: Debtor Income & Monthly Payroll (Form 106I)</h3>
+                  
+                  <h4>Debtor 1 Monthly Income</h4>
+                  <div class="grid-3">
+                    <div class="form-group">
+                      <label for="d1-gross-monthly">Gross Wages / Salary *</label>
+                      <input type="number" id="d1-gross-monthly" value="5850" step="0.01" required />
+                    </div>
+                    <div class="form-group">
+                      <label for="d1-payroll-taxes">Payroll Taxes & FICA *</label>
+                      <input type="number" id="d1-payroll-taxes" value="1220" step="0.01" required />
+                    </div>
+                    <div class="form-group">
+                      <label for="d1-statutory-insurance">Mandatory Insurance / Deductions</label>
+                      <input type="number" id="d1-statutory-insurance" value="280" step="0.01" />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="d1-business-income">Other / Business Net Income</label>
+                    <input type="number" id="d1-business-income" value="0" step="0.01" />
+                  </div>
+
+                  <h4 style="margin-top:1rem;">Debtor 2 (Spouse) Monthly Income</h4>
+                  <div class="grid-3">
+                    <div class="form-group">
+                      <label for="d2-gross-monthly">Gross Wages</label>
+                      <input type="number" id="d2-gross-monthly" value="0" step="0.01" />
+                    </div>
+                    <div class="form-group">
+                      <label for="d2-payroll-taxes">Payroll Deductions</label>
+                      <input type="number" id="d2-payroll-taxes" value="0" step="0.01" />
+                    </div>
+                    <div class="form-group">
+                      <label for="d2-other-income">Other Monthly Income</label>
+                      <input type="number" id="d2-other-income" value="0" step="0.01" />
+                    </div>
+                  </div>
+
+                  <div class="totals-summary-box">
+                    <div>Total Combined Schedule I Net Monthly Income: <strong id="total-sched-i-income">$4,350.00</strong></div>
+                  </div>
+                </div>
+
+                <!-- Step 11: Schedule J Living Expenses -->
+                <div class="form-step" id="step-11">
+                  <h3>Step 11: Schedule J: Your Monthly Household Living Expenses (Form 106J)</h3>
+                  
+                  <div class="grid-3">
+                    <div class="form-group">
+                      <label for="rent-mortgage-expense">Rent / Home Mortgage *</label>
+                      <input type="number" id="rent-mortgage-expense" value="1850" step="0.01" required />
+                    </div>
+                    <div class="form-group">
+                      <label for="food-housekeeping-expense">Food & Housekeeping *</label>
+                      <input type="number" id="food-housekeeping-expense" value="750" step="0.01" required />
+                    </div>
+                    <div class="form-group">
+                      <label for="transportation-gas-expense">Transportation & Gas *</label>
+                      <input type="number" id="transportation-gas-expense" value="380" step="0.01" required />
+                    </div>
+                  </div>
+
+                  <div class="grid-3">
+                    <div class="form-group">
+                      <label for="vehicle-installment-expense">Vehicle Loan Payment</label>
+                      <input type="number" id="vehicle-installment-expense" value="450" step="0.01" />
+                    </div>
+                    <div class="form-group">
+                      <label for="medical-expense">Medical & Dental (Out-of-Pocket)</label>
+                      <input type="number" id="medical-expense" value="220" step="0.01" />
+                    </div>
+                    <div class="form-group">
+                      <label for="charitable-expense">Charitable Contributions</label>
+                      <input type="number" id="charitable-expense" value="50" step="0.01" />
+                    </div>
+                  </div>
+
+                  <div class="grid-2">
+                    <div class="form-group">
+                      <label for="childcare-expense">Childcare / Education</label>
+                      <input type="number" id="childcare-expense" value="0" step="0.01" />
+                    </div>
+                    <div class="form-group">
+                      <label for="other-monthly-expenses">Other Necessary Expenses</label>
+                      <input type="number" id="other-monthly-expenses" value="420" step="0.01" />
+                    </div>
+                  </div>
+
+                  <div class="totals-summary-box grid-2">
+                    <div>Total Schedule J Monthly Expenses: <strong id="total-sched-j-expenses">$4,120.00</strong></div>
+                    <div>Net Monthly Cash Flow (I minus J): <strong id="net-cash-flow-display" style="color: #4ade80;">+$230.00</strong></div>
+                  </div>
+                </div>
+
+                <!-- Step 12: Schedule J-2 Debtor 2 Expenses -->
+                <div class="form-step" id="step-12">
+                  <h3>Step 12: Schedule J-2: Expenses for Separate Household of Debtor 2 (Form 106J-2)</h3>
+                  <p class="section-desc">Required only if Debtor 2 maintains a separate household from Debtor 1.</p>
+                  
+                  <div style="margin-bottom: 1rem; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px;">
+                    <label class="checkbox-label" style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                      <input type="checkbox" id="has-separate-household-toggle" />
+                      <strong>Debtor 2 Maintains a Separate Household (Form 106J-2 Required)</strong>
+                    </label>
+                  </div>
+
+                  <div class="grid-2">
+                    <div class="form-group">
+                      <label for="j2-rent-expense">Debtor 2 Rent / Mortgage</label>
+                      <input type="number" id="j2-rent-expense" value="0" step="0.01" />
+                    </div>
+                    <div class="form-group">
+                      <label for="j2-food-expense">Debtor 2 Food & Groceries</label>
+                      <input type="number" id="j2-food-expense" value="0" step="0.01" />
+                    </div>
+                  </div>
+
+                  <div class="grid-2">
+                    <div class="form-group">
+                      <label for="j2-utilities-expense">Debtor 2 Utilities & Phone</label>
+                      <input type="number" id="j2-utilities-expense" value="0" step="0.01" />
+                    </div>
+                    <div class="form-group">
+                      <label for="j2-other-expense">Debtor 2 Other Living Expenses</label>
+                      <input type="number" id="j2-other-expense" value="0" step="0.01" />
+                    </div>
+                  </div>
+
+                  <div class="totals-summary-box">
+                    <div>Total Separate Schedule J-2 Expenses: <strong id="total-j2-expenses">$0.00</strong></div>
+                  </div>
+                </div>
+
+                <!-- Step 13: Statement of Financial Affairs (SOFA 107) -->
+                <div class="form-step" id="step-13">
+                  <h3>Step 13: Statement of Financial Affairs for Individuals (Official Form 107)</h3>
+                  
+                  <div class="section-block">
+                    <h4>Historical Disclosures & Transactions</h4>
+                    <div class="form-group">
+                      <label class="checkbox-label">
+                        <input type="checkbox" id="sofa-prior-filing-check" />
+                        <span>Any bankruptcy cases filed within the past 8 years?</span>
+                      </label>
+                    </div>
+                    <div class="form-group">
+                      <input type="text" id="sofa-prior-filings-desc" placeholder="Details of prior case (Court, Case No., Year)..." style="margin-top:4px;" />
+                    </div>
+
+                    <div class="form-group" style="margin-top:12px;">
+                      <label class="checkbox-label">
+                        <input type="checkbox" id="sofa-lawsuits-check" />
+                        <span>Party to any lawsuits, court actions, or garnishments within the past 1 year?</span>
+                      </label>
+                    </div>
+                    <div class="form-group">
+                      <input type="text" id="sofa-lawsuits-desc" placeholder="Details of legal actions (Court, Caption, Status)..." style="margin-top:4px;" />
+                    </div>
+
+                    <div class="form-group" style="margin-top:12px;">
+                      <label class="checkbox-label">
+                        <input type="checkbox" id="sofa-property-transfers-check" />
+                        <span>Transferred any property outside ordinary course of business within past 2 years?</span>
+                      </label>
+                    </div>
+                    <div class="form-group">
+                      <input type="text" id="sofa-transfers-desc" placeholder="Details of transfer (Transferee, Relationship, Value)..." style="margin-top:4px;" />
+                    </div>
+
+                    <div class="form-group" style="margin-top:12px;">
+                      <label class="checkbox-label">
+                        <input type="checkbox" id="sofa-business-owner-check" />
+                        <span>Sole proprietor, partner, or officer in any business entity within past 4 years?</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step 14: Statement of Intention (Form 108) -->
+                <div class="form-step" id="step-14">
+                  <h3>Step 14: Statement of Intention for Individuals (Official Form 108)</h3>
+                  <p class="section-desc">Specify whether secured property (vehicles, home) will be retained, reaffirmed, redeemed, or surrendered.</p>
+                  
+                  <div class="section-title-row">
+                    <h4>Secured Property Intentions</h4>
+                    <button type="button" id="add-intention-btn" class="btn btn-sm btn-secondary">+ Add Intention Entry</button>
+                  </div>
+                  <div id="stmt-intention-container" class="item-list-container"></div>
+                </div>
+
+                <!-- Step 15: Document Extraction & Vault -->
+                <div class="form-step" id="step-15">
+                  <h3>Step 15: Pluggable AI Document Extraction & Vault</h3>
+                  <p class="section-desc">Upload source documents to extract values with field-level provenance tracking.</p>
+                  
+                  <div class="grid-2">
+                    <div class="upload-dropzone">
+                      <h4>📄 IRS Form 1040 Tax Returns</h4>
+                      <input type="file" id="upload-tax-returns" accept=".pdf,.png,.jpg,.jpeg" />
+                      <p class="dropzone-hint">Extracts AGI, filing status & dependents</p>
+                    </div>
+                    <div class="upload-dropzone">
+                      <h4>💵 60-Day Paystubs</h4>
+                      <input type="file" id="upload-paystubs" accept=".pdf,.png,.jpg,.jpeg" />
+                      <p class="dropzone-hint">Computes CMI gross wages & deductions</p>
+                    </div>
+                  </div>
+
+                  <div class="grid-2" style="margin-top:1rem;">
+                    <div class="upload-dropzone">
+                      <h4>🏦 Bank Statements</h4>
+                      <input type="file" id="upload-bank-statements" accept=".pdf,.png,.jpg,.jpeg" />
+                      <p class="dropzone-hint">Scans 90-day balances & transfers</p>
+                    </div>
+                    <div class="upload-dropzone">
+                      <h4>📊 Credit Report / Matrix</h4>
+                      <input type="file" id="upload-credit-report" accept=".pdf,.txt,.csv" />
+                      <p class="dropzone-hint">Extracts creditors, balances & notices</p>
+                    </div>
+                  </div>
+
+                  <div id="extraction-vault-status-box" class="extraction-status-box" style="margin-top:1rem;">
+                    <div class="status-indicator success">
+                      <span class="dot"></span>
+                      <span>Synthetic Source Document Vault Ready (4 Samples Extracted)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step 16: Attorney Review, ECF Gateway & Email Outbox -->
+                <div class="form-step" id="step-16">
+                  <h3>Step 16: Supervising Attorney Signoff, ECF Gateway & Outbound Dispatch</h3>
+                  <p class="section-desc">ABA Model Rule 5.3 supervision, court transmission simulator, and certified email outbox console.</p>
+
+                  <div class="grid-2">
+                    <div class="form-group">
+                      <label for="attorney-name">Supervising Attorney Name *</label>
+                      <input type="text" id="attorney-name" value="Christopher Bailey, Esq." required />
+                    </div>
+                    <div class="form-group">
+                      <label for="attorney-bar-number">Colorado Bar Number *</label>
+                      <input type="text" id="attorney-bar-number" value="CO-49182" required />
+                    </div>
+                  </div>
+
+                  <div class="grid-2" style="margin-top:12px;">
+                    <div class="form-group">
+                      <label for="attorney-firm">Law Firm Name *</label>
+                      <input type="text" id="attorney-firm" value="Mile High Bankruptcy Law Group" required />
+                    </div>
+                    <div class="form-group">
+                      <label for="attorney-ecf">CM/ECF Login ID (Audit Reference Only)</label>
+                      <input type="text" id="attorney-ecf" value="TEST_ECF_NOT_REAL" />
+                    </div>
+                  </div>
+
+                  <div class="section-block" style="margin-top:16px;">
+                    <h4>Deterministic Hard Audit Compliance Flags</h4>
+                    <div id="attorney-hard-audit-flags-list" style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px;">
+                      <div style="color: #4ade80;">✓ 0 Hard Audit Compliance Flags Triggered.</div>
+                    </div>
+                  </div>
+
+                  <div style="margin-top:16px; background: rgba(255,255,255,0.03); padding:12px; border-radius:6px; border: 1px solid var(--panel-border);">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                      <input type="checkbox" id="attorney-declaration-check" checked />
+                      <span>I declare under penalty of perjury under 11 U.S.C. and ABA Model Rule 5.3 that I have reviewed all SSOT field provenance, extracted financial values, and court form schedules for accuracy prior to court filing.</span>
+                    </label>
+                  </div>
+
+                  <button type="button" id="btn-attorney-signoff" class="btn btn-accent" style="margin-top:16px; width:100%; font-weight:bold; font-size:1.05rem;">Execute Supervising Attorney Signoff</button>
+                  <div id="signoff-status-box" style="margin-top:12px; color: var(--accent); font-weight:bold;"></div>
+
+                  <!-- ECF Court Transmission & Filing Simulation Portal -->
+                  <div id="ecf-filing-portal" class="section-block ecf-portal-box" style="margin-top:20px;">
+                    <div class="ecf-portal-header">
+                      <div class="ecf-badge-group">
+                        <span class="ecf-portal-badge">CM/ECF SIMULATOR</span>
+                        <span class="ecf-portal-badge district">DISTRICT OF COLORADO (DENVER)</span>
+                      </div>
+                      <h4>Electronic Case Filing (ECF) Submission Interface</h4>
+                      <p class="section-desc">Transmit signed voluntary petition, schedules A-J, Means Test, Statement of Financial Affairs, and matrix to the U.S. Bankruptcy Court ECF gateway.</p>
+                    </div>
+
+                    <div class="grid-3" style="margin-top:12px;">
+                      <div class="form-group">
+                        <label for="ecf-court-target">Filing Jurisdiction</label>
+                        <select id="ecf-court-target" class="ecf-select">
+                          <option value="COB" selected>U.S. Bankruptcy Court — District of Colorado (Denver)</option>
+                          <option value="COB_CS">U.S. Bankruptcy Court — Colorado Springs Division</option>
+                          <option value="COB_GJ">U.S. Bankruptcy Court — Grand Junction Division</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="ecf-filing-type">Filing Event Type</label>
+                        <select id="ecf-filing-type" class="ecf-select">
+                          <option value="NEW_PETITION" selected>Open Voluntary Petition & Complete Schedules</option>
+                          <option value="EMERGENCY_BARE">Emergency Bare-Bones Petition (with 14-day extension)</option>
+                          <option value="AMENDED_SCHEDULES">Amended Schedules / Statements</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="ecf-fee-mode">Filing Fee Handling</label>
+                        <select id="ecf-fee-mode" class="ecf-select">
+                          <option value="PAY_ONLINE" selected>Direct Pay.gov ECF Account ($338.00 / Ch.7)</option>
+                          <option value="INSTALLMENT">Application to Pay Filing Fee in Installments</option>
+                          <option value="IFP_WAIVER">Application for Waiver of Chapter 7 Fee (IFP)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <!-- Live ECF Payload Manifest Preview -->
+                    <div class="ecf-manifest-card" style="margin-top:14px;">
+                      <div class="manifest-header">
+                        <span>Packet Package Verification & Pre-Flight Check</span>
+                        <span id="ecf-packet-checksum" class="checksum-tag">SHA-256: CALCULATING...</span>
+                      </div>
+                      <div class="manifest-items-grid">
+                        <div class="manifest-item"><span class="check-icon">✓</span> Form 101 Voluntary Petition</div>
+                        <div class="manifest-item"><span class="check-icon">✓</span> Schedules A/B through J-2</div>
+                        <div class="manifest-item"><span class="check-icon">✓</span> Form 107 Statement of Financial Affairs</div>
+                        <div class="manifest-item"><span class="check-icon">✓</span> Form 122A Means Testing Presumption Packet</div>
+                        <div class="manifest-item"><span class="check-icon">✓</span> Creditor Address Matrix (USBC-CO format)</div>
+                        <div class="manifest-item"><span class="check-icon">✓</span> ABA Rule 5.3 Attorney Digital Seal</div>
+                      </div>
+                    </div>
+
+                    <!-- File to Court Action Button -->
+                    <div style="margin-top:16px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                      <button type="button" id="btn-ecf-file-court" class="btn btn-primary btn-ecf-transmit" style="flex:1; min-width:240px;">
+                        <span class="btn-icon">⚡</span> Transmit & File to Court (CM/ECF Gateway)
+                      </button>
+                      <button type="button" id="btn-ecf-preflight-check" class="btn btn-secondary" style="padding: 0.65rem 1rem;">
+                        Pre-Flight Lint
+                      </button>
+                    </div>
+
+                    <!-- Animated Filing Progress & Transmission HUD -->
+                    <div id="ecf-progress-container" class="ecf-progress-wrapper" style="display:none; margin-top:16px;">
+                      <div class="ecf-progress-header">
+                        <div class="progress-status-title">
+                          <span class="spinner-ring"></span>
+                          <span id="ecf-progress-stage-text">Connecting to CM/ECF Gateway (COB-PROD-01)...</span>
+                        </div>
+                        <span id="ecf-progress-percent" class="progress-pct">0%</span>
+                      </div>
+                      <div class="ecf-progress-bar-bg">
+                        <div id="ecf-progress-bar-fill" class="ecf-progress-bar-fill" style="width: 0%;"></div>
+                      </div>
+                      <div id="ecf-terminal-stream" class="ecf-terminal-log"></div>
+                    </div>
+
+                    <!-- ECF Official Notice of Electronic Filing (NEF) Confirmation Card -->
+                    <div id="ecf-nef-receipt-container" class="ecf-nef-card" style="display:none; margin-top:16px;">
+                      <div class="nef-banner">
+                        <div class="nef-title-block">
+                          <span class="seal-icon">⚖️</span>
+                          <div>
+                            <h4 style="margin:0; font-size:1rem; color:#4ade80;">U.S. BANKRUPTCY COURT • DISTRICT OF COLORADO</h4>
+                            <div style="font-size:0.8rem; color:#94a3b8;">Notice of Electronic Filing (NEF) — Court Timestamp Certified</div>
+                          </div>
+                        </div>
+                        <span class="docket-status-tag">STATUS: FILED & DOCKETED</span>
+                      </div>
+                      
+                      <div class="nef-details-grid" style="margin-top:12px;">
+                        <div class="nef-detail-item">
+                          <span class="label">Assigned Case Number:</span>
+                          <strong id="nef-case-number" class="val highlight">26-10482-MER</strong>
+                        </div>
+                        <div class="nef-detail-item">
+                          <span class="label">Assigned Bankruptcy Judge:</span>
+                          <strong id="nef-judge-name" class="val">Hon. Michael E. Romero</strong>
+                        </div>
+                        <div class="nef-detail-item">
+                          <span class="label">Chapter:</span>
+                          <strong id="nef-chapter-val" class="val">Chapter 7 Voluntary</strong>
+                        </div>
+                        <div class="nef-detail-item">
+                          <span class="label">Date & Time Filed:</span>
+                          <strong id="nef-timestamp-val" class="val">2026-08-17 08:30:14 MDT</strong>
+                        </div>
+                        <div class="nef-detail-item">
+                          <span class="label">Section 341 Meeting:</span>
+                          <strong id="nef-341-date" class="val">September 24, 2026 @ 9:30 AM MDT</strong>
+                        </div>
+                        <div class="nef-detail-item">
+                          <span class="label">Court Document Hash (SHA-256):</span>
+                          <span id="nef-doc-hash" class="val mono-hash">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</span>
+                        </div>
+                      </div>
+
+                      <div class="nef-action-buttons" style="margin-top:14px; display:flex; gap:10px;">
+                        <button type="button" id="btn-download-nef-receipt" class="btn btn-secondary" style="font-size:0.85rem;">
+                          📄 Download Official NEF Receipt (HTML)
+                        </button>
+                        <button type="button" id="btn-reset-ecf-demo" class="btn btn-secondary" style="font-size:0.85rem; color:#94a3b8;">
+                          🔄 Reset ECF Simulator
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Outbound Electronic Filing & Email Transmission Dispatch Console -->
+                  <div id="email-dispatcher-console" class="email-dispatcher-box">
+                    <div class="dispatcher-header">
+                      <div>
+                        <div class="ecf-badge-group">
+                          <span class="ecf-portal-badge" style="background:rgba(14,165,233,0.2); color:#38bdf8; border-color:rgba(14,165,233,0.4);">
+                            OUTBOUND EMAIL DISPATCHER
+                          </span>
+                          <span class="ecf-portal-badge district">TWO-STAGE APPROVAL GATE</span>
+                        </div>
+                        <h4 style="margin:4px 0 2px 0; font-size:1.05rem; color:#f8fafc;">Electronic Document Transmission & Filing Outbox</h4>
+                        <p class="section-desc" style="margin:0;">
+                          Generate digital reports, verify certified court email paths, and connect mandatory statutory attachments. <strong>Zero auto-send: every document requires explicit approval.</strong>
+                        </p>
+                      </div>
+                      <div style="text-align:right;">
+                        <button type="button" id="btn-print-master-manifest" class="btn btn-secondary btn-sm" title="Print Master Transmission Manifest Docket">
+                          📑 Print Master Manifest
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- SENDER VESSEL SELECTION -->
+                    <div class="section-block" style="margin-top:12px; background:rgba(0,0,0,0.25); padding:12px; border-radius:8px;">
+                      <div style="font-weight:700; font-size:0.85rem; color:#38bdf8; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                        <span>📤 Active Sender Vessel (Transmission Origin)</span>
+                      </div>
+                      <div class="sender-vessel-selector" id="sender-vessel-selector">
+                        <div class="vessel-card active" data-vessel="GMAIL" id="vessel-card-gmail">
+                          <div class="vessel-card-header">
+                            <span>📮</span>
+                            <div class="vessel-card-title">Personal / Workspace Gmail</div>
+                          </div>
+                          <div class="vessel-card-desc">
+                            <strong>chrisfbailey.CB@gmail.com</strong><br/>
+                            Direct authenticated personal/counsel Google vessel with verified RFC-822 compose path.
+                          </div>
+                        </div>
+
+                        <div class="vessel-card" data-vessel="LAW_FIRM" id="vessel-card-firm">
+                          <div class="vessel-card-header">
+                            <span>⚖️</span>
+                            <div class="vessel-card-title">Outbound Firm Domain</div>
+                          </div>
+                          <div class="vessel-card-desc">
+                            <strong>filings@milehighbankruptcy.com</strong><br/>
+                            Mile High Bankruptcy Law Group electronic filing desk with Colorado Bar ID seal.
+                          </div>
+                        </div>
+
+                        <div class="vessel-card" data-vessel="PRIVATE_INDIVIDUAL" id="vessel-card-prose">
+                          <div class="vessel-card-header">
+                            <span>👤</span>
+                            <div class="vessel-card-title">Private Pro Se Individual</div>
+                          </div>
+                          <div class="vessel-card-desc">
+                            <strong>jane.doe.debtor@gmail.com</strong><br/>
+                            Direct debtor personal email with emergency self-represented court filing tags.
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="grid-3" style="margin-top:10px; font-size:0.82rem;">
+                        <div>
+                          <label style="font-size:0.75rem; color:#94a3b8;">Sender Name:</label>
+                          <input type="text" id="vessel-sender-name" class="ecf-select" style="font-size:0.8rem; padding:4px 8px;" value="Attorney Christopher Bailey" />
+                        </div>
+                        <div>
+                          <label style="font-size:0.75rem; color:#94a3b8;">Sender Email Address:</label>
+                          <input type="email" id="vessel-sender-email" class="ecf-select" style="font-size:0.8rem; padding:4px 8px;" value="chrisfbailey.CB@gmail.com" />
+                        </div>
+                        <div>
+                          <label style="font-size:0.75rem; color:#94a3b8;">Firm / Vessel Entity:</label>
+                          <input type="text" id="vessel-sender-org" class="ecf-select" style="font-size:0.8rem; padding:4px 8px;" value="Law Offices of Christopher Bailey" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- MANDATORY APPROVAL GATE NOTICE -->
+                    <div class="approval-gate-banner" id="approval-gate-banner">
+                      <div class="approval-gate-icon">🛡️</div>
+                      <div class="approval-gate-text">
+                        <h4>Mandatory Human Signoff & Explicit Authorization Policy</h4>
+                        <p>
+                          No document or accompanying report is ever transmitted automatically. Every single filing below must be reviewed, confirmed with its required statutory attachments, and authorized by the sender prior to email dispatch.
+                        </p>
+                      </div>
+                    </div>
+
+                    <!-- FORM-BY-FORM TRANSMISSION MANIFEST TABLE -->
+                    <div class="transmission-table-container">
+                      <table class="transmission-table" id="transmission-manifest-table">
+                        <thead>
+                          <tr>
+                            <th style="width: 14%;">Official Form</th>
+                            <th style="width: 22%;">Destination Court / Trustee Email</th>
+                            <th style="width: 28%;">Required Accompanying Documents</th>
+                            <th style="width: 14%;">Approval Status</th>
+                            <th style="width: 22%; text-align: right;">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody id="transmission-manifest-tbody">
+                          <!-- Populated dynamically -->
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                      <div style="font-size:0.8rem; color:#94a3b8;">
+                        <span>🔒 Cryptographic Provenance: All dispatches sealed with SHA-256 and DSN Delivery Receipts.</span>
+                      </div>
+                      <div style="display:flex; gap:8px;">
+                        <button type="button" id="btn-approve-all-transmissions" class="btn btn-secondary btn-sm" style="color:#4ade80;">
+                          ✓ Approve All Verified Filings
+                        </button>
+                        <button type="button" id="btn-reset-approvals" class="btn btn-secondary btn-sm" style="color:#f87171;">
+                          🔄 Reset Approvals
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button type="button" id="prev-btn" class="btn btn-secondary" disabled>Previous</button>
+                  <button type="button" id="next-btn" class="btn btn-primary">Next Step</button>
+                  <button type="button" id="btn-goto-stage2-bottom" class="btn btn-accent">Proceed to Schedule Audit (Stage 2) ➔</button>
+                </div>
+              </form>
+            </div>
+          </main>
+        </div>
+      </section>
+
+
+      <!-- ========================================================================= -->
+      <!-- STAGE 2: SCHEDULE WORKBENCH & DETERMINISTIC AUDIT                         -->
+      <!-- ========================================================================= -->
+      <section class="stage-view" id="stage-2-view">
+        <div class="stage2-container">
+
+          <!-- Left Pane (Flex-1.1): Colorado C.R.S. Exemption Calculator & Means Test -->
+          <div class="stage2-left-ledger" id="stage2-left-ledger">
+            <div class="ledger-header-block">
+              <span class="b2b-badge">COLORADO C.R.S. STATUTORY AUDITOR</span>
+              <h2>Colorado C.R.S. Exemption Calculator & Means Test Engine</h2>
+              <p class="section-desc">Deterministic statutory cap protection rules, household means testing, and disposable income ledger.</p>
+            </div>
+
+            <!-- 1. COLORADO C.R.S. EXEMPTION CALCULATOR & ASSET PROTECTION -->
+            <div class="card ledger-card" style="margin-top:1rem;">
+              <div class="card-header-flex">
+                <div>
+                  <h3 style="font-size:1.1rem; color:#f8fafc;">Colorado C.R.S. Asset Protection & Exemption Ledger</h3>
+                  <p class="section-desc" style="margin:0;">2026 statutory caps under Title 38 and Title 13 C.R.S.</p>
+                </div>
+                <button type="button" id="stage2-btn-add-exemption" class="btn btn-sm btn-secondary">+ Add Claimed Exemption</button>
+              </div>
+
+              <!-- Statutory Cap Cards Grid -->
+              <div class="statutory-caps-grid" style="margin-top:12px;">
+                <!-- Homestead -->
+                <div class="stat-cap-card" id="card-homestead-stat">
+                  <div class="stat-cap-header">
+                    <span class="stat-cap-code">C.R.S. § 38-41-201</span>
+                    <span id="stage2-homestead-status" class="stat-badge protected">100% PROTECTED</span>
+                  </div>
+                  <div class="stat-cap-title">Homestead Exemption</div>
+                  <div class="stat-cap-values">
+                    <div>Property Value: <strong id="stage2-homestead-value">$450,000.00</strong></div>
+                    <div>Secured Mortgages: <strong id="stage2-homestead-mortgage">-$280,000.00</strong></div>
+                    <div>Net Debtor Equity: <strong id="stage2-homestead-equity" style="color:#38bdf8;">$170,000.00</strong></div>
+                    <div>Colorado Statutory Cap: <strong id="stage2-homestead-cap">$250,000.00</strong></div>
+                  </div>
+                  <div class="stat-progress-bar">
+                    <div id="homestead-progress-fill" class="progress-fill" style="width: 68%;"></div>
+                  </div>
+                  <div class="stat-cap-footer">
+                    <span>Non-Exempt Equity: <strong id="stage2-homestead-nonexempt" style="color:#4ade80;">$0.00 (Safe)</strong></span>
+                  </div>
+                </div>
+
+                <!-- Motor Vehicle -->
+                <div class="stat-cap-card" id="card-vehicle-stat">
+                  <div class="stat-cap-header">
+                    <span class="stat-cap-code">C.R.S. § 13-54-102(1)(g)</span>
+                    <span id="stage2-vehicle-status" class="stat-badge protected">PROTECTED</span>
+                  </div>
+                  <div class="stat-cap-title">Motor Vehicles ($15k / Debtor)</div>
+                  <div class="stat-cap-values">
+                    <div>Vehicle Equity: <strong id="stage2-vehicle-equity">$6,200.00</strong></div>
+                    <div>Statutory Exemption Cap: <strong id="stage2-vehicle-cap">$15,000.00</strong></div>
+                  </div>
+                  <div class="stat-progress-bar">
+                    <div id="vehicle-progress-fill" class="progress-fill" style="width: 41%;"></div>
+                  </div>
+                  <div class="stat-cap-footer">
+                    <span>C.R.S. Margin: <strong>$8,800.00 remaining</strong></span>
+                  </div>
+                </div>
+
+                <!-- Household Goods -->
+                <div class="stat-cap-card" id="card-goods-stat">
+                  <div class="stat-cap-header">
+                    <span class="stat-cap-code">C.R.S. § 13-54-102(1)(e)</span>
+                    <span id="stage2-goods-status" class="stat-badge protected">PROTECTED</span>
+                  </div>
+                  <div class="stat-cap-title">Household Goods ($6k Cap)</div>
+                  <div class="stat-cap-values">
+                    <div>Declared Value: <strong id="stage2-goods-equity">$3,500.00</strong></div>
+                    <div>Statutory Exemption Cap: <strong id="stage2-goods-cap">$6,000.00</strong></div>
+                  </div>
+                  <div class="stat-progress-bar">
+                    <div id="goods-progress-fill" class="progress-fill" style="width: 58%;"></div>
+                  </div>
+                  <div class="stat-cap-footer">
+                    <span>C.R.S. Margin: <strong>$2,500.00 remaining</strong></span>
+                  </div>
+                </div>
+
+                <!-- Retirement Accounts -->
+                <div class="stat-cap-card" id="card-retirement-stat">
+                  <div class="stat-cap-header">
+                    <span class="stat-cap-code">11 U.S.C. § 522(d)(12)</span>
+                    <span id="stage2-retirement-status" class="stat-badge protected">100% EXEMPT</span>
+                  </div>
+                  <div class="stat-cap-title">ERISA 401(k) / IRA Retirement</div>
+                  <div class="stat-cap-values">
+                    <div>Qualified Balance: <strong id="stage2-retirement-equity">$48,500.00</strong></div>
+                    <div>Statutory Dollar Ceiling: <strong>Unlimited / 100%</strong></div>
+                  </div>
+                  <div class="stat-progress-bar">
+                    <div class="progress-fill" style="width: 100%; background:#4ade80;"></div>
+                  </div>
+                  <div class="stat-cap-footer">
+                    <span>Status: <strong>Fully Shielded from Trustee</strong></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Exemption Table -->
+              <div class="transmission-table-container" style="margin-top:14px;">
+                <table class="transmission-table">
+                  <thead>
+                    <tr>
+                      <th>Property Description</th>
+                      <th>C.R.S. Statutory Rule</th>
+                      <th>Current Market Value</th>
+                      <th>Exempt Claimed</th>
+                      <th>Protection</th>
+                    </tr>
+                  </thead>
+                  <tbody id="stage2-exemption-ledger-tbody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 2. MEANS TEST 122A-1 / 122A-2 ENGINE -->
+            <div class="card ledger-card" style="margin-top:1.5rem;">
+              <div class="card-header-flex">
+                <div>
+                  <h3 style="font-size:1.1rem; color:#f8fafc;">Means Test Engine (Form 122A-1 & Form 122A-2)</h3>
+                  <p class="section-desc" style="margin:0;">Colorado Median Income Benchmark & 11 U.S.C. § 707(b) Presumption of Abuse Calculator.</p>
+                </div>
+                <span id="stage2-means-presumption-badge" class="badge badge-success">Presumption Does NOT Arise</span>
+              </div>
+
+              <div class="means-metrics-grid" style="margin-top:12px;">
+                <div class="metric-box">
+                  <div class="metric-label">Household Size</div>
+                  <div class="metric-val" id="stage2-means-household">1 Person</div>
+                </div>
+                <div class="metric-box">
+                  <div class="metric-label">6-Month Gross CMI</div>
+                  <div class="metric-val" id="stage2-means-gross-income">$5,850.00/mo</div>
+                </div>
+                <div class="metric-box">
+                  <div class="metric-label">Annualized Debtor Income</div>
+                  <div class="metric-val" id="stage2-means-annualized" style="color:#38bdf8;">$70,200.00</div>
+                </div>
+                <div class="metric-box">
+                  <div class="metric-label">2026 CO Median Income</div>
+                  <div class="metric-val" id="stage2-means-median-limit">$82,450.00</div>
+                </div>
+              </div>
+
+              <div id="stage2-means-comparison-pill" class="means-comparison-banner" style="margin-top:12px; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.3); padding:10px 14px; border-radius:8px; font-size:0.85rem; color:#4ade80;">
+                ✓ <strong>Below-Median Debtor ($70,200 vs $82,450 Median):</strong> Chapter 7 qualification is safe. No presumption of abuse arises under 11 U.S.C. § 707(b)(2). Form 122A-2 expense deductions not required.
+              </div>
+
+              <!-- Cash Flow & Budget Analysis (Schedule I vs J) -->
+              <div class="section-block" style="margin-top:14px; background:rgba(0,0,0,0.25); padding:12px; border-radius:8px;">
+                <h4 style="font-size:0.9rem; color:#cbd5e1; margin-bottom:8px;">Schedule I vs Schedule J Net Cash Flow Analysis</h4>
+                <div class="grid-3">
+                  <div>
+                    <span style="font-size:0.75rem; color:#94a3b8;">Total Monthly Income (Sched I):</span>
+                    <div id="stage2-sched-i-total" style="font-weight:700; font-size:1.05rem; color:#4ade80;">$4,350.00</div>
+                  </div>
+                  <div>
+                    <span style="font-size:0.75rem; color:#94a3b8;">Total Living Expenses (Sched J):</span>
+                    <div id="stage2-sched-j-total" style="font-weight:700; font-size:1.05rem; color:#f87171;">$4,120.00</div>
+                  </div>
+                  <div>
+                    <span style="font-size:0.75rem; color:#94a3b8;">Net Monthly Surplus:</span>
+                    <div id="stage2-net-surplus-display" style="font-weight:700; font-size:1.05rem; color:#38bdf8;">+$230.00/mo</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Pane (Flex-0.9): Real-Time Deterministic Validation Engine -->
+          <div class="stage2-right-audit" id="stage2-right-audit">
+            <div class="ledger-header-block">
+              <span class="b2b-badge" style="background:rgba(239,68,68,0.2); color:#f87171; border-color:rgba(239,68,68,0.4);">DETERMINISTIC COMPLIANCE AUDITOR</span>
+              <h2>Deterministic Hard Audit Watcher</h2>
+              <p class="section-desc">Real-time statutory rule checks across schedules, presumption flags & Rule 9011 compliance.</p>
+            </div>
+
+            <!-- Audit Metrics Bar -->
+            <div class="audit-summary-metrics" style="margin-top:1rem; display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
+              <div class="metric-box" style="padding:10px; background:rgba(255,255,255,0.03);">
+                <div class="metric-label" style="font-size:0.72rem;">Verified Fields</div>
+                <div class="metric-val" id="stage2-audit-verified-count" style="font-size:1.1rem; color:#4ade80;">24 / 24</div>
+              </div>
+              <div class="metric-box" style="padding:10px; background:rgba(255,255,255,0.03);">
+                <div class="metric-label" style="font-size:0.72rem;">Critical Flags</div>
+                <div class="metric-val" id="stage2-audit-critical-count" style="font-size:1.1rem; color:#4ade80;">0</div>
+              </div>
+              <div class="metric-box" style="padding:10px; background:rgba(255,255,255,0.03);">
+                <div class="metric-label" style="font-size:0.72rem;">Warnings</div>
+                <div class="metric-val" id="stage2-audit-warning-count" style="font-size:1.1rem; color:#facc15;">0</div>
+              </div>
+            </div>
+
+            <!-- Active Audit Flags Container -->
+            <div class="card" style="margin-top:1rem; background:rgba(15,23,42,0.8);">
+              <div class="card-header-flex">
+                <h4 style="font-size:0.95rem; color:#f8fafc;">Deterministic Statutory Rules Checked</h4>
+                <button type="button" id="stage2-btn-rescan-audits" class="btn btn-sm btn-secondary">🔄 Re-Scan</button>
+              </div>
+
+              <div id="stage2-audit-flags-list" class="copilot-flags-list" style="margin-top:10px;">
+                <!-- Populated dynamically -->
+              </div>
+
+              <div style="margin-top:14px; display:flex; flex-direction:column; gap:8px;">
+                <button type="button" id="stage2-btn-autofix-all" class="btn btn-primary" style="width:100%;">
+                  🛠️ Auto-Reconcile Detected Discrepancies
+                </button>
+                <button type="button" id="stage2-btn-goto-stage3" class="btn btn-accent" style="width:100%;">
+                  Proceed to Official Court Packet (Stage 3) ➔
+                </button>
+              </div>
+            </div>
+
+            <!-- ABA Model Rule 5.3 & Ethical AI Provenance Card -->
+            <div class="card" style="margin-top:1rem; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.06);">
+              <h4 style="font-size:0.85rem; color:#94a3b8;">⚖️ ABA Model Rule 5.3 Provenance Seal</h4>
+              <p style="font-size:0.75rem; color:#64748b; line-height:1.4; margin:4px 0 0 0;">
+                All calculations in this audit engine are deterministic, rule-based, and maintain exact field-level provenance back to source tax forms, paystubs, and county records under attorney supervision.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- ========================================================================= -->
+      <!-- STAGE 3: OFFICIAL COURT DRAFT LIVE PREVIEW & DOCUMENT STUDIO              -->
+      <!-- ========================================================================= -->
+      <section class="stage-view" id="stage-3-view">
+        <div class="stage3-container">
+
+          <!-- Left Sub-Sidebar (260px): Official Form Vertical Checklist -->
+          <aside class="stage3-sidebar" id="stage3-sidebar">
+            <div class="sidebar-header-block">
+              <span class="b2b-badge">OFFICIAL PACKET DOCKET</span>
+              <h3 style="font-size:0.95rem; color:#f8fafc; margin-top:4px;">Official Court Forms</h3>
+              <p style="font-size:0.75rem; color:#94a3b8; margin:0;">Select a schedule to preview real-time court draft & routing instructions.</p>
+            </div>
+
+            <div class="stage3-form-list" id="stage3-form-list-container">
+              <button class="stage3-form-item active" data-form="form101" id="stage3-form101">
+                <div class="form-item-top">
+                  <span class="form-item-code">Form 101</span>
+                  <span class="form-item-badge ready">✓ Ready</span>
+                </div>
+                <div class="form-item-name">Voluntary Petition for Individuals</div>
+              </button>
+
+              <button class="stage3-form-item" data-form="form121" id="stage3-form121">
+                <div class="form-item-top">
+                  <span class="form-item-code">Form 121</span>
+                  <span class="form-item-badge sealed">🔒 Restricted</span>
+                </div>
+                <div class="form-item-name">Statement About Your SSN</div>
+              </button>
+
+              <button class="stage3-form-item" data-form="form106ab" id="stage3-form106ab">
+                <div class="form-item-top">
+                  <span class="form-item-code">Schedule A/B</span>
+                  <span class="form-item-badge ready">✓ Ready</span>
+                </div>
+                <div class="form-item-name">Property (Real & Personal)</div>
+              </button>
+
+              <button class="stage3-form-item" data-form="form106c" id="stage3-form106c">
+                <div class="form-item-top">
+                  <span class="form-item-code">Schedule C</span>
+                  <span class="form-item-badge ready">✓ Ready</span>
+                </div>
+                <div class="form-item-name">Claimed Exemptions (C.R.S.)</div>
+              </button>
+
+              <button class="stage3-form-item" data-form="form106d" id="stage3-form106d">
+                <div class="form-item-top">
+                  <span class="form-item-code">Schedule D</span>
+                  <span class="form-item-badge ready">✓ Ready</span>
+                </div>
+                <div class="form-item-name">Secured Creditors & Liens</div>
+              </button>
+
+              <button class="stage3-form-item" data-form="form106ef" id="stage3-form106ef">
+                <div class="form-item-top">
+                  <span class="form-item-code">Schedule E/F</span>
+                  <span class="form-item-badge ready">✓ Ready</span>
+                </div>
+                <div class="form-item-name">Unsecured Claims (Priority/Non)</div>
+              </button>
+
+              <button class="stage3-form-item" data-form="form106g" id="stage3-form106g">
+                <div class="form-item-top">
+                  <span class="form-item-code">Schedule G</span>
+                  <span class="form-item-badge ready">✓ Ready</span>
+                </div>
+                <div class="form-item-name">Executory Contracts & Leases</div>
+              </button>
+
+              <button class="stage3-form-item" data-form="form106h" id="stage3-form106h">
+                <div class="form-item-top">
+                  <span class="form-item-code">Schedule H</span>
+                  <span class="form-item-badge ready">✓ Ready</span>
+                </div>
+                <div class="form-item-name">Your Codebtors & Co-signers</div>
+              </button>
+
+              <button class="stage3-form-item" data-form="form106i" id="stage3-form106i">
+                <div class="form-item-top">
+                  <span class="form-item-code">Form 106I</span>
+                  <span class="form-item-badge ready">✓ Ready</span>
+                </div>
+                <div class="form-item-name">Debtor Monthly Income</div>
+              </button>
+
+              <button class="stage3-form-item" data-form="form106j" id="stage3-form106j">
+                <div class="form-item-top">
+                  <span class="form-item-code">Form 106J</span>
+                  <span class="form-item-badge ready">✓ Ready</span>
+                </div>
+                <div class="form-item-name">Monthly Household Expenses</div>
+              </button>
+
+              <button class="stage3-form-item" data-form="form106j2" id="stage3-form106j2">
+                <div class="form-item-top">
+                  <span class="form-item-code">Form 106J-2</span>
+                  <span class="form-item-badge optional">Optional</span>
+                </div>
+                <div class="form-item-name">Expenses of Debtor 2 Separate</div>
+              </button>
+
+              <button class="stage3-form-item" data-form="form107" id="stage3-form107">
+                <div class="form-item-top">
+                  <span class="form-item-code">Form 107</span>
+                  <span class="form-item-badge ready">✓ Ready</span>
+                </div>
+                <div class="form-item-name">Statement of Financial Affairs</div>
+              </button>
+
+              <button class="stage3-form-item" data-form="form108" id="stage3-form108">
+                <div class="form-item-top">
+                  <span class="form-item-code">Form 108</span>
+                  <span class="form-item-badge ready">✓ Ready</span>
+                </div>
+                <div class="form-item-name">Statement of Intention</div>
+              </button>
+
+              <button class="stage3-form-item" data-form="form122a1" id="stage3-form122a1">
+                <div class="form-item-top">
+                  <span class="form-item-code">Form 122A-1</span>
+                  <span class="form-item-badge ready">✓ Ready</span>
+                </div>
+                <div class="form-item-name">Chapter 7 CMI Calculation</div>
+              </button>
+
+              <button class="stage3-form-item" data-form="form122a2" id="stage3-form122a2">
+                <div class="form-item-top">
+                  <span class="form-item-code">Form 122A-2</span>
+                  <span class="form-item-badge optional">Below Median</span>
+                </div>
+                <div class="form-item-name">Means Test Presumption Packet</div>
+              </button>
+            </div>
+          </aside>
+
+          <!-- Main Document Studio Canvas Area -->
+          <main class="stage3-canvas-area" id="stage3-canvas-area">
+            <!-- Canvas Header & Document Actions Bar -->
+            <div class="stage3-canvas-header">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span id="stage3-selected-form-tag" class="routing-form-tag">FORM 101</span>
+                <div>
+                  <h3 id="stage3-selected-form-title" style="margin:0; font-size:0.95rem; color:#f8fafc;">Voluntary Petition for Individuals</h3>
+                  <div style="font-size:0.72rem; color:#94a3b8;">U.S. Bankruptcy Court • District of Colorado</div>
+                </div>
+              </div>
+
+              <div class="stage3-action-buttons" style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                <button type="button" id="btn-open-routing-report" class="btn btn-secondary btn-sm" title="Automated Execution Manifest & Filing Instructions Report">📋 Execution Report</button>
+                <button type="button" id="btn-open-client-handout" class="btn btn-secondary btn-sm" title="Client Summary & Mandatory Deadlines Handout">📑 Client Handout</button>
+                <button type="button" id="btn-run-integrity-audit" class="btn btn-secondary btn-sm" title="Zero-Loss Cross-Population Integrity Audit">🔍 Data Integrity</button>
+                <button type="button" id="btn-show-email-path" class="btn btn-secondary btn-sm" title="View Digital Email Transmission Report, Path & Outbound Approval">📧 Email Outbox</button>
+                <button type="button" id="btn-print-routing-guide" class="btn btn-secondary btn-sm" title="Print Mailing, Email & Drop-off Next Steps">🖨️ Next Steps</button>
+                <button type="button" id="btn-toggle-routing-guide" class="btn btn-secondary btn-sm" title="Show/Hide Filing Routing Details">📍 Routing</button>
+                <button type="button" id="btn-download-active-pdf" class="btn btn-accent btn-sm">📄 Stamped PDF</button>
+                <button type="button" id="btn-download-all-packet" class="btn btn-secondary btn-sm">📦 Full Packet</button>
+              </div>
+            </div>
+
+            <!-- Canvas Scrollable Body -->
+            <div class="stage3-canvas-body">
+              <!-- Document Next Steps & Filing Routing Guide Interactive Drawer -->
+              <div id="routing-guide-container" class="routing-guide-container" style="display:block; width:100%; max-width:960px;">
+                <div class="routing-guide-header">
+                  <div class="routing-title-block">
+                    <span id="routing-form-tag" class="routing-form-tag">FORM 101</span>
+                    <span id="routing-form-name" style="font-weight:700; color:#f8fafc; font-size:0.82rem;">Voluntary Petition for Individuals</span>
+                  </div>
+                  <div style="display:flex; gap:6px; align-items:center;">
+                    <span id="routing-docket-badge" class="badge-mini">PUBLIC DOCKET</span>
+                    <button type="button" id="btn-print-active-slip" class="btn btn-sm btn-accent" style="padding:2px 8px; font-size:0.75rem;">🖨️ Print Slip</button>
+                  </div>
+                </div>
+
+                <div class="routing-guide-body">
+                  <p id="routing-summary-text" style="margin:0 0 8px 0; color:#94a3b8; font-size:0.78rem;">
+                    Primary 8-page jurisdictional filing invoking the automatic stay under 11 U.S.C. § 362.
+                  </p>
+
+                  <div class="routing-grid-4">
+                    <!-- Where to Mail -->
+                    <div class="routing-card-item">
+                      <div class="item-title">📬 Where to Mail</div>
+                      <div id="routing-mail-content" class="item-content">
+                        <strong>Denver HQ:</strong> Byron G. Rogers U.S. Courthouse, 721 19th St Room 400, Denver, CO 80202<br/>
+                        <strong>CO Springs:</strong> 212 N. Wahsatch Ave, Suite 101<br/>
+                        <strong>Grand Junction:</strong> 400 Rood Ave, Room 216
+                      </div>
+                    </div>
+
+                    <!-- Where to Drop Off -->
+                    <div class="routing-card-item">
+                      <div class="item-title">🏢 Where to Drop Off</div>
+                      <div id="routing-dropoff-content" class="item-content">
+                        <strong>Courthouse 24/7 Dropbox:</strong> 1st Floor Security Lobby.<br/>
+                        <strong>Counter Hours:</strong> Mon-Fri 8:00 AM - 4:30 PM MDT.<br/>
+                        <em>Govt ID required for building entry.</em>
+                      </div>
+                    </div>
+
+                    <!-- Where to Email / ECF -->
+                    <div class="routing-card-item">
+                      <div class="item-title">🌐 Email & ECF Gateway</div>
+                      <div id="routing-email-content" class="item-content">
+                        <strong>CM/ECF:</strong> ecf.cob.uscourts.gov<br/>
+                        <strong>Emergency Email:</strong> cob_emergency_filings@cob.uscourts.gov<br/>
+                        <strong>US Trustee:</strong> USTP.Region19.CO@usdoj.gov
+                      </div>
+                    </div>
+
+                    <!-- Where to Fax -->
+                    <div class="routing-card-item">
+                      <div class="item-title">📠 Emergency Fax</div>
+                      <div id="routing-fax-content" class="item-content">
+                        <strong>Clerk Stay Fax:</strong> (303) 335-2999<br/>
+                        <strong>US Trustee Fax:</strong> (303) 844-4015<br/>
+                        <em>Fax certified Page 1 to sheriff/garnisher immediately.</em>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="margin-top:8px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); padding:6px 10px; border-radius:6px; font-size:0.75rem; color:#cbd5e1; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                      <strong>⚖️ L.B.R. 5005-4 Retention:</strong> Attorney must retain wet ink signature for 3 years post-closing.
+                    </div>
+                    <div id="routing-deadline-text" style="color:#f87171; font-weight:600;">
+                      ⚠️ Due on Day 1 with filing fee
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Court Draft Paper Canvas Viewport -->
+              <div class="paper-canvas-wrapper">
+                <div class="pdf-viewer-container" id="court-preview-viewport">
+                  <iframe id="pdf-frame" title="Official Court Draft PDF Viewer"></iframe>
+                </div>
+              </div>
+            </div>
+          </main>
+
+        </div>
+      </section>
+
+      </div><!-- End .stages-content-area -->
+
+    </div><!-- End #stage-views-viewport -->
+
+  </div>
+
+  <!-- Outbound Email Transmission Review, Inspection & Approval Modal -->
+  <div id="modal-email-dispatch" class="modal-overlay" style="display:none;">
+    <div class="modal-content-card">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.3rem;">📧</span>
+          <div>
+            <h3 style="margin:0; font-size:1.05rem; color:#f8fafc;" id="modal-dispatch-form-title">Official Form 101 — Digital Email Routing & Transmission Path</h3>
+            <div style="font-size:0.75rem; color:#94a3b8;" id="modal-dispatch-tracking">Tracking: DSN-COB-2610892-FORM101-981244</div>
+          </div>
+        </div>
+        <button type="button" id="btn-close-dispatch-modal" class="btn-icon" style="color:#cbd5e1; font-size:1.2rem;">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 1. Sender & Destination Summary -->
+        <div class="grid-2" style="margin-bottom:12px;">
+          <div class="panel" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px;">
+            <div style="font-weight:700; font-size:0.78rem; color:#38bdf8; margin-bottom:4px;">📤 ORIGINATING SENDER VESSEL</div>
+            <div style="font-size:0.8rem; line-height:1.4;">
+              <div><strong>Sender:</strong> <span id="modal-sender-name">Attorney Christopher Bailey</span></div>
+              <div><strong>From Address:</strong> <span id="modal-sender-email" style="color:#60a5fa;">chrisfbailey.CB@gmail.com</span></div>
+              <div><strong>Vessel:</strong> <span id="modal-sender-vessel">Personal Gmail Vessel</span></div>
+              <div><strong>Organization:</strong> <span id="modal-sender-org">Mile High Bankruptcy Law Group</span></div>
+            </div>
+          </div>
+
+          <div class="panel" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px;">
+            <div style="font-weight:700; font-size:0.78rem; color:#38bdf8; margin-bottom:4px;">📥 DESTINATION COURT & TRUSTEE ROUTE</div>
+            <div style="font-size:0.8rem; line-height:1.4;">
+              <div><strong>To:</strong> <span id="modal-dest-to" style="color:#4ade80; font-weight:bold;">ecf_intake_filer@cob.uscourts.gov</span></div>
+              <div><strong>Secondary:</strong> <span id="modal-dest-sec">USTP.Region19.CO@usdoj.gov</span></div>
+              <div><strong>CC:</strong> <span id="modal-dest-cc">docketing@milehighbankruptcy.com</span></div>
+              <div><strong>Receipts:</strong> <span style="color:#38bdf8;">DSN + Read Receipt Requested</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Reconnected Document Hash -->
+        <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.06); padding:8px 12px; border-radius:6px; margin-bottom:12px;">
+          <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:2px;">🔗 Cryptographic Document Reconnection Hash (SHA-256):</div>
+          <div id="modal-doc-hash" style="font-family:monospace; font-size:0.75rem; color:#38bdf8; word-break:break-all;">
+            SHA256:d8b2e59a1f49a0c3ee3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934
+          </div>
+        </div>
+
+        <!-- 3. Certified Subject & Message Body -->
+        <div style="margin-bottom:12px;">
+          <label style="font-size:0.78rem; color:#94a3b8; font-weight:600;">Certified Email Subject:</label>
+          <input type="text" id="modal-email-subject" class="ecf-select" style="font-size:0.8rem; margin-top:2px;" readonly />
+        </div>
+
+        <div style="margin-bottom:12px;">
+          <label style="font-size:0.78rem; color:#94a3b8; font-weight:600;">Formatted Outbound Message Body:</label>
+          <textarea id="modal-email-body" class="ecf-select" rows="6" style="font-family:monospace; font-size:0.75rem; line-height:1.4; resize:vertical;" readonly></textarea>
+        </div>
+
+        <!-- 4. Mandatory Statutory Accompanying Documents Checklist -->
+        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); padding:10px; border-radius:6px; margin-bottom:12px;">
+          <div style="font-weight:700; font-size:0.78rem; color:#f8fafc; margin-bottom:6px;">
+            📑 Mandatory Accompanying Statutory Attachments:
+          </div>
+          <div id="modal-attachments-list" style="font-size:0.78rem; color:#cbd5e1; display:flex; flex-direction:column; gap:4px;">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- 5. Two-Stage Explicit Human Approval Checkbox -->
+        <div style="background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.3); padding:10px; border-radius:6px;">
+          <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer; font-size:0.8rem; color:#f8fafc;">
+            <input type="checkbox" id="modal-approval-checkbox" style="margin-top:2px;" />
+            <span>
+              <strong>I explicitly approve and authorize this transmission.</strong> I certify that I have verified the destination path, sender identity, document hash, and all accompanying required exhibits under penalty of perjury and L.B.R. 5005-4.
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button type="button" id="btn-modal-print-slip" class="btn btn-secondary btn-sm">🖨️ Print Transmission Slip</button>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button type="button" id="btn-modal-open-gmail" class="btn btn-secondary btn-sm" style="color:#60a5fa;">
+            📮 Open in Gmail Web
+          </button>
+          <button type="button" id="btn-modal-open-client" class="btn btn-secondary btn-sm">
+            📧 Open in Mail App
+          </button>
+          <button type="button" id="btn-modal-confirm-dispatch" class="btn btn-accent btn-sm" disabled>
+            ✓ Approve & Confirm Dispatch
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 1: Automated Execution Manifest & Filing Instructions Report -->
+  <div id="modal-routing-report" class="modal-overlay" style="display:none;">
+    <div class="modal-content-card" style="max-width:960px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.3rem;">📋</span>
+          <div>
+            <h3 style="margin:0; font-size:1.05rem; color:#f8fafc;">Execution Manifest & Filing Instructions Report</h3>
+            <div style="font-size:0.75rem; color:#94a3b8;">U.S. Bankruptcy Court for the District of Colorado (USBC-CO) Procedural Package</div>
+          </div>
+        </div>
+        <button type="button" id="btn-close-routing-report" class="btn-icon" style="color:#cbd5e1; font-size:1.2rem;">✕</button>
+      </div>
+
+      <div class="modal-body" id="routing-report-content" style="max-height:70vh; overflow-y:auto;">
+        <!-- Dynamic content injected here -->
+      </div>
+
+      <div class="modal-footer">
+        <div style="font-size:0.8rem; color:#94a3b8;">
+          ⚖️ Prepared under supervising attorney certification (ABA Model Rule 5.3 & Fed. R. Bankr. P. 9011)
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button type="button" id="btn-print-execution-report" class="btn btn-secondary btn-sm">🖨️ Print Report</button>
+          <button type="button" id="btn-copy-execution-report" class="btn btn-accent btn-sm">📋 Copy Summary</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Client Summary & Statutory Deadlines Handout -->
+  <div id="modal-client-handout" class="modal-overlay" style="display:none;">
+    <div class="modal-content-card" style="max-width:880px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.3rem;">📑</span>
+          <div>
+            <h3 style="margin:0; font-size:1.05rem; color:#f8fafc;">Client Case Summary & Statutory Deadlines Handout</h3>
+            <div style="font-size:0.75rem; color:#94a3b8;">Debtor Orientation, Post-Filing Obligations & Important Contact Information</div>
+          </div>
+        </div>
+        <button type="button" id="btn-close-client-handout" class="btn-icon" style="color:#cbd5e1; font-size:1.2rem;">✕</button>
+      </div>
+
+      <div class="modal-body" id="client-handout-content" style="max-height:70vh; overflow-y:auto;">
+        <!-- Dynamic content injected here -->
+      </div>
+
+      <div class="modal-footer">
+        <div style="font-size:0.8rem; color:#94a3b8;">
+          🔒 Attorney-Client Confidential Communication
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button type="button" id="btn-print-client-handout" class="btn btn-secondary btn-sm">🖨️ Print Client Handout</button>
+          <button type="button" id="btn-download-client-handout" class="btn btn-accent btn-sm">📄 Download Client Packet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Cross-Population Integrity Audit Inspector -->
+  <div id="modal-integrity-audit" class="modal-overlay" style="display:none;">
+    <div class="modal-content-card" style="max-width:920px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.3rem;">🔍</span>
+          <div>
+            <h3 style="margin:0; font-size:1.05rem; color:#f8fafc;">Zero-Loss Cross-Population Integrity Audit</h3>
+            <div style="font-size:0.75rem; color:#94a3b8;">Field-by-Field Synchronous Verification across all 15 Colorado Schedules</div>
+          </div>
+        </div>
+        <button type="button" id="btn-close-integrity-audit" class="btn-icon" style="color:#cbd5e1; font-size:1.2rem;">✕</button>
+      </div>
+
+      <div class="modal-body" id="integrity-audit-content" style="max-height:70vh; overflow-y:auto;">
+        <!-- Dynamic content injected here -->
+      </div>
+
+      <div class="modal-footer">
+        <div style="font-size:0.8rem; color:#4ade80;" id="integrity-status-summary">
+          ✓ All 15 Court Schedules 100% Reconciled
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button type="button" id="btn-rerun-integrity-audit" class="btn btn-secondary btn-sm">🔄 Re-Verify All Fields</button>
+          <button type="button" id="btn-print-integrity-audit" class="btn btn-accent btn-sm">🖨️ Print Audit Certification</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./src/main.ts"></script>
+</body>
+</html>

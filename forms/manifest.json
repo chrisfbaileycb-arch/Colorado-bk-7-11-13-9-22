@@ -1,0 +1,25 @@
+{
+  "jurisdiction": "US_BANKRUPTCY_COLORADO",
+  "chapter": 7,
+  "manifest_version": "1.0.0",
+  "forms": [
+    { "id": "Form_101", "official_name": "Voluntary Petition for Individuals Filing for Bankruptcy", "category": "Petition Core", "requires_continuation": false },
+    { "id": "Form_121", "official_name": "Your Statement About Your Social Security Numbers", "category": "Restricted Identity", "requires_continuation": false },
+    { "id": "Form_106Sum", "official_name": "Summary of Your Assets and Liabilities and Certain Related Information", "category": "Summary", "requires_continuation": false },
+    { "id": "Form_106AB", "official_name": "Schedule A/B: Property", "category": "Assets", "max_items_per_page": 10, "requires_continuation": true },
+    { "id": "Form_106C", "official_name": "Schedule C: The Property You Claim as Exempt", "category": "Exemptions", "max_items_per_page": 8, "requires_continuation": true },
+    { "id": "Form_106D", "official_name": "Schedule D: Creditors Who Have Claims Secured by Property", "category": "Liabilities", "max_items_per_page": 3, "requires_continuation": true },
+    { "id": "Form_106EF", "official_name": "Schedule E/F: Creditors Who Have Unsecured Claims", "category": "Liabilities", "max_items_per_page": 3, "requires_continuation": true },
+    { "id": "Form_106G", "official_name": "Schedule G: Executory Contracts and Unexpired Leases", "category": "Contracts", "max_items_per_page": 4, "requires_continuation": true },
+    { "id": "Form_106H", "official_name": "Schedule H: Your Codebtors", "category": "Codebtors", "max_items_per_page": 4, "requires_continuation": true },
+    { "id": "Form_106I", "official_name": "Schedule I: Your Income", "category": "Income", "requires_continuation": false },
+    { "id": "Form_106J", "official_name": "Schedule J: Your Expenses", "category": "Expenses", "requires_continuation": false },
+    { "id": "Form_106J2", "official_name": "Schedule J-2: Expenses for Separate Household of Debtor 2", "category": "Expenses", "requires_continuation": false },
+    { "id": "Form_107", "official_name": "Statement of Financial Affairs for Individuals Filing for Bankruptcy", "category": "SOFA", "requires_continuation": true },
+    { "id": "Form_108", "official_name": "Statement of Intention for Individuals Filing for Bankruptcy", "category": "Intention", "requires_continuation": true },
+    { "id": "Form_122A_1", "official_name": "Chapter 7 Statement of Your Current Monthly Income", "category": "Means Test", "requires_continuation": false },
+    { "id": "Form_122A_2", "official_name": "Chapter 7 Means Test Calculation", "category": "Means Test", "requires_continuation": false },
+    { "id": "LBF_1007_6_1", "official_name": "Local Form 1007-6.1 Payment Advices Statement", "category": "Local Colorado Form", "requires_continuation": false },
+    { "id": "Matrix_TXT", "official_name": "Creditor Mailing Matrix", "category": "Court E-Filing", "format": "TXT" }
+  ]
+}

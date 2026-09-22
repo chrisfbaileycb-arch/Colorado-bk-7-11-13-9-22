@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+.bun/
+
+# Environment & IDE
+.DS_Store
+*.log
+.vscode/
+.idea/
