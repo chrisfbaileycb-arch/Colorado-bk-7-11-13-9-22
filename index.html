@@ -153,7 +153,7 @@
                 </td>
                 <td>
                   <span class="time-tag automated">Instant (Real-time)</span>
-                  <div class="workflow-detail">Deterministic calculation of homestead ($250k/$350k), vehicles ($15k/$25k/$30k), tools of trade & 100% ERISA retirement shield.</div>
+                  <div class="workflow-detail">Deterministic cap checks for homestead, vehicles, household goods and tools of trade, driven by the Colorado jurisdiction pack (figures pending counsel sign-off).</div>
                 </td>
                 <td>
                   <div class="savings-tag">⚡ 95% Time Savings</div>
@@ -751,7 +751,7 @@
                         <div class="gemini-banner-sub">Compares entered equity against the configured Colorado homestead cap. Does not look up assessor records.</div>
                       </div>
                     </div>
-                    <button type="button" class="btn-gemini-action" id="btn-gemini-assess-re">Check Equity vs. Cap</button>
+                    <button type="button" class="btn-gemini-action" id="btn-rule-check-homestead">Check Equity vs. Cap</button>
                   </div>
                   
                   <div class="section-block">
@@ -797,7 +797,7 @@
                         <div class="gemini-banner-sub">Checks claimed exemptions against the configured caps. Caps are unverified and need attorney review.</div>
                       </div>
                     </div>
-                    <button type="button" class="btn-gemini-action" id="btn-gemini-optimize-exemptions">Check Schedule C Claims</button>
+                    <button type="button" class="btn-gemini-action" id="btn-rule-check-exemptions">Check Schedule C Claims</button>
                   </div>
                   
                   <div class="grid-2 toggle-row">
@@ -1444,39 +1444,39 @@
                 <div class="stat-cap-card" id="card-homestead-stat">
                   <div class="stat-cap-header">
                     <span class="stat-cap-code">C.R.S. § 38-41-201</span>
-                    <span id="stage2-homestead-status" class="stat-badge protected">100% PROTECTED</span>
+                    <span id="stage2-homestead-status" class="stat-badge">—</span>
                   </div>
                   <div class="stat-cap-title">Homestead Exemption</div>
                   <div class="stat-cap-values">
-                    <div>Property Value: <strong id="stage2-homestead-value">$450,000.00</strong></div>
-                    <div>Secured Mortgages: <strong id="stage2-homestead-mortgage">-$280,000.00</strong></div>
-                    <div>Net Debtor Equity: <strong id="stage2-homestead-equity" style="color:#38bdf8;">$170,000.00</strong></div>
-                    <div>Colorado Statutory Cap: <strong id="stage2-homestead-cap">$250,000.00</strong></div>
+                    <div>Property Value: <strong id="stage2-homestead-value">—</strong></div>
+                    <div>Secured Mortgages: <strong id="stage2-homestead-mortgage">—</strong></div>
+                    <div>Net Debtor Equity: <strong id="stage2-homestead-equity" style="color:#38bdf8;">—</strong></div>
+                    <div>Colorado Statutory Cap: <strong id="stage2-homestead-cap">—</strong></div>
                   </div>
                   <div class="stat-progress-bar">
-                    <div id="homestead-progress-fill" class="progress-fill" style="width: 68%;"></div>
+                    <div id="homestead-progress-fill" class="progress-fill" style="width: 0%;"></div>
                   </div>
                   <div class="stat-cap-footer">
-                    <span>Non-Exempt Equity: <strong id="stage2-homestead-nonexempt" style="color:#4ade80;">$0.00 (Safe)</strong></span>
+                    <span>Non-Exempt Equity: <strong id="stage2-homestead-nonexempt">—</strong></span>
                   </div>
                 </div>
 
                 <!-- Motor Vehicle -->
                 <div class="stat-cap-card" id="card-vehicle-stat">
                   <div class="stat-cap-header">
-                    <span class="stat-cap-code">C.R.S. § 13-54-102(1)(g)</span>
-                    <span id="stage2-vehicle-status" class="stat-badge protected">PROTECTED</span>
+                    <span class="stat-cap-code">C.R.S. § 13-54-102(1)(j)(I)</span>
+                    <span id="stage2-vehicle-status" class="stat-badge">—</span>
                   </div>
-                  <div class="stat-cap-title">Motor Vehicles ($15k / Debtor)</div>
+                  <div class="stat-cap-title">Motor Vehicles</div>
                   <div class="stat-cap-values">
-                    <div>Vehicle Equity: <strong id="stage2-vehicle-equity">$6,200.00</strong></div>
-                    <div>Statutory Exemption Cap: <strong id="stage2-vehicle-cap">$15,000.00</strong></div>
+                    <div>Vehicle Equity: <strong id="stage2-vehicle-equity">—</strong></div>
+                    <div>Statutory Exemption Cap: <strong id="stage2-vehicle-cap">—</strong></div>
                   </div>
                   <div class="stat-progress-bar">
-                    <div id="vehicle-progress-fill" class="progress-fill" style="width: 41%;"></div>
+                    <div id="vehicle-progress-fill" class="progress-fill" style="width: 0%;"></div>
                   </div>
                   <div class="stat-cap-footer">
-                    <span>C.R.S. Margin: <strong>$8,800.00 remaining</strong></span>
+                    <span>C.R.S. Margin: <strong id="stage2-vehicle-margin">—</strong></span>
                   </div>
                 </div>
 
@@ -1484,18 +1484,18 @@
                 <div class="stat-cap-card" id="card-goods-stat">
                   <div class="stat-cap-header">
                     <span class="stat-cap-code">C.R.S. § 13-54-102(1)(e)</span>
-                    <span id="stage2-goods-status" class="stat-badge protected">PROTECTED</span>
+                    <span id="stage2-goods-status" class="stat-badge">—</span>
                   </div>
-                  <div class="stat-cap-title">Household Goods ($6k Cap)</div>
+                  <div class="stat-cap-title">Household Goods</div>
                   <div class="stat-cap-values">
-                    <div>Declared Value: <strong id="stage2-goods-equity">$3,500.00</strong></div>
-                    <div>Statutory Exemption Cap: <strong id="stage2-goods-cap">$6,000.00</strong></div>
+                    <div>Declared Value: <strong id="stage2-goods-equity">—</strong></div>
+                    <div>Statutory Exemption Cap: <strong id="stage2-goods-cap">—</strong></div>
                   </div>
                   <div class="stat-progress-bar">
-                    <div id="goods-progress-fill" class="progress-fill" style="width: 58%;"></div>
+                    <div id="goods-progress-fill" class="progress-fill" style="width: 0%;"></div>
                   </div>
                   <div class="stat-cap-footer">
-                    <span>C.R.S. Margin: <strong>$2,500.00 remaining</strong></span>
+                    <span>C.R.S. Margin: <strong id="stage2-goods-margin">—</strong></span>
                   </div>
                 </div>
 
@@ -1503,7 +1503,7 @@
                 <div class="stat-cap-card" id="card-retirement-stat">
                   <div class="stat-cap-header">
                     <span class="stat-cap-code">11 U.S.C. § 522(b)(3)(C) (verify)</span>
-                    <span id="stage2-retirement-status" class="stat-badge protected">100% EXEMPT</span>
+                    <span id="stage2-retirement-status" class="stat-badge">ATTORNEY TO CONFIRM</span>
                   </div>
                   <div class="stat-cap-title">ERISA 401(k) / IRA Retirement</div>
                   <div class="stat-cap-values">
@@ -1514,7 +1514,7 @@
                     <div class="progress-fill" style="width: 100%; background:#4ade80;"></div>
                   </div>
                   <div class="stat-cap-footer">
-                    <span>Status: <strong>Fully Shielded from Trustee</strong></span>
+                    <span>Status: <strong>Qualified-plan status must be confirmed</strong></span>
                   </div>
                 </div>
               </div>
@@ -2079,7 +2079,7 @@
 
       <div class="modal-footer">
         <div style="font-size:0.8rem; color:#4ade80;" id="integrity-status-summary">
-          ✓ All 15 Court Schedules 100% Reconciled
+          Run the check to see results.
         </div>
         <div style="display:flex; gap:8px; align-items:center;">
           <button type="button" id="btn-rerun-integrity-audit" class="btn btn-secondary btn-sm">🔄 Re-Verify All Fields</button>

@@ -772,7 +772,7 @@ function renderExemptions() {
             <option value="C.R.S. § 38-41-201" ${ex.statuteCitation === 'C.R.S. § 38-41-201' ? 'selected' : ''}>C.R.S. § 38-41-201 (Homestead - Principal Residence)</option>
             <option value="C.R.S. § 13-54-102(1)(j)(I)" ${ex.statuteCitation === 'C.R.S. § 13-54-102(1)(j)(I)' ? 'selected' : ''}>C.R.S. § 13-54-102(1)(j)(I) (Motor Vehicle - $15k / $25k)</option>
             <option value="C.R.S. § 13-54-102(1)(s)" ${ex.statuteCitation === 'C.R.S. § 13-54-102(1)(s)' ? 'selected' : ''}>C.R.S. § 13-54-102(1)(s) (Qualified Retirement Account - 100%)</option>
-            <option value="C.R.S. § 13-54-102(1)(i)" ${ex.statuteCitation === 'C.R.S. § 13-54-102(1)(i)' ? 'selected' : ''}>C.R.S. § 13-54-102(1)(i) (Tools of Trade - $30k)</option>
+            <option value="C.R.S. § 13-54-102(1)(i)" ${ex.statuteCitation === 'C.R.S. § 13-54-102(1)(i)' ? 'selected' : ''}>C.R.S. § 13-54-102(1)(i) (Tools of Trade)</option>
             <option value="C.R.S. § 13-54-102(1)(e)" ${ex.statuteCitation === 'C.R.S. § 13-54-102(1)(e)' ? 'selected' : ''}>C.R.S. § 13-54-102(1)(e) (Household Goods - $10k)</option>
             <option value="C.R.S. § 13-54-102(1)(a)" ${ex.statuteCitation === 'C.R.S. § 13-54-102(1)(a)' ? 'selected' : ''}>C.R.S. § 13-54-102(1)(a) (Wearing Apparel - $2k)</option>
             <option value="OTHER_CRS" ${!ex.statuteCitation.startsWith('C.R.S.') ? 'selected' : ''}>Other Colorado Exemption</option>
@@ -2082,6 +2082,11 @@ function updateHeaderReadinessScore() {
   }
 }
 
+function formatCapMargin(margin: number): string {
+  const amount = Math.abs(margin).toLocaleString('en-US', { minimumFractionDigits: 2 });
+  return margin >= 0 ? `$${amount} remaining` : `$${amount} over cap`;
+}
+
 function renderStage2AuditAndLedger() {
   const masterData = dualStateManager ? dualStateManager.getDraftFiling() : buildMasterCaseDataFromUI();
   const isElderlyOrDisabled = (document.getElementById('elderly-disabled-toggle') as HTMLInputElement)?.checked ?? false;
@@ -2114,12 +2119,12 @@ function renderStage2AuditAndLedger() {
       nonExEl.innerText = `$${reNonExempt.toLocaleString('en-US', { minimumFractionDigits: 2 })} (At Risk)`;
     } else {
       nonExEl.style.color = '#4ade80';
-      nonExEl.innerText = `$0.00 (100% Protected)`;
+      nonExEl.innerText = `$0.00 (within configured cap)`;
     }
   }
   if (hsFill) hsFill.style.width = `${homesteadPct}%`;
   if (hsStatus) {
-    hsStatus.innerText = reNonExempt > 0 ? 'EXCESS EQUITY RISK' : '100% PROTECTED';
+    hsStatus.innerText = reNonExempt > 0 ? 'EXCESS EQUITY RISK' : 'WITHIN CAP';
     hsStatus.className = reNonExempt > 0 ? 'stat-badge warning' : 'stat-badge protected';
   }
 
@@ -2140,9 +2145,11 @@ function renderStage2AuditAndLedger() {
   if (vehCapEl) vehCapEl.innerText = `$${vehCap.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
   if (vehFill) vehFill.style.width = `${vehPct}%`;
   if (vehStatus) {
-    vehStatus.innerText = vehEquity <= vehCap ? 'PROTECTED' : 'OVER CAP';
+    vehStatus.innerText = vehEquity <= vehCap ? 'WITHIN CAP' : 'OVER CAP';
     vehStatus.className = vehEquity <= vehCap ? 'stat-badge protected' : 'stat-badge warning';
   }
+  const vehMarginEl = document.getElementById('stage2-vehicle-margin');
+  if (vehMarginEl) vehMarginEl.innerText = formatCapMargin(vehCap - vehEquity);
 
   // 3. Household Goods C.R.S. § 13-54-102(1)(e)
   const goodsItems = state.personalProperty.filter(p => p.category === 'HOUSEHOLD_GOODS');
@@ -2157,6 +2164,13 @@ function renderStage2AuditAndLedger() {
   if (goodsEqEl) goodsEqEl.innerText = `$${goodsTotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
   if (goodsCapEl) goodsCapEl.innerText = `$${goodsCap.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
   if (goodsFill) goodsFill.style.width = `${goodsPct}%`;
+  const goodsStatus = document.getElementById('stage2-goods-status');
+  if (goodsStatus) {
+    goodsStatus.innerText = goodsTotal <= goodsCap ? 'WITHIN CAP' : 'OVER CAP';
+    goodsStatus.className = goodsTotal <= goodsCap ? 'stat-badge protected' : 'stat-badge warning';
+  }
+  const goodsMarginEl = document.getElementById('stage2-goods-margin');
+  if (goodsMarginEl) goodsMarginEl.innerText = formatCapMargin(goodsCap - goodsTotal);
 
   // 4. Retirement Accounts
   const retItems = state.personalProperty.filter(p => p.category === 'RETIREMENT_ACCOUNT');
@@ -3481,27 +3495,27 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Rule-based check banners (Steps 3, 5, 8, 10, 15, 17). These route to the keyword-matched copilot.
-  document.getElementById('btn-gemini-assess-re')?.addEventListener('click', () => {
+  document.getElementById('btn-rule-check-homestead')?.addEventListener('click', () => {
     handleUserPrompt('Run Real Estate & Homestead Equity Assessment: calculate unencumbered equity and C.R.S. § 38-41-201 statutory exemptions.');
   });
 
-  document.getElementById('btn-gemini-optimize-exemptions')?.addEventListener('click', () => {
+  document.getElementById('btn-rule-check-exemptions')?.addEventListener('click', () => {
     handleUserPrompt('Run 2026 Colorado Exemption Optimizer: maximize statutory asset protections under C.R.S. Title 13 and Title 38.');
   });
 
-  document.getElementById('btn-gemini-audit-claims')?.addEventListener('click', () => {
+  document.getElementById('btn-rule-check-claims')?.addEventListener('click', () => {
     handleUserPrompt('Run Priority vs. General Unsecured Claims Audit: verify 11 U.S.C. § 507 priority classifications and codebtor protections.');
   });
 
-  document.getElementById('btn-gemini-audit-budget')?.addEventListener('click', () => {
+  document.getElementById('btn-rule-check-budget')?.addEventListener('click', () => {
     handleUserPrompt('Run Budget Doctor & Disposable Income Diagnostic: analyze Schedule I vs Schedule J cash flow for § 707(b)(3) totality of circumstances.');
   });
 
-  document.getElementById('btn-gemini-means-diagnostic')?.addEventListener('click', () => {
+  document.getElementById('btn-rule-check-means')?.addEventListener('click', () => {
     handleUserPrompt('Run Means Test & Safe Harbor Diagnostic: evaluate Colorado median income thresholds and 60-month disposable income deductions under § 707(b)(2).');
   });
 
-  document.getElementById('btn-gemini-ethical-audit')?.addEventListener('click', () => {
+  document.getElementById('btn-rule-check-provenance')?.addEventListener('click', () => {
     handleUserPrompt('Execute Provenance & ABA Model Rule 5.3 Audit: perform complete cross-schedule integrity checks and verify supervising attorney provenance.');
   });
 
