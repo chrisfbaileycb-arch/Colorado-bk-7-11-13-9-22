@@ -45,7 +45,8 @@ import {
   validateExemptionCapsAndSummaries,
   getColoradoMedianIncome,
   getColoradoExemptionCap,
-  calculate6MonthCMI
+  calculate6MonthCMI,
+  getCounselVerificationStatus
 } from '../lib/index';
 import {
   parseTaxReturn,
@@ -2836,8 +2837,18 @@ function initAutopilotAgentUI() {
   updatePortionedFormBanner(1);
 }
 
+function renderVerificationBanner() {
+  const el = document.getElementById('banner-verification-status');
+  if (!el) return;
+  const status = getCounselVerificationStatus();
+  el.innerText = status.allVerified
+    ? `Colorado figures verified by ${status.verifiers.join(', ')} as of ${status.latestVerifiedOn}`
+    : `statutory caps and medians are unverified (${status.records.filter(r => !r.verified).length} of ${status.records.length} items pending counsel sign-off)`;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   void loadVerifiedIdentity();
+  renderVerificationBanner();
   initTermsModal();
   // Initialize Dual-State Engine, Copilot, and Autopilot
   const initialMasterData = buildMasterCaseDataFromUI();

@@ -11,3 +11,4 @@ const JURISDICTION_REGISTRY: Record<string, JurisdictionPack> = {
 export function getJurisdictionPack(jurisdictionCode: string = 'CO'): JurisdictionPack {
   return JURISDICTION_REGISTRY[jurisdictionCode.toUpperCase()] || ColoradoJurisdictionPack;
 }
+export * from './counsel-verification';
