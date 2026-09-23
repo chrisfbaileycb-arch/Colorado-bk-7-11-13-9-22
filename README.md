@@ -37,8 +37,7 @@ These capabilities describe implemented software paths, not independent confirma
 | CM/ECF filing | Not implemented (UI is a labeled simulation) |
 | OCR / AI extraction | Not implemented |
 | AI assistant | Not implemented (rule-based keyword matching) |
-| Official-form PDF stamping | Not implemented (official templates not bundled) |
-| Six-month CMI inputs in UI | Not implemented (engine is tested; UI inputs missing) |
+| Official-form PDF filling | Engine built and tested; templates and field maps not yet added |
 | Legal and form-currency certification | Required before production |
 | Security certification | Required before production |
 
@@ -113,7 +112,7 @@ There is no CI workflow in this repository yet (`.github/` is empty); run these 
 
 Current repository baseline:
 
-- 29 tests across 8 files passing
+- 47 tests across 11 files passing
 - TypeScript typecheck passing
 - production build passing
 
@@ -230,6 +229,9 @@ A deployment behind Access still does not authorize real client data until the p
 Chapter 11 and Chapter 13 must remain disabled until their data models, calculations, forms, local requirements, tests, attorney workflows, and release evidence are separately implemented and approved.
 
 ## Documentation
+
+- [Deploying on Cloudflare](docs/deploy-cloudflare.md)
+- [Recording Colorado counsel's sign-off](docs/recording-counsel-signoff.md)
 
 - [Security policy](SECURITY.md)
 - [Data handling and generated PDFs](docs/data-handling.md)
