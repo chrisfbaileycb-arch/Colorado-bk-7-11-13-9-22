@@ -33,3 +33,14 @@ describe('Colorado exemption caps come from the jurisdiction pack', () => {
     }
   });
 });
+
+describe('counsel verification status', () => {
+  it('reports every exemption rule and the median table, and nothing is verified yet', async () => {
+    const { getCounselVerificationStatus } = await import('../lib/jurisdictions/counsel-verification');
+    const status = getCounselVerificationStatus();
+    expect(status.records.some(r => r.item.startsWith('HOMESTEAD'))).toBe(true);
+    expect(status.records.some(r => r.item.includes('median'))).toBe(true);
+    // Tripwire: flips to true only when counsel's sign-off is recorded in code.
+    expect(status.allVerified).toBe(false);
+  });
+});

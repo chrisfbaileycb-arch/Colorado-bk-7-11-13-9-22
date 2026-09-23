@@ -8,3 +8,4 @@ export * from './routing';
 export * from './store/master-store';
 
 export * from './integrity';
+export * from './access';

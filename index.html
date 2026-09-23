@@ -13,7 +13,7 @@
   <!-- Persistent, non-dismissable disclaimer. Stays above every overlay and modal. -->
   <div id="global-disclaimer-banner" class="global-disclaimer-banner" role="note" aria-label="Prototype disclaimer">
     <strong>PROTOTYPE — NOT LEGAL ADVICE — NOTHING IS FILED.</strong>
-    <span>Synthetic data only. No AI, OCR, court connection, or credential check. Draft outputs are not official forms; statutory caps and medians are unverified.</span>
+    <span>Synthetic data only. No AI, OCR, or court connection. Draft outputs require attorney review; <span id="banner-verification-status">statutory caps and medians are unverified</span>.</span>
   </div>
   <!-- B2B Law Firm Executive Cover Page & Access Portal -->
   <div id="landing-overlay" class="landing-overlay">
@@ -259,7 +259,7 @@
 
           <form id="auth-form" class="attorney-auth-form">
             <!-- No credentials are checked: this is a static, browser-only prototype with no server. -->
-            <div class="form-group-compact" style="background: rgba(234, 179, 8, 0.08); border: 1px solid rgba(234, 179, 8, 0.4); padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; font-size: 0.75rem; color: #fbbf24;">
+            <div id="access-status-notice" class="form-group-compact" style="background: rgba(234, 179, 8, 0.08); border: 1px solid rgba(234, 179, 8, 0.4); padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; font-size: 0.75rem; color: #fbbf24;">
               <strong>Demo access — no login.</strong> This prototype runs entirely in your browser. Nothing below is verified: no password, bar-registry, or CM/ECF credential check exists. Use synthetic data only.
             </div>
 
@@ -359,13 +359,16 @@
         <button type="button" id="btn-header-autopilot" class="btn btn-accent btn-sm" style="display:flex; align-items:center; gap:6px; font-weight:700; background:linear-gradient(135deg, #0284c7, #2563eb); border:none;" title="Step through all 16 steps with a scripted walkthrough that fills synthetic sample data">
           <span>▶ Guided Walkthrough</span>
         </button>
-        <button type="button" id="btn-toggle-copilot" class="btn btn-secondary btn-sm active" style="display:flex; align-items:center; gap:5px;" title="Toggle Bankruptcy Filing Copilot Sidebar Agent">
-          <span class="copilot-pulse-dot" style="width:7px; height:7px;"></span> <span>🤖 Sidebar Agent</span>
+        <button type="button" id="btn-toggle-copilot" class="btn btn-secondary btn-sm active" style="display:flex; align-items:center; gap:5px;" title="Show or hide the rule-based copilot panel">
+          <span class="copilot-pulse-dot" style="width:7px; height:7px;"></span> <span>Copilot</span>
         </button>
         <button type="button" id="btn-show-cover-page" class="btn btn-secondary btn-sm" style="display:flex; align-items:center; gap:5px;" title="View Law Firm Cover Page & Workflow Efficiency Briefing">
           <span>🏛️ Firm Cover Page</span>
         </button>
-        <span id="header-readiness-badge" class="badge badge-success" title="Filing Readiness based on validated fields">Readiness: 98%</span>
+        <button type="button" id="btn-show-terms" class="btn btn-secondary btn-sm" title="View the license terms you accepted">
+          <span>Terms</span>
+        </button>
+        <span id="header-readiness-badge" class="badge" title="Deterministic hard-audit flags on the current draft">Audit: —</span>
         <button type="button" id="btn-open-email-outbox" class="btn btn-secondary btn-sm" style="display:flex; align-items:center; gap:6px;" title="Outbound Email Filing Dispatcher & Approval Console">
           <span>📤 Outbox</span>
           <span id="outbox-pending-badge" class="badge-mini" style="background:#f59e0b; color:#000;">15</span>
@@ -925,7 +928,22 @@
                   </div>
 
                   <div class="totals-summary-box">
-                    <div>Total Combined Schedule I Net Monthly Income: <strong id="total-sched-i-income">$4,350.00</strong></div>
+                    <div>Total Combined Schedule I Net Monthly Income: <strong id="total-sched-i-income">—</strong></div>
+                  </div>
+
+                  <!-- Form 122A-1: six full calendar months of gross income before the petition date -->
+                  <h4 style="margin-top:1.25rem;">Form 122A-1: Six-Month Gross Income (Current Monthly Income)</h4>
+                  <p class="section-desc">Enter combined gross income from all sources for each of the six full calendar months before the filing month (11 U.S.C. § 101(10A)). Month 1 is the oldest.</p>
+                  <div class="grid-3 cmi-month-grid">
+                    <div class="form-group"><label for="cmi-m1">Month 1 (oldest)</label><input type="number" id="cmi-m1" min="0" step="0.01" placeholder="0.00" inputmode="decimal" /></div>
+                    <div class="form-group"><label for="cmi-m2">Month 2</label><input type="number" id="cmi-m2" min="0" step="0.01" placeholder="0.00" inputmode="decimal" /></div>
+                    <div class="form-group"><label for="cmi-m3">Month 3</label><input type="number" id="cmi-m3" min="0" step="0.01" placeholder="0.00" inputmode="decimal" /></div>
+                    <div class="form-group"><label for="cmi-m4">Month 4</label><input type="number" id="cmi-m4" min="0" step="0.01" placeholder="0.00" inputmode="decimal" /></div>
+                    <div class="form-group"><label for="cmi-m5">Month 5</label><input type="number" id="cmi-m5" min="0" step="0.01" placeholder="0.00" inputmode="decimal" /></div>
+                    <div class="form-group"><label for="cmi-m6">Month 6 (most recent)</label><input type="number" id="cmi-m6" min="0" step="0.01" placeholder="0.00" inputmode="decimal" /></div>
+                  </div>
+                  <div class="totals-summary-box" id="cmi-result-box" aria-live="polite">
+                    <div>Enter all six months to calculate current monthly income.</div>
                   </div>
                 </div>
 
@@ -963,20 +981,29 @@
                     </div>
                   </div>
 
-                  <div class="grid-2">
+                  <div class="grid-3">
+                    <div class="form-group">
+                      <label for="utilities-expense">Utilities (Electric, Gas, Water, Phone)</label>
+                      <input type="number" id="utilities-expense" value="280" step="0.01" />
+                    </div>
+                    <div class="form-group">
+                      <label for="insurance-expense">Insurance (not deducted from pay)</label>
+                      <input type="number" id="insurance-expense" value="0" step="0.01" />
+                    </div>
                     <div class="form-group">
                       <label for="childcare-expense">Childcare / Education</label>
                       <input type="number" id="childcare-expense" value="0" step="0.01" />
                     </div>
-                    <div class="form-group">
-                      <label for="other-monthly-expenses">Other Necessary Expenses</label>
-                      <input type="number" id="other-monthly-expenses" value="420" step="0.01" />
-                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="other-monthly-expenses">Other Necessary Expenses</label>
+                    <input type="number" id="other-monthly-expenses" value="420" step="0.01" />
                   </div>
 
                   <div class="totals-summary-box grid-2">
-                    <div>Total Schedule J Monthly Expenses: <strong id="total-sched-j-expenses">$4,120.00</strong></div>
-                    <div>Net Monthly Cash Flow (I minus J): <strong id="net-cash-flow-display" style="color: #4ade80;">+$230.00</strong></div>
+                    <div>Total Schedule J Monthly Expenses: <strong id="total-sched-j-expenses">—</strong></div>
+                    <div>Net Monthly Cash Flow (I minus J): <strong id="net-cash-flow-display">—</strong></div>
                   </div>
                 </div>
 
@@ -1119,6 +1146,8 @@
                 <div class="form-step" id="step-16">
                   <h3>Step 16: Supervising Attorney Signoff, ECF Gateway & Outbound Dispatch</h3>
                   <p class="section-desc">Attorney signoff (recorded locally, unverified), a filing simulation (nothing is sent), and a draft email outbox.</p>
+
+                  <div id="attorney-verified-identity" class="verified-identity-note">Signed-in identity: not available (local session without Cloudflare Access).</div>
 
                   <div class="grid-2">
                     <div class="form-group">
@@ -1668,7 +1697,7 @@
               <button class="stage3-form-item active" data-form="form101" id="stage3-form101">
                 <div class="form-item-top">
                   <span class="form-item-code">Form 101</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Voluntary Petition for Individuals</div>
               </button>
@@ -1684,7 +1713,7 @@
               <button class="stage3-form-item" data-form="form106ab" id="stage3-form106ab">
                 <div class="form-item-top">
                   <span class="form-item-code">Schedule A/B</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Property (Real & Personal)</div>
               </button>
@@ -1692,7 +1721,7 @@
               <button class="stage3-form-item" data-form="form106c" id="stage3-form106c">
                 <div class="form-item-top">
                   <span class="form-item-code">Schedule C</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Claimed Exemptions (C.R.S.)</div>
               </button>
@@ -1700,7 +1729,7 @@
               <button class="stage3-form-item" data-form="form106d" id="stage3-form106d">
                 <div class="form-item-top">
                   <span class="form-item-code">Schedule D</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Secured Creditors & Liens</div>
               </button>
@@ -1708,7 +1737,7 @@
               <button class="stage3-form-item" data-form="form106ef" id="stage3-form106ef">
                 <div class="form-item-top">
                   <span class="form-item-code">Schedule E/F</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Unsecured Claims (Priority/Non)</div>
               </button>
@@ -1716,7 +1745,7 @@
               <button class="stage3-form-item" data-form="form106g" id="stage3-form106g">
                 <div class="form-item-top">
                   <span class="form-item-code">Schedule G</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Executory Contracts & Leases</div>
               </button>
@@ -1724,7 +1753,7 @@
               <button class="stage3-form-item" data-form="form106h" id="stage3-form106h">
                 <div class="form-item-top">
                   <span class="form-item-code">Schedule H</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Your Codebtors & Co-signers</div>
               </button>
@@ -1732,7 +1761,7 @@
               <button class="stage3-form-item" data-form="form106i" id="stage3-form106i">
                 <div class="form-item-top">
                   <span class="form-item-code">Form 106I</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Debtor Monthly Income</div>
               </button>
@@ -1740,7 +1769,7 @@
               <button class="stage3-form-item" data-form="form106j" id="stage3-form106j">
                 <div class="form-item-top">
                   <span class="form-item-code">Form 106J</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Monthly Household Expenses</div>
               </button>
@@ -1756,7 +1785,7 @@
               <button class="stage3-form-item" data-form="form107" id="stage3-form107">
                 <div class="form-item-top">
                   <span class="form-item-code">Form 107</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge notbuilt">Not built</span>
                 </div>
                 <div class="form-item-name">Statement of Financial Affairs</div>
               </button>
@@ -1764,7 +1793,7 @@
               <button class="stage3-form-item" data-form="form108" id="stage3-form108">
                 <div class="form-item-top">
                   <span class="form-item-code">Form 108</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge notbuilt">Not built</span>
                 </div>
                 <div class="form-item-name">Statement of Intention</div>
               </button>
@@ -1772,7 +1801,7 @@
               <button class="stage3-form-item" data-form="form122a1" id="stage3-form122a1">
                 <div class="form-item-top">
                   <span class="form-item-code">Form 122A-1</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Chapter 7 CMI Calculation</div>
               </button>
@@ -1780,7 +1809,7 @@
               <button class="stage3-form-item" data-form="form122a2" id="stage3-form122a2">
                 <div class="form-item-top">
                   <span class="form-item-code">Form 122A-2</span>
-                  <span class="form-item-badge optional">Below Median</span>
+                  <span class="form-item-badge notbuilt">Not built</span>
                 </div>
                 <div class="form-item-name">Means Test Presumption Packet</div>
               </button>
@@ -2084,6 +2113,40 @@
         <div style="display:flex; gap:8px; align-items:center;">
           <button type="button" id="btn-rerun-integrity-audit" class="btn btn-secondary btn-sm">🔄 Re-Verify All Fields</button>
           <button type="button" id="btn-print-integrity-audit" class="btn btn-accent btn-sm">🖨️ Print Audit Certification</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- License terms acknowledgment: shown until the current terms version is accepted. No close button. -->
+  <div id="modal-terms" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="terms-title">
+    <div class="modal-content-card terms-card">
+      <div class="modal-header">
+        <div>
+          <h3 id="terms-title" style="margin:0; font-size:1.05rem; color:#f8fafc;">License Terms</h3>
+          <div style="font-size:0.75rem; color:#94a3b8;">Version <span id="terms-version"></span></div>
+        </div>
+        <span id="terms-placeholder-badge" class="terms-placeholder-badge" style="display:none;">PLACEHOLDER — not the final agreement</span>
+      </div>
+      <div class="modal-body">
+        <div id="terms-sections" class="terms-sections"></div>
+        <div id="terms-accept-form" class="terms-accept-form">
+          <div class="form-group">
+            <label for="terms-typed-name">Type your full name</label>
+            <input type="text" id="terms-typed-name" autocomplete="name" />
+          </div>
+          <label class="terms-check">
+            <input type="checkbox" id="terms-accept-check" />
+            <span>I have read and accept these terms for my use of this software.</span>
+          </label>
+          <div id="terms-identity-line" class="terms-identity-line"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div id="terms-accepted-line" style="font-size:0.8rem; color:#94a3b8;"></div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" id="btn-terms-close" class="btn btn-secondary btn-sm" style="display:none;">Close</button>
+          <button type="button" id="btn-terms-accept" class="btn btn-primary btn-sm" disabled>Accept and Continue</button>
         </div>
       </div>
     </div>

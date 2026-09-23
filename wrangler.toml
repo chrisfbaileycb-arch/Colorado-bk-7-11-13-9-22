@@ -1,0 +1,7 @@
+# Cloudflare Pages project for the app (NOT the marketing site; that is marketing/).
+# Deploy: bun run build && npx wrangler pages deploy
+# ACCESS_TEAM_DOMAIN and ACCESS_AUD are set per environment in the Pages dashboard
+# (Settings > Variables and Secrets). See docs/deploy-cloudflare.md.
+name = "colorado-bk-app"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-09-01"

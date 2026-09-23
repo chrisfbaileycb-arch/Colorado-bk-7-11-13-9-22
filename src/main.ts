@@ -1,4 +1,14 @@
 import {
+  TERMS_SECTIONS,
+  TERMS_VERSION,
+  TERMS_IS_PLACEHOLDER,
+  needsTermsAcceptance,
+  buildTermsAcceptance,
+  termsStorageKey,
+  type TermsAcceptance,
+  OFFICIAL_FORM_REGISTRY,
+  isFormMapped,
+  fillOfficialForm,
   sha256Hex,
   canonicalJson,
   generateDraftFormPdf,
@@ -34,7 +44,9 @@ import {
   runHardAuditFlags,
   validateExemptionCapsAndSummaries,
   getColoradoMedianIncome,
-  getColoradoExemptionCap
+  getColoradoExemptionCap,
+  calculate6MonthCMI,
+  getCounselVerificationStatus
 } from '../lib/index';
 import {
   parseTaxReturn,
@@ -305,9 +317,171 @@ function getValNumber(id: string, fallback: number = 0): number {
   return isNaN(parsed) ? fallback : parsed;
 }
 
+/** Reads the Step 10-12 inputs (Schedules I, J, J-2). Missing or blank fields count as 0. */
+function readIncomeExpenseInputs() {
+  const n = (id: string) => getValNumber(id, 0);
+  const d1Gross = n('d1-gross-monthly');
+  const d1Taxes = n('d1-payroll-taxes');
+  const d1Insurance = n('d1-statutory-insurance');
+  const d1Business = n('d1-business-income');
+  const d2Gross = n('d2-gross-monthly');
+  const d2Deductions = n('d2-payroll-taxes');
+  const d2Other = n('d2-other-income');
+  const scheduleINet = (d1Gross - d1Taxes - d1Insurance + d1Business) + (d2Gross - d2Deductions + d2Other);
+
+  const jRent = n('rent-mortgage-expense');
+  const jFood = n('food-housekeeping-expense');
+  const jTransportation = n('transportation-gas-expense');
+  const jVehicle = n('vehicle-installment-expense');
+  const jMedical = n('medical-expense');
+  const jCharitable = n('charitable-expense');
+  const jUtilities = n('utilities-expense');
+  const jInsurance = n('insurance-expense');
+  const jChildcare = n('childcare-expense');
+  const jOther = n('other-monthly-expenses');
+  const scheduleJTotal = jRent + jFood + jTransportation + jVehicle + jMedical + jCharitable + jUtilities + jInsurance + jChildcare + jOther;
+
+  const j2Separate = (document.getElementById('has-separate-household-toggle') as HTMLInputElement)?.checked ?? false;
+  const j2Rent = j2Separate ? n('j2-rent-expense') : 0;
+  const j2Food = j2Separate ? n('j2-food-expense') : 0;
+  const j2Utilities = j2Separate ? n('j2-utilities-expense') : 0;
+  const j2Other = j2Separate ? n('j2-other-expense') : 0;
+  const scheduleJ2Total = j2Rent + j2Food + j2Utilities + j2Other;
+
+  return {
+    d1Gross, d1Taxes, d1Insurance, d1Business, d2Gross, d2Deductions, d2Other, scheduleINet,
+    jRent, jFood, jTransportation, jVehicle, jMedical, jCharitable, jUtilities, jInsurance, jChildcare, jOther, scheduleJTotal,
+    j2Separate, j2Rent, j2Food, j2Utilities, j2Other, scheduleJ2Total
+  };
+}
+
+/** Reads the six Form 122A-1 month inputs. A blank month is reported as missing, not zero. */
+function readCmiMonths(): { months: number[]; complete: boolean } {
+  const months: number[] = [];
+  let complete = true;
+  for (let i = 1; i <= 6; i++) {
+    const raw = (document.getElementById(`cmi-m${i}`) as HTMLInputElement | null)?.value ?? '';
+    const v = parseFloat(raw);
+    if (raw.trim() === '' || isNaN(v)) complete = false;
+    months.push(isNaN(v) ? 0 : v);
+  }
+  return { months, complete };
+}
+
 function getValString(id: string, fallback: string = ''): string {
   const el = document.getElementById(id) as HTMLInputElement | HTMLSelectElement;
   return el ? el.value : fallback;
+}
+
+// Identity verified by Cloudflare Access (via /api/whoami). null when running locally without Access.
+let verifiedAccessEmail: string | null = null;
+
+async function loadVerifiedIdentity() {
+  try {
+    const res = await fetch('/api/whoami', { cache: 'no-store', credentials: 'same-origin' });
+    if (!res.ok) return;
+    const body = await res.json();
+    if (typeof body?.email !== 'string' || !body.email) return;
+    verifiedAccessEmail = body.email;
+  } catch {
+    return;
+  }
+  const notice = document.getElementById('access-status-notice');
+  if (notice) {
+    notice.style.background = 'rgba(34, 197, 94, 0.08)';
+    notice.style.borderColor = 'rgba(34, 197, 94, 0.4)';
+    notice.style.color = '#15803d';
+    notice.innerHTML = `<strong>Signed in as ${escapeHtml(verifiedAccessEmail!)}</strong> (verified by Cloudflare Access). Attorney name and registration number below are still self-reported.`;
+  }
+  const idNote = document.getElementById('attorney-verified-identity');
+  if (idNote) idNote.innerHTML = `Signed-in identity: <strong>${escapeHtml(verifiedAccessEmail!)}</strong> (verified by Cloudflare Access). It is recorded with the signoff.`;
+}
+
+// ----------------------------------------------------
+// LICENSE TERMS ACKNOWLEDGMENT
+// ----------------------------------------------------
+// Stored in this browser for now; moves to server storage when the backend exists.
+function readTermsAcceptance(): TermsAcceptance | null {
+  try {
+    const raw = localStorage.getItem(termsStorageKey(verifiedAccessEmail));
+    return raw ? JSON.parse(raw) as TermsAcceptance : null;
+  } catch {
+    return null;
+  }
+}
+
+function openTermsModal(mode: 'accept' | 'view') {
+  const modal = document.getElementById('modal-terms');
+  if (!modal) return;
+  const sections = document.getElementById('terms-sections');
+  if (sections) {
+    sections.innerHTML = TERMS_SECTIONS.map(t => `<div><h4>${escapeHtml(t.heading)}</h4><p>${escapeHtml(t.body)}</p></div>`).join('');
+  }
+  const versionEl = document.getElementById('terms-version');
+  if (versionEl) versionEl.innerText = TERMS_VERSION;
+  const badge = document.getElementById('terms-placeholder-badge');
+  if (badge) badge.style.display = TERMS_IS_PLACEHOLDER ? 'inline-block' : 'none';
+
+  const form = document.getElementById('terms-accept-form');
+  const acceptBtn = document.getElementById('btn-terms-accept') as HTMLButtonElement | null;
+  const closeBtn = document.getElementById('btn-terms-close');
+  const acceptedLine = document.getElementById('terms-accepted-line');
+  const record = readTermsAcceptance();
+
+  if (mode === 'view') {
+    if (form) form.style.display = 'none';
+    if (acceptBtn) acceptBtn.style.display = 'none';
+    if (closeBtn) closeBtn.style.display = 'inline-flex';
+    if (acceptedLine) {
+      acceptedLine.innerText = record
+        ? `Accepted by ${record.typedName}${record.verifiedEmail ? ` (${record.verifiedEmail})` : ''} on ${new Date(record.acceptedAt).toLocaleString()}, version ${record.version}.`
+        : 'Not yet accepted.';
+    }
+  } else {
+    if (form) form.style.display = 'grid';
+    if (acceptBtn) acceptBtn.style.display = 'inline-flex';
+    if (closeBtn) closeBtn.style.display = 'none';
+    if (acceptedLine) acceptedLine.innerText = '';
+    const identityLine = document.getElementById('terms-identity-line');
+    if (identityLine) {
+      identityLine.innerText = verifiedAccessEmail
+        ? `Recorded with your signed-in identity: ${verifiedAccessEmail}.`
+        : 'No signed-in identity is available in this session; only your typed name is recorded.';
+    }
+  }
+  modal.style.display = 'flex';
+  (mode === 'accept' ? document.getElementById('terms-typed-name') : closeBtn)?.focus();
+}
+
+function ensureTermsAccepted() {
+  if (needsTermsAcceptance(readTermsAcceptance())) openTermsModal('accept');
+}
+
+function initTermsModal() {
+  const nameInput = document.getElementById('terms-typed-name') as HTMLInputElement | null;
+  const check = document.getElementById('terms-accept-check') as HTMLInputElement | null;
+  const acceptBtn = document.getElementById('btn-terms-accept') as HTMLButtonElement | null;
+  const refresh = () => {
+    if (acceptBtn) acceptBtn.disabled = !(nameInput?.value.trim() && check?.checked);
+  };
+  nameInput?.addEventListener('input', refresh);
+  check?.addEventListener('change', refresh);
+  acceptBtn?.addEventListener('click', () => {
+    if (!nameInput?.value.trim() || !check?.checked) return;
+    const record = buildTermsAcceptance(nameInput.value, verifiedAccessEmail);
+    try {
+      localStorage.setItem(termsStorageKey(verifiedAccessEmail), JSON.stringify(record));
+    } catch {
+      // Storage blocked (private mode); the acceptance still applies to this session.
+    }
+    const modal = document.getElementById('modal-terms');
+    if (modal) modal.style.display = 'none';
+  });
+  document.getElementById('btn-terms-close')?.addEventListener('click', () => {
+    const modal = document.getElementById('modal-terms');
+    if (modal) modal.style.display = 'none';
+  });
+  document.getElementById('btn-show-terms')?.addEventListener('click', () => openTermsModal('view'));
 }
 
 function buildMasterCaseDataFromUI(): MasterCaseData {
@@ -486,58 +660,44 @@ function buildMasterCaseDataFromUI(): MasterCaseData {
     }))
   };
 
-  // Schedule I Income & Deductions
-  const grossWages = getValNumber('d1-monthly-gross', 4850);
-  const overtime = getValNumber('d1-monthly-overtime', 0);
-  const taxes = getValNumber('d1-payroll-tax', 950);
-  const retirement401k = getValNumber('d1-payroll-401k', 250);
-  const totalDeductions = taxes + retirement401k;
-  const netMonthlyIncome = (grossWages + overtime) - totalDeductions;
+  // Schedules I, J, J-2: read once from the Step 10-12 inputs (single source for data + on-screen totals)
+  const ie = readIncomeExpenseInputs();
 
-  data.schedule_i.debtor_1_gross_wages = createFieldWrapper(grossWages, 'i.d1_gross');
-  data.schedule_i.debtor_1_overtime = createFieldWrapper(overtime, 'i.d1_overtime');
+  data.schedule_i.debtor_1_gross_wages = createFieldWrapper(ie.d1Gross, 'i.d1_gross');
   data.schedule_i.debtor_1_payroll_deductions = {
-    taxes_and_social_security: createFieldWrapper(taxes, 'i.ded.tax'),
+    taxes_and_social_security: createFieldWrapper(ie.d1Taxes, 'i.ded.tax'),
     mandatory_contributions: createFieldWrapper(0, 'i.ded.mand'),
-    voluntary_contributions_retirement: createFieldWrapper(retirement401k, 'i.ded.401k'),
+    voluntary_contributions_retirement: createFieldWrapper(0, 'i.ded.401k'),
     required_repayments_401k: createFieldWrapper(0, 'i.ded.loan'),
-    insurance: createFieldWrapper(0, 'i.ded.ins'),
+    insurance: createFieldWrapper(ie.d1Insurance, 'i.ded.ins'),
     domestic_support: createFieldWrapper(0, 'i.ded.dso'),
     other_deductions: createFieldWrapper(0, 'i.ded.other')
   };
-  data.schedule_i.total_monthly_net_income = createFieldWrapper(netMonthlyIncome, 'i.net_tot');
+  data.schedule_i.other_monthly_income = { business_net_income: createFieldWrapper(ie.d1Business, 'i.d1_business') };
+  data.schedule_i.debtor_2_gross_wages = createFieldWrapper(ie.d2Gross, 'i.d2_gross');
+  data.schedule_i.debtor_2_payroll_deductions_total = createFieldWrapper(ie.d2Deductions, 'i.d2_ded');
+  data.schedule_i.debtor_2_other_income = createFieldWrapper(ie.d2Other, 'i.d2_other');
+  data.schedule_i.total_monthly_net_income = createFieldWrapper(ie.scheduleINet, 'i.net_tot');
 
-  // Schedule J Living Expenses
-  const rentMortgage = getValNumber('j-rent-mortgage', 1850);
-  const utilities = getValNumber('j-utilities', 280);
-  const foodClothing = getValNumber('j-food-clothing', 650);
-  const childcare = getValNumber('j-childcare', 200);
-  const medical = getValNumber('j-medical', 150);
-  const transportation = getValNumber('j-transportation', 320);
-  const insurance = getValNumber('j-insurance', 180);
-  const totalJExpenses = rentMortgage + utilities + foodClothing + childcare + medical + transportation + insurance;
+  data.schedule_j.rent_or_mortgage = createFieldWrapper(ie.jRent, 'j.rent');
+  data.schedule_j.utilities = createFieldWrapper(ie.jUtilities, 'j.util');
+  data.schedule_j.food_and_housekeeping = createFieldWrapper(ie.jFood, 'j.food');
+  data.schedule_j.childcare_and_children = createFieldWrapper(ie.jChildcare, 'j.childcare');
+  data.schedule_j.medical_and_dental = createFieldWrapper(ie.jMedical, 'j.medical');
+  data.schedule_j.transportation_gas = createFieldWrapper(ie.jTransportation, 'j.trans');
+  data.schedule_j.insurance = createFieldWrapper(ie.jInsurance, 'j.ins');
+  data.schedule_j.vehicle_installment = createFieldWrapper(ie.jVehicle, 'j.vehicle');
+  data.schedule_j.charitable = createFieldWrapper(ie.jCharitable, 'j.charitable');
+  data.schedule_j.other_expenses = createFieldWrapper(ie.jOther, 'j.other');
+  data.schedule_j.total_monthly_expenses = createFieldWrapper(ie.scheduleJTotal, 'j.tot_exp');
 
-  data.schedule_j.rent_or_mortgage = createFieldWrapper(rentMortgage, 'j.rent');
-  data.schedule_j.utilities = createFieldWrapper(utilities, 'j.util');
-  data.schedule_j.food_and_housekeeping = createFieldWrapper(foodClothing, 'j.food');
-  data.schedule_j.childcare_and_children = createFieldWrapper(childcare, 'j.childcare');
-  data.schedule_j.medical_and_dental = createFieldWrapper(medical, 'j.medical');
-  data.schedule_j.transportation_gas = createFieldWrapper(transportation, 'j.trans');
-  data.schedule_j.insurance = createFieldWrapper(insurance, 'j.ins');
-  data.schedule_j.total_monthly_expenses = createFieldWrapper(totalJExpenses, 'j.tot_exp');
-
-  // Schedule J-2 Expenses
-  const j2Rent = getValNumber('j2-rent-mortgage', 0);
-  const j2Util = getValNumber('j2-utilities', 0);
-  const j2Food = getValNumber('j2-food-clothing', 0);
-  const j2Child = getValNumber('j2-childcare', 0);
-  const j2Med = getValNumber('j2-medical', 0);
-  const j2Trans = getValNumber('j2-transportation', 0);
-  const j2Ins = getValNumber('j2-insurance', 0);
-  const totalJ2Expenses = j2Rent + j2Util + j2Food + j2Child + j2Med + j2Trans + j2Ins;
   data.schedule_j2 = {
-    has_separate_household: createFieldWrapper(totalJ2Expenses > 0, 'j2.has_sep'),
-    total_monthly_expenses: createFieldWrapper(totalJ2Expenses, 'j2.tot_exp')
+    has_separate_household: createFieldWrapper(ie.j2Separate, 'j2.has_sep'),
+    expenses: {
+      rental_mortgage_payment: createFieldWrapper(ie.j2Rent, 'j2.rent'),
+      utilities: createFieldWrapper(ie.j2Utilities, 'j2.util')
+    },
+    total_monthly_expenses: createFieldWrapper(ie.scheduleJ2Total, 'j2.tot_exp')
   };
 
   // Form 122A-1 CMI inputs (six calendar months) and household size
@@ -1230,70 +1390,40 @@ function updateDOMSummaries() {
   if (nonPrioEl) nonPrioEl.innerText = `$${nonPriorityTotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
   if (totalEfEl) totalEfEl.innerText = `$${totalUnsecured.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
 
-  // 6. Schedule I Net Income (Step 10)
-  const gross = getValNumber('d1-monthly-gross', 4850);
-  const ot = getValNumber('d1-monthly-overtime', 0);
-  const tax = getValNumber('d1-payroll-tax', 950);
-  const ret = getValNumber('d1-payroll-401k', 250);
-  const netIncome = (gross + ot) - (tax + ret);
-  const schedIEl = document.getElementById('total-schedule-i-income-display');
-  if (schedIEl) schedIEl.innerText = `$${netIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+  // 6-8. Schedules I, J, J-2 totals (Steps 10-12), from the same reader as the case data
+  const ie = readIncomeExpenseInputs();
+  const fmtUsd = (v: number) => `$${v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const schedIEl = document.getElementById('total-sched-i-income');
+  if (schedIEl) schedIEl.innerText = fmtUsd(ie.scheduleINet);
+  const schedJEl = document.getElementById('total-sched-j-expenses');
+  if (schedJEl) schedJEl.innerText = fmtUsd(ie.scheduleJTotal);
+  const netFlow = ie.scheduleINet - ie.scheduleJTotal - ie.scheduleJ2Total;
+  const netFlowEl = document.getElementById('net-cash-flow-display');
+  if (netFlowEl) {
+    netFlowEl.innerText = `${netFlow >= 0 ? '+' : '-'}${fmtUsd(Math.abs(netFlow))}`;
+    netFlowEl.style.color = netFlow >= 0 ? '#4ade80' : '#f87171';
+  }
+  const schedJ2El = document.getElementById('total-j2-expenses');
+  if (schedJ2El) schedJ2El.innerText = fmtUsd(ie.scheduleJ2Total);
 
-  // 7. Schedule J Expenses (Step 11)
-  const jExpenses = getValNumber('j-rent-mortgage', 1850)
-    + getValNumber('j-utilities', 280)
-    + getValNumber('j-food-clothing', 650)
-    + getValNumber('j-childcare', 200)
-    + getValNumber('j-medical', 150)
-    + getValNumber('j-transportation', 320)
-    + getValNumber('j-insurance', 180);
-  const schedJEl = document.getElementById('total-schedule-j-expenses-display');
-  if (schedJEl) schedJEl.innerText = `$${jExpenses.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-
-  // 8. Schedule J-2 Expenses (Step 12)
-  const j2Expenses = getValNumber('j2-rent-mortgage', 0)
-    + getValNumber('j2-utilities', 0)
-    + getValNumber('j2-food-clothing', 0)
-    + getValNumber('j2-childcare', 0)
-    + getValNumber('j2-medical', 0)
-    + getValNumber('j2-transportation', 0)
-    + getValNumber('j2-insurance', 0);
-  const schedJ2El = document.getElementById('total-j2-expenses-display');
-  if (schedJ2El) schedJ2El.innerText = `$${j2Expenses.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-
-  // 9. Means Testing Calculations (Step 15)
-  const m1 = getValNumber('cmi-m1', 4850);
-  const m2 = getValNumber('cmi-m2', 4850);
-  const m3 = getValNumber('cmi-m3', 4850);
-  const m4 = getValNumber('cmi-m4', 4850);
-  const m5 = getValNumber('cmi-m5', 4850);
-  const m6 = getValNumber('cmi-m6', 4850);
-  const monthlyCmi = (m1 + m2 + m3 + m4 + m5 + m6) / 6;
-  const annualizedCmi = monthlyCmi * 12;
-  const householdSize = (document.getElementById('has-joint-debtor-toggle') as HTMLInputElement)?.checked ? 2 : 1;
-  const coMedian = getColoradoMedianIncome(householdSize);
-
-  const irsFood = getValNumber('irs-food-cloth', 850);
-  const irsHousing = getValNumber('irs-housing', 1950);
-  const irsTrans = getValNumber('irs-trans', 920);
-  const monthlyIrsDeductions = irsFood + irsHousing + irsTrans;
-  const monthlyDisposable = Math.max(0, monthlyCmi - monthlyIrsDeductions);
-  const disposable60Mo = monthlyDisposable * 60;
-
-  const mt60MoEl = document.getElementById('mt-60mo-disposable');
-  const mtVerdictEl = document.getElementById('mt-verdict-display');
-  if (mt60MoEl) mt60MoEl.innerText = `$${disposable60Mo.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-
-  if (mtVerdictEl) {
-    if (annualizedCmi <= coMedian) {
-      mtVerdictEl.style.color = '#4ade80';
-      mtVerdictEl.innerText = 'NO PRESUMPTION OF ABUSE (Below Median Safe Harbor § 707(b)(7))';
-    } else if (disposable60Mo > 15150) {
-      mtVerdictEl.style.color = '#f87171';
-      mtVerdictEl.innerText = 'PRESUMPTION OF ABUSE ARISES (11 U.S.C. § 707(b)(2))';
+  // 9. Form 122A-1 current monthly income (Step 10), via the tested CMI engine
+  const cmiBox = document.getElementById('cmi-result-box');
+  if (cmiBox) {
+    const { months, complete } = readCmiMonths();
+    const householdSize = (document.getElementById('has-joint-debtor-toggle') as HTMLInputElement)?.checked ? 2 : 1;
+    if (!complete) {
+      cmiBox.innerHTML = `<div>Enter all six months to calculate current monthly income.</div>`;
     } else {
-      mtVerdictEl.style.color = '#4ade80';
-      mtVerdictEl.innerText = 'NO PRESUMPTION OF ABUSE (Rebutted by IRS Standards)';
+      const r = calculate6MonthCMI(months.map(v => ({ debtor_1_gross: v, debtor_2_gross: 0 })), householdSize);
+      cmiBox.innerHTML = `
+        <div class="grid-3" style="gap:8px;">
+          <div>CMI (6-month average): <strong>${fmtUsd(r.total_combined_cmi_monthly)}</strong></div>
+          <div>Annualized: <strong>${fmtUsd(r.total_combined_cmi_annualized)}</strong></div>
+          <div>Median, household of ${householdSize}: <strong>${fmtUsd(r.colorado_median_threshold)}</strong> <span style="color:#94a3b8;">(app-configured; verify)</span></div>
+        </div>
+        <div style="margin-top:6px; font-weight:600; color:${r.is_above_median ? '#fbbf24' : '#4ade80'};">
+          ${r.is_above_median ? 'Above the configured median: Form 122A-2 is required (not built in this app).' : 'At or below the configured median: Form 122A-2 not required on this figure.'}
+        </div>`;
     }
   }
 
@@ -1327,6 +1457,15 @@ function updateDOMSummaries() {
   if (copilotFlagBadge) {
     copilotFlagBadge.innerText = String(auditFlags.length);
     copilotFlagBadge.style.display = auditFlags.length > 0 ? 'inline-block' : 'none';
+  }
+
+  // Header audit badge (real counts from the hard-audit engine)
+  const headerAuditEl = document.getElementById('header-readiness-badge');
+  if (headerAuditEl) {
+    const critical = auditFlags.filter(f => f.severity === 'CRITICAL').length;
+    const warnings = auditFlags.length - critical;
+    headerAuditEl.innerText = `Audit: ${critical} critical · ${warnings} warning${warnings === 1 ? '' : 's'}`;
+    headerAuditEl.className = `badge ${critical > 0 ? 'badge-danger' : warnings > 0 ? 'badge-warning' : 'badge-success'}`;
   }
 
   // 12. Attorney Review Step 17
@@ -2202,13 +2341,8 @@ function renderStage2AuditAndLedger() {
   }
 
   // 6. Means Test 122A Engine
-  const m1 = getValNumber('cmi-m1', 4850);
-  const m2 = getValNumber('cmi-m2', 4850);
-  const m3 = getValNumber('cmi-m3', 4850);
-  const m4 = getValNumber('cmi-m4', 4850);
-  const m5 = getValNumber('cmi-m5', 4850);
-  const m6 = getValNumber('cmi-m6', 4850);
-  const monthlyCmi = (m1 + m2 + m3 + m4 + m5 + m6) / 6;
+  const cmiInput = readCmiMonths();
+  const monthlyCmi = cmiInput.months.reduce((a, b) => a + b, 0) / 6;
   const annualizedCmi = monthlyCmi * 12;
   const householdSize = (document.getElementById('has-joint-debtor-toggle') as HTMLInputElement)?.checked ? 2 : 1;
   const coMedian = getColoradoMedianIncome(householdSize);
@@ -2221,9 +2355,20 @@ function renderStage2AuditAndLedger() {
   const badgeEl = document.getElementById('stage2-means-presumption-badge');
 
   if (hhEl) hhEl.innerText = `${householdSize} Person${householdSize > 1 ? 's' : ''}`;
+  if (medEl) medEl.innerText = `$${coMedian.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+  if (!cmiInput.complete) {
+    if (grossEl) grossEl.innerText = '—';
+    if (annEl) annEl.innerText = '—';
+    if (badgeEl) { badgeEl.innerText = 'CMI Not Entered'; badgeEl.className = 'badge badge-warning'; }
+    if (pillEl) {
+      pillEl.style.background = 'rgba(148, 163, 184, 0.12)';
+      pillEl.style.borderColor = 'rgba(148, 163, 184, 0.3)';
+      pillEl.style.color = '#cbd5e1';
+      pillEl.innerHTML = 'Enter all six months of gross income in Step 10 to run the Form 122A-1 comparison.';
+    }
+  } else {
   if (grossEl) grossEl.innerText = `$${monthlyCmi.toLocaleString('en-US', { minimumFractionDigits: 2 })}/mo`;
   if (annEl) annEl.innerText = `$${annualizedCmi.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-  if (medEl) medEl.innerText = `$${coMedian.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
 
   const isBelowMedian = annualizedCmi <= coMedian;
   if (badgeEl) {
@@ -2235,20 +2380,20 @@ function renderStage2AuditAndLedger() {
       pillEl.style.background = 'rgba(34, 197, 94, 0.15)';
       pillEl.style.borderColor = 'rgba(34, 197, 94, 0.3)';
       pillEl.style.color = '#4ade80';
-      pillEl.innerHTML = `✓ <strong>Below-Median Debtor ($${annualizedCmi.toLocaleString('en-US', { minimumFractionDigits: 0 })} vs $${coMedian.toLocaleString('en-US', { minimumFractionDigits: 0 })} Median):</strong> Chapter 7 qualification is safe. No presumption of abuse arises under 11 U.S.C. § 707(b)(2). Form 122A-2 expense deductions not required.`;
+      pillEl.innerHTML = `✓ <strong>Below-Median Debtor ($${annualizedCmi.toLocaleString('en-US', { minimumFractionDigits: 0 })} vs $${coMedian.toLocaleString('en-US', { minimumFractionDigits: 0 })} Median):</strong> Under § 707(b)(7) the presumption of abuse is not raised on this figure (median is app-configured; verify). Form 122A-2 not required.`;
     } else {
       pillEl.style.background = 'rgba(234, 179, 8, 0.15)';
       pillEl.style.borderColor = 'rgba(234, 179, 8, 0.3)';
       pillEl.style.color = '#facc15';
-      pillEl.innerHTML = `⚠️ <strong>Above-Median Debtor ($${annualizedCmi.toLocaleString('en-US', { minimumFractionDigits: 0 })} vs $${coMedian.toLocaleString('en-US', { minimumFractionDigits: 0 })} Median):</strong> Form 122A-2 expense deductions evaluated against IRS National & Local Standards.`;
+      pillEl.innerHTML = `⚠️ <strong>Above-Median Debtor ($${annualizedCmi.toLocaleString('en-US', { minimumFractionDigits: 0 })} vs $${coMedian.toLocaleString('en-US', { minimumFractionDigits: 0 })} Median):</strong> Form 122A-2 is required (not built in this app).`;
     }
   }
+  }
 
-  // Budget Analysis
-  const inc = getValNumber('d1-monthly-gross', 4850) + getValNumber('d1-monthly-overtime', 0);
-  const deductions = getValNumber('d1-payroll-tax', 750) + getValNumber('d1-payroll-401k', 250);
-  const netInc = inc - deductions;
-  const exp = getValNumber('j-rent-mortgage', 1650) + getValNumber('j-utilities', 320) + getValNumber('j-food-clothing', 850) + getValNumber('j-transportation', 450) + getValNumber('j-insurance', 280) + getValNumber('j-medical', 150) + getValNumber('j-childcare', 0);
+  // Budget Analysis (Schedules I, J, J-2 from the Step 10-12 inputs)
+  const budget = readIncomeExpenseInputs();
+  const netInc = budget.scheduleINet;
+  const exp = budget.scheduleJTotal + budget.scheduleJ2Total;
   const surplus = netInc - exp;
 
   const schedIEl = document.getElementById('stage2-sched-i-total');
@@ -2335,15 +2480,34 @@ function switchCopilotDrawerTab(tabId: string) {
 
 async function triggerDownloadPdf(formId: string) {
   const currentData = dualStateManager ? dualStateManager.getDraftFiling() : buildMasterCaseDataFromUI();
-  // Real PDF built from the draft data. Official court templates are not bundled, so this is
-  // a watermarked data sheet per form, not a stamped official form.
-  const pdfBytes = await generateDraftFormPdf(formId, currentData);
+  // Prefer the official fillable PDF when its template is present and its field map is built;
+  // otherwise fall back to the watermarked data sheet.
+  let pdfBytes: Uint8Array | null = null;
+  let fileLabel = 'UNOFFICIAL_DRAFT';
+  const spec = OFFICIAL_FORM_REGISTRY[formId];
+  if (spec && isFormMapped(formId)) {
+    try {
+      const res = await fetch(`forms/official/${spec.templateFile}`);
+      if (res.ok) {
+        const { bytes, report } = await fillOfficialForm(new Uint8Array(await res.arrayBuffer()), spec.fieldMap, currentData, { formId });
+        if (report.missingInPdf.length > 0) {
+          alert(`${spec.officialNumber}: ${report.missingInPdf.length} mapped field(s) are missing from this PDF edition. Downloading the data sheet instead; the field map needs updating.`);
+        } else {
+          pdfBytes = bytes;
+          fileLabel = 'OFFICIAL_FORM_DRAFT';
+        }
+      }
+    } catch (err) {
+      console.warn('Official form fill failed; using data sheet.', err);
+    }
+  }
+  if (!pdfBytes) pdfBytes = await generateDraftFormPdf(formId, currentData);
 
   const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `Colorado_${formId.toUpperCase()}_UNOFFICIAL_DRAFT.pdf`;
+  a.download = `Colorado_${formId.toUpperCase()}_${fileLabel}.pdf`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -2682,7 +2846,19 @@ function initAutopilotAgentUI() {
   updatePortionedFormBanner(1);
 }
 
+function renderVerificationBanner() {
+  const el = document.getElementById('banner-verification-status');
+  if (!el) return;
+  const status = getCounselVerificationStatus();
+  el.innerText = status.allVerified
+    ? `Colorado figures verified by ${status.verifiers.join(', ')} as of ${status.latestVerifiedOn}`
+    : `statutory caps and medians are unverified (${status.records.filter(r => !r.verified).length} of ${status.records.length} items pending counsel sign-off)`;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  void loadVerifiedIdentity();
+  renderVerificationBanner();
+  initTermsModal();
   // Initialize Dual-State Engine, Copilot, and Autopilot
   const initialMasterData = buildMasterCaseDataFromUI();
   dualStateManager = new DualStateManager(initialMasterData);
@@ -2732,13 +2908,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     sessionStorage.setItem('lexpetition_authenticated', 'true');
     if (overlay) overlay.style.display = 'none';
+    ensureTermsAccepted();
     if (authErr) authErr.style.display = 'none';
 
-    // Ensure Copilot Sidebar is open
+    // Open the copilot beside the form on wide screens; on narrow screens it is a slide-over
+    // panel, so leave it closed until the user opens it.
     const sidebar = document.getElementById('copilot-sidebar');
     const toggleBtn = document.getElementById('btn-toggle-copilot');
-    if (sidebar) sidebar.classList.remove('collapsed');
-    if (toggleBtn) toggleBtn.classList.add('active');
+    const isNarrow = window.matchMedia('(max-width: 900px)').matches;
+    if (sidebar) sidebar.classList.toggle('collapsed', isNarrow);
+    if (toggleBtn) toggleBtn.classList.toggle('active', !isNarrow);
 
     if (contextMessage) {
       setTimeout(() => {
@@ -3147,13 +3326,13 @@ document.addEventListener('DOMContentLoaded', () => {
     'has-joint-debtor-toggle', 'd2-first-name', 'd2-middle-name', 'd2-last-name', 'd2-ssn-full', 'd2-phone', 'd2-street', 'd2-city', 'd2-zip',
     'joint-filing-toggle', 'elderly-disabled-toggle',
     'd1-occupation', 'd1-employer-name', 'd1-employer-street', 'd1-employer-citystate', 'd1-employment-years', 'd1-pay-period',
-    'd1-monthly-gross', 'd1-monthly-overtime', 'd1-payroll-tax', 'd1-payroll-401k',
-    'j-rent-mortgage', 'j-utilities', 'j-food-clothing', 'j-childcare', 'j-medical', 'j-transportation', 'j-insurance',
-    'j2-rent-mortgage', 'j2-utilities', 'j2-food-clothing', 'j2-childcare', 'j2-medical', 'j2-transportation', 'j2-insurance',
+    'd1-gross-monthly', 'd1-payroll-taxes', 'd1-statutory-insurance', 'd1-business-income', 'd2-gross-monthly', 'd2-payroll-taxes', 'd2-other-income',
+    'rent-mortgage-expense', 'food-housekeeping-expense', 'transportation-gas-expense', 'vehicle-installment-expense', 'medical-expense',
+    'charitable-expense', 'utilities-expense', 'insurance-expense', 'childcare-expense', 'other-monthly-expenses',
+    'has-separate-household-toggle', 'j2-rent-expense', 'j2-food-expense', 'j2-utilities-expense', 'j2-other-expense',
     'sofa-income-ytd', 'sofa-income-lastyr', 'sofa-noninsider-creditor', 'sofa-noninsider-paid', 'sofa-insider-name', 'sofa-insider-paid', 'sofa-lawsuit-caption',
     'f108-creditor', 'f108-property', 'f108-intention', 'f108-lessor', 'f108-lease-property', 'f108-lease-intention',
-    'cmi-m1', 'cmi-m2', 'cmi-m3', 'cmi-m4', 'cmi-m5', 'cmi-m6',
-    'irs-food-cloth', 'irs-housing', 'irs-trans'
+    'cmi-m1', 'cmi-m2', 'cmi-m3', 'cmi-m4', 'cmi-m5', 'cmi-m6'
   ];
 
   syncInputIds.forEach(id => {
@@ -3238,6 +3417,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bar_number: attBar,
       firm_name: attFirm,
       ecf_login_id: (document.getElementById('attorney-ecf') as HTMLInputElement)?.value.trim() ?? '',
+      verified_email: verifiedAccessEmail,
       signed_at: new Date().toISOString(),
       declaration_accepted: isDeclChecked
     };
@@ -3247,7 +3427,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (statusBox) {
       if (result.success) {
         statusBox.style.color = '#4ade80';
-        statusBox.innerHTML = `✓ Signoff recorded in this browser for ${escapeHtml(attName)} (Reg. # ${escapeHtml(attBar)} — format checked only, not verified against the Colorado registry). Nothing has been filed.`;
+        statusBox.innerHTML = `✓ Signoff recorded in this browser for ${escapeHtml(attName)} (Reg. # ${escapeHtml(attBar)} — format checked only, not verified against the Colorado registry)${verifiedAccessEmail ? `, signed in as ${escapeHtml(verifiedAccessEmail)} (Cloudflare Access)` : ''}. Nothing has been filed.`;
         dualStateManager.publishToOfficialPetition(attName, attBar, attFirm);
 
         const pill = document.getElementById('agent-approval-status-pill');
@@ -4234,15 +4414,10 @@ function openExecutionReportModal() {
   const reNonExemptEquity = Math.max(0, reEquity - homesteadCap);
   const totalExemptionsClaimed = state.exemptions.reduce((sum, e) => sum + e.claimedAmount, 0);
 
-  const m1 = getValNumber('cmi-m1', 4850);
-  const m2 = getValNumber('cmi-m2', 4850);
-  const m3 = getValNumber('cmi-m3', 4850);
-  const m4 = getValNumber('cmi-m4', 4850);
-  const m5 = getValNumber('cmi-m5', 4850);
-  const m6 = getValNumber('cmi-m6', 4850);
-  const monthlyCmi = (m1 + m2 + m3 + m4 + m5 + m6) / 6;
+  const summaryCmi = readCmiMonths();
+  const monthlyCmi = summaryCmi.months.reduce((a, b) => a + b, 0) / 6;
   const annualizedCmi = monthlyCmi * 12;
-  const hhSize = isJoint ? 2 : 1;
+  const hhSize = (document.getElementById('has-joint-debtor-toggle') as HTMLInputElement)?.checked ? 2 : 1;
   const coMedian = getColoradoMedianIncome(hhSize);
   const isBelowMedian = annualizedCmi <= coMedian;
 
@@ -4264,7 +4439,7 @@ function openExecutionReportModal() {
         <div><span style="color:#94a3b8;">Total Scheduled Assets:</span><br/><strong style="color:#4ade80;">$${totalAssets.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong></div>
         <div><span style="color:#94a3b8;">Total Scheduled Debts:</span><br/><strong style="color:#f87171;">$${totalDebts.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong></div>
         <div><span style="color:#94a3b8;">Claimed C.R.S. Exemptions:</span><br/><strong style="color:#38bdf8;">$${totalExemptionsClaimed.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong></div>
-        <div><span style="color:#94a3b8;">Means Test Presumption:</span><br/><strong style="color:${isBelowMedian ? '#4ade80' : '#fbbf24'};">${isBelowMedian ? '✓ Safe Harbor (Below Median)' : '⚠️ Above Median'}</strong></div>
+        <div><span style="color:#94a3b8;">Means Test Presumption:</span><br/><strong style="color:${!summaryCmi.complete ? '#94a3b8' : isBelowMedian ? '#4ade80' : '#fbbf24'};">${!summaryCmi.complete ? 'CMI not entered' : isBelowMedian ? '✓ Below Configured Median' : '⚠️ Above Median'}</strong></div>
       </div>
     </div>
 
@@ -4272,7 +4447,9 @@ function openExecutionReportModal() {
     <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.06); padding:12px; border-radius:8px; margin-bottom:14px;">
       <h4 style="margin:0 0 8px 0; font-size:0.9rem; color:#38bdf8;">1. Statutory Findings & Colorado Safe Harbor Analysis</h4>
       <div style="font-size:0.8rem; line-height:1.5; color:#cbd5e1;">
-        <div>• <strong>Form 122A Means Test:</strong> 6-Month Gross CMI is <strong>$${monthlyCmi.toLocaleString('en-US', { minimumFractionDigits: 2 })}/mo</strong> (Annualized <strong>$${annualizedCmi.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> vs. 2026 Colorado Median Income limit of <strong>$${coMedian.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> for household size of ${hhSize}; app-configured, unverified). ${isBelowMedian ? 'Below the configured median: under § 707(b)(7) the presumption of abuse would not be raised on this figure.' : '<strong>Above the configured median: complete Form 122A-2.</strong>'}</div>
+        <div>• <strong>Form 122A Means Test:</strong> ${!summaryCmi.complete
+          ? 'Six-month income not entered in Step 10; no means-test conclusion drawn.'
+          : `6-Month Gross CMI is <strong>$${monthlyCmi.toLocaleString('en-US', { minimumFractionDigits: 2 })}/mo</strong> (Annualized <strong>$${annualizedCmi.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> vs. Colorado median of <strong>$${coMedian.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> for household size of ${hhSize}; app-configured, unverified). ${isBelowMedian ? 'Below the configured median: under § 707(b)(7) the presumption of abuse would not be raised on this figure.' : '<strong>Above the configured median: complete Form 122A-2.</strong>'}`}</div>
         <div>• <strong>Homestead Protection (C.R.S. § 38-41-201):</strong> Real property equity is <strong>$${reEquity.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> against statutory cap of <strong>$${homesteadCap.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> (${isElderlyDisabled ? 'Elderly/Disabled Rate' : 'Standard Rate'}; cap unverified). Non-exempt equity: <strong>$${reNonExemptEquity.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong>${reNonExemptEquity > 0 ? ' (at risk)' : ''}.</div>
         <div>• <strong>Retirement Funds (11 U.S.C. § 522(b)(3)(C); C.R.S. § 13-54-102(1)(s) — attorney to verify):</strong> Colorado is an opt-out state, so the federal § 522(d) list is not available; qualified retirement funds are claimed under § 522(b)(3)(C) and state law.</div>
       </div>
@@ -4524,7 +4701,7 @@ function openIntegrityAuditModal() {
     { section: 'Exemptions', field: 'Colorado C.R.S. Exemption Claims', rawVal: `${state.exemptions.length} Claims ($${state.exemptions.reduce((s,e)=>s+e.claimedAmount,0).toLocaleString()})`, dests: ['Schedule C Pt 1', 'Form 106Dec'], status: 'PASS' },
     { section: 'Secured Claims', field: 'Schedule D Secured Creditors', rawVal: `${state.securedClaims.length} Claims ($${state.securedClaims.reduce((s,c)=>s+c.securedAmount,0).toLocaleString()})`, dests: ['Schedule D Pt 1', 'Form 108', 'Matrix'], status: 'PASS' },
     { section: 'Unsecured Claims', field: 'Schedule E/F Priority & Nonpriority', rawVal: `${state.unsecuredClaims.length} Debts ($${state.unsecuredClaims.reduce((s,u)=>s+u.totalClaimAmount,0).toLocaleString()})`, dests: ['Schedule E/F Pt 1 & 2', 'Matrix'], status: 'PASS' },
-    { section: 'Income', field: 'Schedule I Debtor Monthly Income', rawVal: `$${getValNumber('d1-monthly-gross', 4850).toLocaleString()}/mo Gross`, dests: ['Form 106I Pt 1-2', 'Form 122A-1'], status: 'PASS' },
+    { section: 'Income', field: 'Schedule I Debtor Monthly Income', rawVal: `$${readIncomeExpenseInputs().d1Gross.toLocaleString()}/mo Gross`, dests: ['Form 106I Pt 1-2', 'Form 122A-1'], status: 'PASS' },
     { section: 'Expenses', field: 'Schedule J Living Expenses', rawVal: `$${(getValNumber('j-rent-mortgage',1650)+getValNumber('j-utilities',320)+getValNumber('j-food-clothing',850)+getValNumber('j-transportation',450)+getValNumber('j-insurance',280)+getValNumber('j-medical',150)).toLocaleString()}/mo`, dests: ['Form 106J Pt 1-2', 'Cash Flow'], status: 'PASS' },
     { section: 'Means Testing', field: '6-Month CMI & CO Median Limit', rawVal: `$${getColoradoMedianIncome(1).toLocaleString()} Median Threshold`, dests: ['Form 122A-1', 'Safe Harbor Safe'], status: 'PASS' }
   ];

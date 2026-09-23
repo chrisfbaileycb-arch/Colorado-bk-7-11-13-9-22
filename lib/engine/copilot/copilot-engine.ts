@@ -432,12 +432,12 @@ Please select an action below or ask a specific bankruptcy question!`;
     const medianThreshold = getColoradoMedianIncome(householdSize);
 
     // Get 6-month gross wage numbers from means test or schedule I
-    const m1 = Number(data.means_test_122a?.gross_wages_month_1?.value ?? 4850);
-    const m2 = Number(data.means_test_122a?.gross_wages_month_2?.value ?? 4850);
-    const m3 = Number(data.means_test_122a?.gross_wages_month_3?.value ?? 4850);
-    const m4 = Number(data.means_test_122a?.gross_wages_month_4?.value ?? 4850);
-    const m5 = Number(data.means_test_122a?.gross_wages_month_5?.value ?? 4850);
-    const m6 = Number(data.means_test_122a?.gross_wages_month_6?.value ?? 4850);
+    const m1 = Number(data.means_test_122a?.gross_wages_month_1?.value ?? 0);
+    const m2 = Number(data.means_test_122a?.gross_wages_month_2?.value ?? 0);
+    const m3 = Number(data.means_test_122a?.gross_wages_month_3?.value ?? 0);
+    const m4 = Number(data.means_test_122a?.gross_wages_month_4?.value ?? 0);
+    const m5 = Number(data.means_test_122a?.gross_wages_month_5?.value ?? 0);
+    const m6 = Number(data.means_test_122a?.gross_wages_month_6?.value ?? 0);
 
     const cmiMonthlyAvg = (m1 + m2 + m3 + m4 + m5 + m6) / 6;
     const annualizedCmi = cmiMonthlyAvg * 12;
@@ -485,7 +485,7 @@ Please select an action below or ask a specific bankruptcy question!`;
     const householdSize = data.debtor_2 ? 2 : 1;
     const medianThreshold = getColoradoMedianIncome(householdSize);
     
-    const grossIncome = Number(data.schedule_i?.total_monthly_gross_wages?.value || 4850);
+    const grossIncome = Number(data.schedule_i?.debtor_1_gross_wages?.value || 0);
     const allowedExpenses = Number(data.schedule_j?.total_monthly_expenses?.value || 4100);
     const dmi = Math.max(0, grossIncome - allowedExpenses);
 

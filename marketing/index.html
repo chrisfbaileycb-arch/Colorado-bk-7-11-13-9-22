@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VoxelLex Colorado — Chapter 7 Petition Preparation for Law Firms</title>
+  <meta name="description" content="Petition preparation software for Colorado bankruptcy firms: paralegal intake, deterministic exemption and means-test checks, and a documented attorney review gate." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c1917;
+      --muted: #57534e;
+      --paper: #f7f4ed;
+      --card: #ffffff;
+      --line: #e7e0d2;
+      --wine: #701a2b;
+      --wine-soft: #f5e9eb;
+      --amber: #92400e;
+      --amber-soft: #fef3c7;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.6;
+      font-size: 17px;
+    }
+    a { color: var(--wine); }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+    header.top {
+      border-bottom: 1px solid var(--line);
+      background: rgba(247, 244, 237, 0.92);
+      position: sticky; top: 0; z-index: 10;
+      backdrop-filter: blur(8px);
+    }
+    header.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+    .wordmark { font-weight: 700; letter-spacing: 0.08em; font-size: 0.95rem; color: var(--wine); text-decoration: none; }
+    .wordmark span { color: var(--muted); font-weight: 500; letter-spacing: 0.02em; margin-left: 6px; }
+    nav.links { display: flex; gap: 24px; font-size: 0.92rem; }
+    nav.links a { color: var(--muted); text-decoration: none; }
+    nav.links a:hover { color: var(--wine); }
+    .btn {
+      display: inline-block; padding: 12px 22px; border-radius: 999px; font-weight: 600; font-size: 0.95rem;
+      text-decoration: none; border: 1px solid var(--wine); transition: background 0.15s, color 0.15s;
+    }
+    .btn-primary { background: var(--wine); color: #fff; }
+    .btn-primary:hover { background: #5a1422; }
+    .btn-ghost { color: var(--wine); background: transparent; }
+    .btn-ghost:hover { background: var(--wine-soft); }
+
+    .hero { padding-top: 88px; padding-bottom: 56px; }
+    .eyebrow { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--wine); }
+    h1, h2 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; line-height: 1.15; color: var(--ink); }
+    h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); margin: 14px 0 20px; max-width: 18ch; }
+    .lede { font-size: 1.2rem; color: var(--muted); max-width: 60ch; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 32px; }
+
+    section { padding: 64px 0; scroll-margin-top: 72px; }
+    section + section { border-top: 1px solid var(--line); }
+    h2 { font-size: clamp(1.7rem, 3.5vw, 2.3rem); margin-bottom: 14px; }
+    .section-intro { color: var(--muted); max-width: 62ch; margin-bottom: 36px; }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; }
+    .card h3 { font-size: 1.08rem; margin-bottom: 8px; }
+    .card p { color: var(--muted); font-size: 0.97rem; }
+
+    .shot { margin: 0 0 56px; }
+    .shot:last-child { margin-bottom: 0; }
+    .shot img {
+      width: 100%; height: auto; display: block; border-radius: var(--radius);
+      border: 1px solid var(--line); box-shadow: 0 18px 40px -18px rgba(28, 25, 23, 0.35);
+    }
+    .shot figcaption { margin-top: 16px; max-width: 70ch; }
+    .shot figcaption strong { display: block; font-size: 1.05rem; margin-bottom: 4px; }
+    .shot figcaption span { color: var(--muted); font-size: 0.97rem; }
+
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; counter-reset: step; }
+    .steps .card { position: relative; padding-top: 58px; }
+    .steps .card::before {
+      counter-increment: step; content: counter(step);
+      position: absolute; top: 20px; left: 26px; width: 28px; height: 28px; border-radius: 50%;
+      background: var(--wine); color: #fff; font-weight: 700; font-size: 0.9rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .honest { background: var(--amber-soft); border: 1px solid #fcd34d; border-radius: var(--radius); padding: 28px; }
+    .honest h2 { font-size: 1.5rem; }
+    .honest ul { margin: 12px 0 0 20px; color: #44403c; }
+    .honest li { margin: 6px 0; }
+
+    .cta { text-align: center; }
+    .cta .lede { margin: 0 auto 28px; }
+
+    footer { border-top: 1px solid var(--line); padding: 32px 0 48px; font-size: 0.85rem; color: var(--muted); }
+    footer p + p { margin-top: 8px; }
+
+    @media (max-width: 860px) {
+      nav.links { display: none; }
+      .grid-3, .steps { grid-template-columns: 1fr; }
+      .hero { padding-top: 48px; padding-bottom: 36px; }
+      header.top .btn { padding: 9px 14px; font-size: 0.85rem; white-space: nowrap; }
+      body { font-size: 16px; }
+      section { padding: 48px 0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="wordmark" href="#">VOXELLEX<span>Colorado</span></a>
+      <nav class="links" aria-label="Sections">
+        <a href="#product">Product</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#security">Access &amp; security</a>
+        <a href="#status">Status</a>
+      </nav>
+      <!-- TODO(owner): replace with your sales address before publishing -->
+      <a class="btn btn-primary" href="mailto:hello@example.com?subject=VoxelLex%20Colorado%20demo">Request a demo</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap hero">
+      <div class="eyebrow">For Colorado bankruptcy firms</div>
+      <h1>Chapter 7 petitions, prepared by your paralegals, reviewed by your attorney.</h1>
+      <p class="lede">
+        One intake that fills every schedule, Colorado exemption and means-test checks that show their math,
+        and an attorney review gate that records who approved what. Built for firms, licensed only to firms.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="mailto:hello@example.com?subject=VoxelLex%20Colorado%20demo">Request a demo</a>
+        <a class="btn btn-ghost" href="#product">See the product</a>
+      </div>
+    </div>
+
+    <section>
+      <div class="wrap">
+        <h2>What it does</h2>
+        <p class="section-intro">The work between the client consultation and the attorney's signature, in one place.</p>
+        <div class="grid-3">
+          <div class="card">
+            <h3>Enter it once</h3>
+            <p>A 16-step intake feeds Form 101, Schedules A/B through J-2, and Form 122A-1 from a single case record, so the same number never has to be typed twice.</p>
+          </div>
+          <div class="card">
+            <h3>Checks that show their work</h3>
+            <p>Colorado exemption caps, six-month current monthly income, and cross-schedule consistency are calculated by rule, with the inputs and thresholds on screen.</p>
+          </div>
+          <div class="card">
+            <h3>A documented attorney gate</h3>
+            <p>Hard-audit flags block sign-off. The supervising attorney's review is recorded with their signed-in identity before anything is marked ready.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="product">
+      <div class="wrap">
+        <h2>Inside the app</h2>
+        <p class="section-intro">Screens from the current build, with synthetic case data.</p>
+
+        <figure class="shot">
+          <img src="assets/intake-means-test.png" alt="Intake step for Schedule I income with the six-month Form 122A-1 table and a calculated current monthly income compared with the configured Colorado median." width="1440" height="900" loading="lazy" />
+          <figcaption>
+            <strong>Income and the six-month means test, on one step</strong>
+            <span>Schedule I totals update as you type. Enter six months of gross income and the Form 122A-1 comparison appears, showing the median figure it used.</span>
+          </figcaption>
+        </figure>
+
+        <figure class="shot">
+          <img src="assets/exemption-audit.png" alt="Schedule audit screen showing Colorado homestead, vehicle, household goods and retirement exemption cards with equity, caps and remaining margin, next to a list of audit flags." width="1440" height="900" loading="lazy" />
+          <figcaption>
+            <strong>Colorado exemptions, card by card</strong>
+            <span>Equity, the configured cap, and the remaining margin for each exemption, alongside the audit flags that must be cleared before attorney sign-off.</span>
+          </figcaption>
+        </figure>
+
+        <figure class="shot">
+          <img src="assets/form-preview.png" alt="Court packet screen listing each official form with its status, and a draft preview of Schedule J populated from the intake." width="1440" height="900" loading="lazy" />
+          <figcaption>
+            <strong>Every schedule, previewed from the same record</strong>
+            <span>Pick a form to preview it and download a draft. Drafts are marked for attorney review. Forms not yet built are labeled that way.</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="workflow">
+      <div class="wrap">
+        <h2>How a case moves</h2>
+        <p class="section-intro">The software prepares; your attorney decides and files.</p>
+        <div class="steps">
+          <div class="card">
+            <h3>Paralegal intake</h3>
+            <p>Staff enter debtor, property, creditor, income and expense details once. Totals and schedules fill in as they go.</p>
+          </div>
+          <div class="card">
+            <h3>Checks and review</h3>
+            <p>The app flags exemption overages, missing statements and inconsistencies. The attorney reviews the drafts and signs off in the app.</p>
+          </div>
+          <div class="card">
+            <h3>Attorney files</h3>
+            <p>Your attorney files through the court's own CM/ECF system, as today. The app never files or contacts the court.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="security">
+      <div class="wrap">
+        <h2>Access and security</h2>
+        <p class="section-intro">The app is not on the public internet. Each firm's staff sign in through Cloudflare Access with their own work accounts before the app will load.</p>
+        <div class="grid-3">
+          <div class="card">
+            <h3>Firm-only sign-in</h3>
+            <p>Access is limited per firm, by work email or your existing Microsoft 365 or Google Workspace login. Removing a firm's access takes one change.</p>
+          </div>
+          <div class="card">
+            <h3>Verified identity on sign-off</h3>
+            <p>The app checks the sign-in on every request and records the verified email with each attorney sign-off and terms acceptance.</p>
+          </div>
+          <div class="card">
+            <h3>No AI, no third parties</h3>
+            <p>Calculations are rule-based. Case data stays in the browser session and is not sent to AI services or other outside providers.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="status">
+      <div class="wrap">
+        <div class="honest">
+          <h2>Where the product is today</h2>
+          <p>We would rather you hear this from us than find it in a demo.</p>
+          <ul>
+            <li>Chapter 7 is the supported workflow. Chapters 11 and 13 are not yet available.</li>
+            <li>Forms 107 (SOFA), 108 and 122A-2 are not built yet.</li>
+            <li>Downloads are drafts for attorney review. Filling the official court PDFs directly is in progress.</li>
+            <li>There is no document scanning (OCR); figures are entered by staff.</li>
+            <li>Colorado exemption amounts and median-income figures are being confirmed by Colorado counsel before release.</li>
+            <li>Case data is not yet saved between sessions; persistent, encrypted storage comes before any real client use.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="wrap">
+        <h2>See it with your own workflow</h2>
+        <p class="lede">A 30-minute walkthrough with synthetic data, for your paralegals and supervising attorney.</p>
+        <a class="btn btn-primary" href="mailto:hello@example.com?subject=VoxelLex%20Colorado%20demo">Request a demo</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>VoxelLex Colorado is software for licensed law firms. It is not a law firm, does not provide legal advice, and does not file documents with any court.</p>
+      <p>Screenshots show synthetic data. Features described reflect the current build and may change.</p>
+    </div>
+  </footer>
+</body>
+</html>
