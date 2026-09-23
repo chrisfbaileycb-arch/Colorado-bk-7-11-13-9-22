@@ -1,4 +1,7 @@
 import {
+  OFFICIAL_FORM_REGISTRY,
+  isFormMapped,
+  fillOfficialForm,
   sha256Hex,
   canonicalJson,
   generateDraftFormPdf,
@@ -2349,15 +2352,34 @@ function switchCopilotDrawerTab(tabId: string) {
 
 async function triggerDownloadPdf(formId: string) {
   const currentData = dualStateManager ? dualStateManager.getDraftFiling() : buildMasterCaseDataFromUI();
-  // Real PDF built from the draft data. Official court templates are not bundled, so this is
-  // a watermarked data sheet per form, not a stamped official form.
-  const pdfBytes = await generateDraftFormPdf(formId, currentData);
+  // Prefer the official fillable PDF when its template is present and its field map is built;
+  // otherwise fall back to the watermarked data sheet.
+  let pdfBytes: Uint8Array | null = null;
+  let fileLabel = 'UNOFFICIAL_DRAFT';
+  const spec = OFFICIAL_FORM_REGISTRY[formId];
+  if (spec && isFormMapped(formId)) {
+    try {
+      const res = await fetch(`forms/official/${spec.templateFile}`);
+      if (res.ok) {
+        const { bytes, report } = await fillOfficialForm(new Uint8Array(await res.arrayBuffer()), spec.fieldMap, currentData, { formId });
+        if (report.missingInPdf.length > 0) {
+          alert(`${spec.officialNumber}: ${report.missingInPdf.length} mapped field(s) are missing from this PDF edition. Downloading the data sheet instead; the field map needs updating.`);
+        } else {
+          pdfBytes = bytes;
+          fileLabel = 'OFFICIAL_FORM_DRAFT';
+        }
+      }
+    } catch (err) {
+      console.warn('Official form fill failed; using data sheet.', err);
+    }
+  }
+  if (!pdfBytes) pdfBytes = await generateDraftFormPdf(formId, currentData);
 
   const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `Colorado_${formId.toUpperCase()}_UNOFFICIAL_DRAFT.pdf`;
+  a.download = `Colorado_${formId.toUpperCase()}_${fileLabel}.pdf`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);

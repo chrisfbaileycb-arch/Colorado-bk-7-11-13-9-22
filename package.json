@@ -9,7 +9,9 @@
     "build": "vite build",
     "preview": "vite preview --port 3000",
     "lint": "tsc --noEmit",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "forms:inspect": "bun scripts/inspect-form-fields.ts",
+    "test": "bun test"
   },
   "keywords": [
     "bankruptcy",
