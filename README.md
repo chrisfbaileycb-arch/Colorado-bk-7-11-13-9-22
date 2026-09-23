@@ -4,6 +4,46 @@ VoxelLex.AI Colorado is an attorney-supervised Colorado Chapter 7, Chapter 11 (S
 
 > **Important:** This project is not a law firm, filing service, substitute for counsel, or source of legal advice. Chapter 7 is the implemented prototype workflow. Chapter 11 and Chapter 13 are architectural plans only.
 
+## Owner to-do
+
+<details>
+<summary><strong>What's needed from the owner before release (click to expand)</strong></summary>
+
+<br/>
+
+These items can't be done in code alone. Each one lists what to provide and where it goes.
+
+### 1. Official court forms
+- [ ] Download the current fillable PDFs from uscourts.gov (Bankruptcy Forms, Form 100 series): **Forms 101, 106I, 106J, 122A-1**.
+- [ ] Save them in `public/forms/official/` using the file names in [that folder's README](public/forms/official/README.md), and commit them.
+- [ ] Ask for the field maps to be built. Until then, downloads stay as watermarked draft data sheets.
+
+### 2. Cloudflare deployment
+- [ ] Follow [docs/deploy-cloudflare.md](docs/deploy-cloudflare.md): deploy the app with `npx wrangler pages deploy`.
+- [ ] Put the app behind Cloudflare Access (Zero Trust), with one Allow policy per firm. Don't use "Everyone".
+- [ ] Set `ACCESS_TEAM_DOMAIN` and `ACCESS_AUD` in the Pages project settings (Production and Preview).
+- [ ] Deploy the `marketing/` folder as a separate public Pages project.
+- [ ] Check it: a private window should show the Access login page, and after sign-in the app should show your verified email.
+
+### 3. Colorado counsel sign-off
+- [ ] Have a Colorado attorney confirm each exemption amount, the joint-filer treatment and the median-income table, in writing. See [docs/recording-counsel-signoff.md](docs/recording-counsel-signoff.md) for the list.
+- [ ] Provide the attorney's **name, Colorado registration number, review date**, and which figures they confirmed.
+- [ ] Record it in code; the banner then switches from "pending" to "verified by … as of …".
+
+### 4. License agreement
+- [ ] Have a contracts attorney write the firm license agreement: tool not advice, attorney responsibility, authorized users, liability limits, data handling.
+- [ ] Provide the text to replace the placeholder in `lib/engine/review/terms.ts`, and bump `TERMS_VERSION` so every user accepts it again.
+
+### 5. Marketing site
+- [ ] Replace `hello@example.com` in `marketing/index.html` with your real sales address (three places).
+- [ ] Decide the public brand name: the page uses "VoxelLex" because it states there is no AI.
+
+### 6. Accounts and housekeeping
+- [ ] Revoke any API keys or tokens from the old AppDeploy account.
+- [ ] Before any real client data: complete the [production-readiness requirements](#production-readiness-requirements), including server storage, encryption, per-firm data separation, backups and audit logs.
+
+</details>
+
 ## Current capabilities
 
 - Seventeen-step adaptive Chapter 7 intake interface
