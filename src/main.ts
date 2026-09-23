@@ -1,4 +1,11 @@
 import {
+  TERMS_SECTIONS,
+  TERMS_VERSION,
+  TERMS_IS_PLACEHOLDER,
+  needsTermsAcceptance,
+  buildTermsAcceptance,
+  termsStorageKey,
+  type TermsAcceptance,
   OFFICIAL_FORM_REGISTRY,
   isFormMapped,
   fillOfficialForm,
@@ -387,6 +394,93 @@ async function loadVerifiedIdentity() {
   }
   const idNote = document.getElementById('attorney-verified-identity');
   if (idNote) idNote.innerHTML = `Signed-in identity: <strong>${escapeHtml(verifiedAccessEmail!)}</strong> (verified by Cloudflare Access). It is recorded with the signoff.`;
+}
+
+// ----------------------------------------------------
+// LICENSE TERMS ACKNOWLEDGMENT
+// ----------------------------------------------------
+// Stored in this browser for now; moves to server storage when the backend exists.
+function readTermsAcceptance(): TermsAcceptance | null {
+  try {
+    const raw = localStorage.getItem(termsStorageKey(verifiedAccessEmail));
+    return raw ? JSON.parse(raw) as TermsAcceptance : null;
+  } catch {
+    return null;
+  }
+}
+
+function openTermsModal(mode: 'accept' | 'view') {
+  const modal = document.getElementById('modal-terms');
+  if (!modal) return;
+  const sections = document.getElementById('terms-sections');
+  if (sections) {
+    sections.innerHTML = TERMS_SECTIONS.map(t => `<div><h4>${escapeHtml(t.heading)}</h4><p>${escapeHtml(t.body)}</p></div>`).join('');
+  }
+  const versionEl = document.getElementById('terms-version');
+  if (versionEl) versionEl.innerText = TERMS_VERSION;
+  const badge = document.getElementById('terms-placeholder-badge');
+  if (badge) badge.style.display = TERMS_IS_PLACEHOLDER ? 'inline-block' : 'none';
+
+  const form = document.getElementById('terms-accept-form');
+  const acceptBtn = document.getElementById('btn-terms-accept') as HTMLButtonElement | null;
+  const closeBtn = document.getElementById('btn-terms-close');
+  const acceptedLine = document.getElementById('terms-accepted-line');
+  const record = readTermsAcceptance();
+
+  if (mode === 'view') {
+    if (form) form.style.display = 'none';
+    if (acceptBtn) acceptBtn.style.display = 'none';
+    if (closeBtn) closeBtn.style.display = 'inline-flex';
+    if (acceptedLine) {
+      acceptedLine.innerText = record
+        ? `Accepted by ${record.typedName}${record.verifiedEmail ? ` (${record.verifiedEmail})` : ''} on ${new Date(record.acceptedAt).toLocaleString()}, version ${record.version}.`
+        : 'Not yet accepted.';
+    }
+  } else {
+    if (form) form.style.display = 'grid';
+    if (acceptBtn) acceptBtn.style.display = 'inline-flex';
+    if (closeBtn) closeBtn.style.display = 'none';
+    if (acceptedLine) acceptedLine.innerText = '';
+    const identityLine = document.getElementById('terms-identity-line');
+    if (identityLine) {
+      identityLine.innerText = verifiedAccessEmail
+        ? `Recorded with your signed-in identity: ${verifiedAccessEmail}.`
+        : 'No signed-in identity is available in this session; only your typed name is recorded.';
+    }
+  }
+  modal.style.display = 'flex';
+  (mode === 'accept' ? document.getElementById('terms-typed-name') : closeBtn)?.focus();
+}
+
+function ensureTermsAccepted() {
+  if (needsTermsAcceptance(readTermsAcceptance())) openTermsModal('accept');
+}
+
+function initTermsModal() {
+  const nameInput = document.getElementById('terms-typed-name') as HTMLInputElement | null;
+  const check = document.getElementById('terms-accept-check') as HTMLInputElement | null;
+  const acceptBtn = document.getElementById('btn-terms-accept') as HTMLButtonElement | null;
+  const refresh = () => {
+    if (acceptBtn) acceptBtn.disabled = !(nameInput?.value.trim() && check?.checked);
+  };
+  nameInput?.addEventListener('input', refresh);
+  check?.addEventListener('change', refresh);
+  acceptBtn?.addEventListener('click', () => {
+    if (!nameInput?.value.trim() || !check?.checked) return;
+    const record = buildTermsAcceptance(nameInput.value, verifiedAccessEmail);
+    try {
+      localStorage.setItem(termsStorageKey(verifiedAccessEmail), JSON.stringify(record));
+    } catch {
+      // Storage blocked (private mode); the acceptance still applies to this session.
+    }
+    const modal = document.getElementById('modal-terms');
+    if (modal) modal.style.display = 'none';
+  });
+  document.getElementById('btn-terms-close')?.addEventListener('click', () => {
+    const modal = document.getElementById('modal-terms');
+    if (modal) modal.style.display = 'none';
+  });
+  document.getElementById('btn-show-terms')?.addEventListener('click', () => openTermsModal('view'));
 }
 
 function buildMasterCaseDataFromUI(): MasterCaseData {
@@ -2744,6 +2838,7 @@ function initAutopilotAgentUI() {
 
 document.addEventListener('DOMContentLoaded', () => {
   void loadVerifiedIdentity();
+  initTermsModal();
   // Initialize Dual-State Engine, Copilot, and Autopilot
   const initialMasterData = buildMasterCaseDataFromUI();
   dualStateManager = new DualStateManager(initialMasterData);
@@ -2793,6 +2888,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     sessionStorage.setItem('lexpetition_authenticated', 'true');
     if (overlay) overlay.style.display = 'none';
+    ensureTermsAccepted();
     if (authErr) authErr.style.display = 'none';
 
     // Ensure Copilot Sidebar is open

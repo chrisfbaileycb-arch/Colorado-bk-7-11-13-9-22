@@ -3170,3 +3170,17 @@ body { padding-top: var(--disclaimer-h); }
   font-size: 0.8rem;
   color: #cbd5e1;
 }
+
+/* License terms acknowledgment */
+.terms-card { max-width: 640px; }
+.terms-placeholder-badge {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.02em;
+  color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.5); border-radius: 9999px; padding: 3px 10px;
+}
+.terms-sections { display: grid; gap: 10px; margin-bottom: 16px; }
+.terms-sections h4 { margin: 0 0 2px 0; font-size: 0.85rem; color: #e2e8f0; }
+.terms-sections p { margin: 0; font-size: 0.82rem; line-height: 1.5; color: #cbd5e1; }
+.terms-accept-form { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 14px; display: grid; gap: 10px; }
+.terms-check { display: flex; gap: 8px; align-items: flex-start; font-size: 0.85rem; color: #e2e8f0; cursor: pointer; }
+.terms-check input { margin-top: 3px; }
+.terms-identity-line { font-size: 0.75rem; color: #94a3b8; }
