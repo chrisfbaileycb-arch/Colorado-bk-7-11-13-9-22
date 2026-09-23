@@ -155,6 +155,9 @@ export function buildDraftFormContent(formId: string, data: MasterCaseData): Dra
           ['Medical and dental', usd(j.medical_and_dental)],
           ['Transportation', usd(j.transportation)],
           ['Insurance', usd(j.insurance)],
+          ['Vehicle installment payments', usd(j.vehicle_installment)],
+          ['Charitable contributions', usd(j.charitable_contributions)],
+          ['Other', usd(j.other_expenses)],
           ['Total monthly expenses', usd(j.total_monthly_expenses)]
         ]
       });

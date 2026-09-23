@@ -296,6 +296,9 @@ export function renderCourtFormHtml(formId: string, data: MasterCaseData): strin
               <tr><td>11. Medical and Dental Expenses</td><td>${usd(j.medical_and_dental)}</td></tr>
               <tr><td>12. Transportation</td><td>${usd(j.transportation)}</td></tr>
               <tr><td>15. Insurance</td><td>${usd(j.insurance)}</td></tr>
+              <tr><td>17. Vehicle Installment Payments</td><td>${usd(j.vehicle_installment)}</td></tr>
+              <tr><td>14. Charitable Contributions</td><td>${usd(j.charitable_contributions)}</td></tr>
+              <tr><td>21. Other</td><td>${usd(j.other_expenses)}</td></tr>
               <tr class="highlight-row"><td><strong>22. Total Monthly Expenses</strong></td><td><strong>$${j.total_monthly_expenses.toLocaleString()}</strong></td></tr>
             </tbody>
           </table>

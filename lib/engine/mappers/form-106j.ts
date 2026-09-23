@@ -16,7 +16,10 @@ export function mapForm106J(data: MasterCaseData) {
   const medical = jLine(data, 'medical_and_dental', 'medical_and_dental');
   const transportation = jLine(data, 'transportation_gas', 'transportation_gas');
   const insurance = jLine(data, 'insurance', 'insurance');
-  const itemized = rent + util + food + childcare + medical + transportation + insurance;
+  const vehicle = jLine(data, 'vehicle_installment', 'vehicle_installment');
+  const charitable = jLine(data, 'charitable', 'charitable');
+  const other = jLine(data, 'other_expenses', 'other_expenses');
+  const itemized = rent + util + food + childcare + medical + transportation + insurance + vehicle + charitable + other;
   const total = data.schedule_j?.total_monthly_expenses?.value ?? itemized;
 
   return {
@@ -27,6 +30,9 @@ export function mapForm106J(data: MasterCaseData) {
     medical_and_dental: medical,
     transportation: transportation,
     insurance: insurance,
+    vehicle_installment: vehicle,
+    charitable_contributions: charitable,
+    other_expenses: other,
     total_monthly_expenses: total
   };
 }

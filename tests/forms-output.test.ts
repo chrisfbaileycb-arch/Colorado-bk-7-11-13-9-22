@@ -116,3 +116,19 @@ describe('Draft PDF generator', () => {
     expect(buildDraftFormContent('form107', data).implemented).toBe(false);
   });
 });
+
+describe('UI input ids used by main.ts exist in index.html', () => {
+  it('Schedules I, J, J-2 and the 122A-1 month inputs are wired to real elements', async () => {
+    const html = await Bun.file('index.html').text();
+    const ids = [
+      'd1-gross-monthly', 'd1-payroll-taxes', 'd1-statutory-insurance', 'd1-business-income',
+      'd2-gross-monthly', 'd2-payroll-taxes', 'd2-other-income',
+      'rent-mortgage-expense', 'food-housekeeping-expense', 'transportation-gas-expense', 'vehicle-installment-expense',
+      'medical-expense', 'charitable-expense', 'utilities-expense', 'insurance-expense', 'childcare-expense', 'other-monthly-expenses',
+      'has-separate-household-toggle', 'j2-rent-expense', 'j2-food-expense', 'j2-utilities-expense', 'j2-other-expense',
+      'cmi-m1', 'cmi-m2', 'cmi-m3', 'cmi-m4', 'cmi-m5', 'cmi-m6', 'cmi-result-box',
+      'total-sched-i-income', 'total-sched-j-expenses', 'net-cash-flow-display', 'total-j2-expenses'
+    ];
+    for (const id of ids) expect(html).toContain(`id="${id}"`);
+  });
+});
