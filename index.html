@@ -359,8 +359,8 @@
         <button type="button" id="btn-header-autopilot" class="btn btn-accent btn-sm" style="display:flex; align-items:center; gap:6px; font-weight:700; background:linear-gradient(135deg, #0284c7, #2563eb); border:none;" title="Step through all 16 steps with a scripted walkthrough that fills synthetic sample data">
           <span>▶ Guided Walkthrough</span>
         </button>
-        <button type="button" id="btn-toggle-copilot" class="btn btn-secondary btn-sm active" style="display:flex; align-items:center; gap:5px;" title="Toggle Bankruptcy Filing Copilot Sidebar Agent">
-          <span class="copilot-pulse-dot" style="width:7px; height:7px;"></span> <span>🤖 Sidebar Agent</span>
+        <button type="button" id="btn-toggle-copilot" class="btn btn-secondary btn-sm active" style="display:flex; align-items:center; gap:5px;" title="Show or hide the rule-based copilot panel">
+          <span class="copilot-pulse-dot" style="width:7px; height:7px;"></span> <span>Copilot</span>
         </button>
         <button type="button" id="btn-show-cover-page" class="btn btn-secondary btn-sm" style="display:flex; align-items:center; gap:5px;" title="View Law Firm Cover Page & Workflow Efficiency Briefing">
           <span>🏛️ Firm Cover Page</span>
@@ -368,7 +368,7 @@
         <button type="button" id="btn-show-terms" class="btn btn-secondary btn-sm" title="View the license terms you accepted">
           <span>Terms</span>
         </button>
-        <span id="header-readiness-badge" class="badge badge-success" title="Filing Readiness based on validated fields">Readiness: 98%</span>
+        <span id="header-readiness-badge" class="badge" title="Deterministic hard-audit flags on the current draft">Audit: —</span>
         <button type="button" id="btn-open-email-outbox" class="btn btn-secondary btn-sm" style="display:flex; align-items:center; gap:6px;" title="Outbound Email Filing Dispatcher & Approval Console">
           <span>📤 Outbox</span>
           <span id="outbox-pending-badge" class="badge-mini" style="background:#f59e0b; color:#000;">15</span>
@@ -1697,7 +1697,7 @@
               <button class="stage3-form-item active" data-form="form101" id="stage3-form101">
                 <div class="form-item-top">
                   <span class="form-item-code">Form 101</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Voluntary Petition for Individuals</div>
               </button>
@@ -1713,7 +1713,7 @@
               <button class="stage3-form-item" data-form="form106ab" id="stage3-form106ab">
                 <div class="form-item-top">
                   <span class="form-item-code">Schedule A/B</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Property (Real & Personal)</div>
               </button>
@@ -1721,7 +1721,7 @@
               <button class="stage3-form-item" data-form="form106c" id="stage3-form106c">
                 <div class="form-item-top">
                   <span class="form-item-code">Schedule C</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Claimed Exemptions (C.R.S.)</div>
               </button>
@@ -1729,7 +1729,7 @@
               <button class="stage3-form-item" data-form="form106d" id="stage3-form106d">
                 <div class="form-item-top">
                   <span class="form-item-code">Schedule D</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Secured Creditors & Liens</div>
               </button>
@@ -1737,7 +1737,7 @@
               <button class="stage3-form-item" data-form="form106ef" id="stage3-form106ef">
                 <div class="form-item-top">
                   <span class="form-item-code">Schedule E/F</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Unsecured Claims (Priority/Non)</div>
               </button>
@@ -1745,7 +1745,7 @@
               <button class="stage3-form-item" data-form="form106g" id="stage3-form106g">
                 <div class="form-item-top">
                   <span class="form-item-code">Schedule G</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Executory Contracts & Leases</div>
               </button>
@@ -1753,7 +1753,7 @@
               <button class="stage3-form-item" data-form="form106h" id="stage3-form106h">
                 <div class="form-item-top">
                   <span class="form-item-code">Schedule H</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Your Codebtors & Co-signers</div>
               </button>
@@ -1761,7 +1761,7 @@
               <button class="stage3-form-item" data-form="form106i" id="stage3-form106i">
                 <div class="form-item-top">
                   <span class="form-item-code">Form 106I</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Debtor Monthly Income</div>
               </button>
@@ -1769,7 +1769,7 @@
               <button class="stage3-form-item" data-form="form106j" id="stage3-form106j">
                 <div class="form-item-top">
                   <span class="form-item-code">Form 106J</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Monthly Household Expenses</div>
               </button>
@@ -1785,7 +1785,7 @@
               <button class="stage3-form-item" data-form="form107" id="stage3-form107">
                 <div class="form-item-top">
                   <span class="form-item-code">Form 107</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge notbuilt">Not built</span>
                 </div>
                 <div class="form-item-name">Statement of Financial Affairs</div>
               </button>
@@ -1793,7 +1793,7 @@
               <button class="stage3-form-item" data-form="form108" id="stage3-form108">
                 <div class="form-item-top">
                   <span class="form-item-code">Form 108</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge notbuilt">Not built</span>
                 </div>
                 <div class="form-item-name">Statement of Intention</div>
               </button>
@@ -1801,7 +1801,7 @@
               <button class="stage3-form-item" data-form="form122a1" id="stage3-form122a1">
                 <div class="form-item-top">
                   <span class="form-item-code">Form 122A-1</span>
-                  <span class="form-item-badge ready">✓ Ready</span>
+                  <span class="form-item-badge ready">Draft</span>
                 </div>
                 <div class="form-item-name">Chapter 7 CMI Calculation</div>
               </button>
@@ -1809,7 +1809,7 @@
               <button class="stage3-form-item" data-form="form122a2" id="stage3-form122a2">
                 <div class="form-item-top">
                   <span class="form-item-code">Form 122A-2</span>
-                  <span class="form-item-badge optional">Below Median</span>
+                  <span class="form-item-badge notbuilt">Not built</span>
                 </div>
                 <div class="form-item-name">Means Test Presumption Packet</div>
               </button>

@@ -3184,3 +3184,114 @@ body { padding-top: var(--disclaimer-h); }
 .terms-check { display: flex; gap: 8px; align-items: flex-start; font-size: 0.85rem; color: #e2e8f0; cursor: pointer; }
 .terms-check input { margin-top: 3px; }
 .terms-identity-line { font-size: 0.75rem; color: #94a3b8; }
+
+/* ------------------------------------------------------------------
+   Layout audit fixes (2026-09): header and toolbars wrap instead of
+   clipping; the copilot becomes a slide-over panel on narrow screens.
+   ------------------------------------------------------------------ */
+.form-item-badge.notbuilt {
+  background: rgba(148, 163, 184, 0.15);
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+/* Header: grows to fit instead of clipping at 60px */
+.app-header {
+  height: auto;
+  max-height: none;
+  min-height: 60px;
+  flex-wrap: wrap;
+  row-gap: 8px;
+  padding: 8px 1.25rem;
+  flex-shrink: 0;
+}
+.header-left-block { flex-wrap: wrap; row-gap: 8px; min-width: 0; }
+.header-right-block { flex-wrap: wrap; justify-content: flex-end; row-gap: 6px; margin-left: auto; }
+.brand h1 { white-space: nowrap; }
+
+/* The workspace takes whatever height the header leaves */
+#app.app-root-container { display: flex; flex-direction: column; }
+.stage-views-viewport { height: auto; flex: 1 1 auto; min-height: 0; }
+
+/* Stage 3 document toolbar: wrap instead of overflowing its fixed height */
+.stage3-canvas-header {
+  height: auto;
+  min-height: 52px;
+  padding: 8px 1.25rem;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Copilot header: stop squeezing the title beside the buttons */
+.copilot-header { flex-wrap: wrap; gap: 8px; }
+.copilot-title-box { flex: 1 1 200px; min-width: 0; }
+.copilot-sub { line-height: 1.35; }
+
+/* Six-month CMI inputs read as one group */
+.cmi-month-grid { margin-top: 0.5rem; }
+
+/* Mid-width screens: tighter header, section titles only on wide screens */
+@media (max-width: 1280px) {
+  .stage-tab-btn { padding: 6px 10px; }
+  .brand .subtitle { display: none; }
+}
+
+/* Narrow screens (tablet portrait, phones) */
+@media (max-width: 900px) {
+  .app-header { padding: 8px 12px; }
+  .header-left-block, .header-right-block, .stage-nav-tabs {
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    justify-content: flex-start;
+    margin-left: 0;
+  }
+  .stage-tab-btn .stage-step-title { display: none; }
+  .stage-tab-btn { padding: 6px 12px; }
+  .active-case-pill { display: none; }
+  .header-right-block .btn { white-space: nowrap; flex-shrink: 0; }
+
+  /* Copilot slides over the content instead of taking a fixed 350px column */
+  .stage-views-viewport { position: relative; }
+  .copilot-sidebar {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100% !important;
+    width: min(92vw, 360px) !important;
+    min-width: 0 !important;
+    max-width: 92vw !important;
+    z-index: 60;
+    border-radius: 0 !important;
+    background: #0f172a !important;
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.6) !important;
+  }
+  .copilot-sidebar.collapsed { width: 0 !important; }
+
+  .stage1-intake-pane { padding: 1rem; }
+  .stage3-canvas-body { padding: 1rem; }
+  .form-actions { flex-wrap: wrap; gap: 8px; }
+}
+
+/* Compact header actions so the header stays at two rows on laptop widths */
+.header-right-block .btn,
+.header-right-block .badge { padding: 5px 10px; font-size: 0.78rem; }
+.header-right-block { gap: 6px; }
+.badge.badge-success, .badge-success { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.35); }
+.badge.badge-warning, .badge-warning { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.35); }
+.badge.badge-danger, .badge-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  background: rgba(148, 163, 184, 0.15);
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}

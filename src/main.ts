@@ -1459,6 +1459,15 @@ function updateDOMSummaries() {
     copilotFlagBadge.style.display = auditFlags.length > 0 ? 'inline-block' : 'none';
   }
 
+  // Header audit badge (real counts from the hard-audit engine)
+  const headerAuditEl = document.getElementById('header-readiness-badge');
+  if (headerAuditEl) {
+    const critical = auditFlags.filter(f => f.severity === 'CRITICAL').length;
+    const warnings = auditFlags.length - critical;
+    headerAuditEl.innerText = `Audit: ${critical} critical · ${warnings} warning${warnings === 1 ? '' : 's'}`;
+    headerAuditEl.className = `badge ${critical > 0 ? 'badge-danger' : warnings > 0 ? 'badge-warning' : 'badge-success'}`;
+  }
+
   // 12. Attorney Review Step 17
   const reviewSummary = calculateReviewSummary(masterData);
   const readinessEl = document.getElementById('attorney-readiness-val');
@@ -2902,11 +2911,13 @@ document.addEventListener('DOMContentLoaded', () => {
     ensureTermsAccepted();
     if (authErr) authErr.style.display = 'none';
 
-    // Ensure Copilot Sidebar is open
+    // Open the copilot beside the form on wide screens; on narrow screens it is a slide-over
+    // panel, so leave it closed until the user opens it.
     const sidebar = document.getElementById('copilot-sidebar');
     const toggleBtn = document.getElementById('btn-toggle-copilot');
-    if (sidebar) sidebar.classList.remove('collapsed');
-    if (toggleBtn) toggleBtn.classList.add('active');
+    const isNarrow = window.matchMedia('(max-width: 900px)').matches;
+    if (sidebar) sidebar.classList.toggle('collapsed', isNarrow);
+    if (toggleBtn) toggleBtn.classList.toggle('active', !isNarrow);
 
     if (contextMessage) {
       setTimeout(() => {
