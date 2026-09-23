@@ -259,7 +259,7 @@
 
           <form id="auth-form" class="attorney-auth-form">
             <!-- No credentials are checked: this is a static, browser-only prototype with no server. -->
-            <div class="form-group-compact" style="background: rgba(234, 179, 8, 0.08); border: 1px solid rgba(234, 179, 8, 0.4); padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; font-size: 0.75rem; color: #fbbf24;">
+            <div id="access-status-notice" class="form-group-compact" style="background: rgba(234, 179, 8, 0.08); border: 1px solid rgba(234, 179, 8, 0.4); padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; font-size: 0.75rem; color: #fbbf24;">
               <strong>Demo access — no login.</strong> This prototype runs entirely in your browser. Nothing below is verified: no password, bar-registry, or CM/ECF credential check exists. Use synthetic data only.
             </div>
 
@@ -1143,6 +1143,8 @@
                 <div class="form-step" id="step-16">
                   <h3>Step 16: Supervising Attorney Signoff, ECF Gateway & Outbound Dispatch</h3>
                   <p class="section-desc">Attorney signoff (recorded locally, unverified), a filing simulation (nothing is sent), and a draft email outbox.</p>
+
+                  <div id="attorney-verified-identity" class="verified-identity-note">Signed-in identity: not available (local session without Cloudflare Access).</div>
 
                   <div class="grid-2">
                     <div class="form-group">

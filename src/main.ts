@@ -365,6 +365,30 @@ function getValString(id: string, fallback: string = ''): string {
   return el ? el.value : fallback;
 }
 
+// Identity verified by Cloudflare Access (via /api/whoami). null when running locally without Access.
+let verifiedAccessEmail: string | null = null;
+
+async function loadVerifiedIdentity() {
+  try {
+    const res = await fetch('/api/whoami', { cache: 'no-store', credentials: 'same-origin' });
+    if (!res.ok) return;
+    const body = await res.json();
+    if (typeof body?.email !== 'string' || !body.email) return;
+    verifiedAccessEmail = body.email;
+  } catch {
+    return;
+  }
+  const notice = document.getElementById('access-status-notice');
+  if (notice) {
+    notice.style.background = 'rgba(34, 197, 94, 0.08)';
+    notice.style.borderColor = 'rgba(34, 197, 94, 0.4)';
+    notice.style.color = '#15803d';
+    notice.innerHTML = `<strong>Signed in as ${escapeHtml(verifiedAccessEmail!)}</strong> (verified by Cloudflare Access). Attorney name and registration number below are still self-reported.`;
+  }
+  const idNote = document.getElementById('attorney-verified-identity');
+  if (idNote) idNote.innerHTML = `Signed-in identity: <strong>${escapeHtml(verifiedAccessEmail!)}</strong> (verified by Cloudflare Access). It is recorded with the signoff.`;
+}
+
 function buildMasterCaseDataFromUI(): MasterCaseData {
   const data: MasterCaseData = createSampleMasterCaseData();
   data.chapter = currentChapter;
@@ -2719,6 +2743,7 @@ function initAutopilotAgentUI() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  void loadVerifiedIdentity();
   // Initialize Dual-State Engine, Copilot, and Autopilot
   const initialMasterData = buildMasterCaseDataFromUI();
   dualStateManager = new DualStateManager(initialMasterData);
@@ -3274,6 +3299,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bar_number: attBar,
       firm_name: attFirm,
       ecf_login_id: (document.getElementById('attorney-ecf') as HTMLInputElement)?.value.trim() ?? '',
+      verified_email: verifiedAccessEmail,
       signed_at: new Date().toISOString(),
       declaration_accepted: isDeclChecked
     };
@@ -3283,7 +3309,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (statusBox) {
       if (result.success) {
         statusBox.style.color = '#4ade80';
-        statusBox.innerHTML = `✓ Signoff recorded in this browser for ${escapeHtml(attName)} (Reg. # ${escapeHtml(attBar)} — format checked only, not verified against the Colorado registry). Nothing has been filed.`;
+        statusBox.innerHTML = `✓ Signoff recorded in this browser for ${escapeHtml(attName)} (Reg. # ${escapeHtml(attBar)} — format checked only, not verified against the Colorado registry)${verifiedAccessEmail ? `, signed in as ${escapeHtml(verifiedAccessEmail)} (Cloudflare Access)` : ''}. Nothing has been filed.`;
         dualStateManager.publishToOfficialPetition(attName, attBar, attFirm);
 
         const pill = document.getElementById('agent-approval-status-pill');

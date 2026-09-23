@@ -17,6 +17,8 @@ export interface AttorneySignoff {
   ecf_login_id: string;
   signed_at: string;
   declaration_accepted: boolean;
+  /** Email verified by Cloudflare Access for the signed-in user, when deployed behind Access. */
+  verified_email?: string | null;
 }
 
 export interface PetitionReviewSummary {
